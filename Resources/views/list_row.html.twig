@@ -1,0 +1,10 @@
+{# @var grid \Unlooped\GridBundle\Model\Grid #}
+{# @var type \Unlooped\GridBundle\ColumnType\ColumnTypeInterface #}
+
+{% block grid_list_row %}
+    <tr>
+        {% for column in grid.columns %}
+            {% include column.template with {'type': column, 'data': data} %}
+        {% endfor %}
+    </tr>
+{% endblock %}

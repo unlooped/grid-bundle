@@ -1,0 +1,16 @@
+<div class="row form-row">
+    <div class="form-group col-2">
+        {{ form_widget(data.field, {'label': false, 'attr': {'class': 'custom-select'}}) }}
+    </div>
+    <div class="form-group col-3">
+        {{ form_widget(data.operator, {'label': false, 'attr': {'class': 'custom-select'}}) }}
+    </div>
+    <div class="form-group col-7">
+        <div class="input-group">
+            {{ form_widget(data.value, {'label': false}) }}
+            <div class="input-group-append">
+                <button class="btn btn-sm btn-danger {{ deleteBtnSel|replace({'.': ''}) }}">X</button>
+            </div>
+        </div>
+    </div>
+</div>

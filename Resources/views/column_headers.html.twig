@@ -1,0 +1,3 @@
+{% for column in grid.columns %}
+    {% include '@UnloopedGrid/column_header.html.twig' with {'column': column, 'pagination': grid.pagination} %}
+{% endfor %}

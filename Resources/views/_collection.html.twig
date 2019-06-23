@@ -1,0 +1,15 @@
+<div class="{{ class|default('row-container') }}"
+     data-collection="form-collection"
+     data-allow-add="{{ data.vars.allow_add|json_encode }}"
+     data-allow-delete="{{ data.vars.allow_delete|json_encode }}"
+     data-prototype="{% filter escape('html_attr') %}{% spaceless %}{% include rowTemplate with {'data': data.vars.prototype} %}{% endspaceless %}{% endfilter %}"
+     data-add-btn-sel="{{ addBtnSel }}"
+     data-delete-btn-sel="{{ deleteBtnSel }}"
+>
+    {% for row in data %}
+        {% include rowTemplate with {'data': row, 'deleteBtnSel': deleteBtnSel} %}
+    {% endfor %}
+</div>
+{% if showAddButton is defined and showAddButton %}
+    <button class="btn btn-secondary" id="{{ addBtnSel|replace({'#': ''}) }}">{{ addBtnText|trans }}</button>
+{% endif %}

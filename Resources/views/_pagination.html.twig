@@ -1,0 +1,30 @@
+<div class="col">
+    {{ knp_pagination_render(grid.pagination) }}
+</div>
+<div class="col col-md-auto text-right">
+    <div class="mb-3">
+        <span class="mr-2">
+            {{ ((grid.pagination.page|default(1) - 1) * grid.currentPerPage) + 1 }} to {{ min(grid.currentPage|default(1) * grid.currentPerPage, grid.pagination.getTotalItemCount) }} of {{ grid.pagination.getTotalItemCount }}
+        </span>
+        {% if grid.pagination.getTotalItemCount > min(grid.helper.perPageOptions) %}
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
+                        {{ grid.currentPerPage }} per Page
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for ppo in grid.helper.perPageOptions %}
+                            <a class="dropdown-item{% if ppo == grid.currentPerPage %} active{% endif %}"
+                               href="{{ path(grid.route, grid.routeParams|merge({(grid.helper.perPageParameterName): ppo})) }}"
+                            >
+                                {{ ppo }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,7 @@
+{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+
+{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+
+{% block column_content %}
+    {{ type.value(data)|localizeddate(type.options.date_format, type.options.time_format, type.options.locale, type.options.timezone, type.options.format, type.options.calendar) }}
+{% endblock %}

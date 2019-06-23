@@ -1,0 +1,11 @@
+{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+
+{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+
+{% block column_content %}
+    <div class="btn-group mr-2" role="group">
+        {% for action in type.options.actions %}
+            <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': data.id}) }}"{% endif %}><span class="{{ action.icon }}"></span> {{ action.label|trans }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

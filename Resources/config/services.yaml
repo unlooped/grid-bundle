@@ -1,0 +1,15 @@
+services:
+    Unlooped\GridBundle\Repository\FilterRepository:
+        public: true
+        autoconfigure: true
+        autowire: true
+    Unlooped\GridBundle\Service\GridService:
+        public: true
+        arguments:
+          - '@request_stack'
+          - '@knp_paginator'
+          - '@form.factory'
+          - '@doctrine.orm.entity_manager'
+          - '@session.flash_bag'
+          -
+          -

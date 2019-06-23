@@ -1,0 +1,19 @@
+{# @var column \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{% if column.sortable and pagination.isSorted(column.field) %}
+    {% set attr = column.attr|merge({class: (column.attr.class|default('') ~ ' sorted sorted-' ~ pagination.direction)|trim}) %}
+{% else %}
+    {% set attr = column.attr %}
+{% endif %}
+
+{% block grid_column %}
+    <th scope="col" {% for attr, value in attr %}
+    {{ attr }}="{{ value }}"
+{% endfor %}
+    >
+        {% if column.sortable %}
+            {{ knp_pagination_sortable(pagination, column.label|trans, column.fieldWithAlias) }}
+        {% else %}
+            {{ column.label|trans }}
+        {% endif %}
+    </th>
+{% endblock %}
