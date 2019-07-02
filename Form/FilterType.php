@@ -20,7 +20,8 @@ class FilterType extends AbstractType
                 'entry_type'    => FilterRowType::class,
                 'allow_add'     => true,
                 'allow_delete'  => true,
-                'entry_options' => ['fields' => $options['fields']]
+                'entry_options' => ['fields' => $options['fields']],
+                'by_reference'  => false,
             ])
             ->add('filter', SubmitType::class)
         ;
