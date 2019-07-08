@@ -1,0 +1,11 @@
+{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+
+{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+
+{% block column_content %}
+    {% if type.value(data) %}
+        <span class="badge badge-success">{% trans %}Yes{% endtrans %}</span>
+    {% else %}
+        <span class="badge badge-danger">{% trans %}No{% endtrans %}</span>
+    {% endif %}
+{% endblock %}
