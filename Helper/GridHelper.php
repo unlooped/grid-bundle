@@ -9,6 +9,7 @@ use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
+use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
 use Unlooped\GridBundle\FilterType\FilterType;
 
@@ -85,11 +86,16 @@ class GridHelper
 
     /**
      * @throws DuplicateColumnException
+     * @throws TypeNotAColumnException
      */
     public function addColumn(string $identifier, string $type = TextColumn::class, array $options = []): self
     {
         if (!$this->options['allow_duplicate_columns'] && in_array($identifier, $this->columnNames, true)) {
             throw new DuplicateColumnException('Column ' . $identifier . ' already exists in ' . $this->name . ' Grid Helper');
+        }
+
+        if (!is_a($type, AbstractColumnType::class, true)) {
+            throw new TypeNotAColumnException($type);
         }
 
         $this->columnNames[] = $identifier;
