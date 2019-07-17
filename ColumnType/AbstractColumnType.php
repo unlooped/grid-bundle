@@ -9,10 +9,10 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
 
     protected $template = '@UnloopedGrid/column_types/text.html.twig';
 
-    private $options;
-    private $field;
-    private $propertyAccessor;
-    private $alias;
+    protected $options;
+    protected $field;
+    protected $propertyAccessor;
+    protected $alias;
 
     /**
      * Text constructor.
