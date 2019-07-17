@@ -185,7 +185,7 @@ class GridService
     {
         $existingFilter = $this->doesSameFilterExist($filter);
         if ($existingFilter && $existingFilter->getId() !== $filter->getId()) {
-            $this->flashBag->add('unlooped_grid.warning', 'Filter already Exists: ' . $existingFilter->getName());
+            $this->flashBag->add('unlooped_grid.alert', 'Filter already Exists: ' . $existingFilter->getName());
             return;
         }
 
