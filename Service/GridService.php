@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Entity\FilterRow;
-use Unlooped\GridBundle\Form\FilterType;
+use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
@@ -102,7 +102,7 @@ class GridService
         $filter = $gridHelper->getFilter();
         $filter->setIsSaveable($this->saveFilter);
 
-        $form = $this->formFactory->create(FilterType::class, $filter, ['fields' => $filter->getFields(), 'method' => 'post']);
+        $form = $this->formFactory->create(FilterFormType::class, $filter, ['fields' => $filter->getFields(), 'method' => 'post']);
 
         $form->handleRequest($request);
         $filterApplied = false;

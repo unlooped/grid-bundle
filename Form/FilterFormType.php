@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\Filter;
 
-class FilterType extends AbstractType
+class FilterFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
