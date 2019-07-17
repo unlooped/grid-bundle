@@ -19,11 +19,15 @@
         "knplabs/knp-paginator-bundle": "^3.0",
         "unlooped/helper": "^1.1.0",
         "symfony/property-access": "^4.2",
-        "unlooped/ts-resources": "^0.1.0"
+        "unlooped/ts-resources": "^0.1.0",
+        "nesbot/carbon": "^2.21"
     },
     "autoload": {
         "psr-4": {
             "Unlooped\\GridBundle\\": ""
         }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.3"
     }
 }

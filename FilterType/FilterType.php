@@ -79,6 +79,11 @@ class FilterType
         ],
     ];
 
+    public static function getVariables(): array
+    {
+        return [];
+    }
+
     public static function getExprList(): array
     {
         return ConstantHelper::getList('EXPR');
