@@ -34,6 +34,15 @@ class FilterFormType extends AbstractType
 
                 $label = $data->getHash() ? 'Filter and Update' : 'Filter and Save';
 
+                if ($data->isSaveable() && $data->getHash()) {
+                    $form->add('delete_filter', SubmitType::class, [
+                        'label' => 'Yes Delete Filter',
+                        'attr' => [
+                            'class' => 'btn-danger btn-block',
+                        ]
+                    ]);
+                }
+
                 if ($data->isSaveable()) {
                     $form->add('name', null, ['attr' => ['placeholder' => 'Name']]);
                     $form->add('filter_and_save', SubmitType::class, ['label' => $label]);

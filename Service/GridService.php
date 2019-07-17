@@ -114,7 +114,10 @@ class GridService
         $form = $this->formFactory->create(FilterFormType::class, $filter, ['fields' => $filter->getFields(), 'method' => 'post']);
 
         $form->handleRequest($request);
+
         $filterApplied = false;
+        $filterSaved = false;
+        $filterDeleted = false;
 
         if ($filter->getHash() || ($form->isSubmitted() && $form->isValid())) {
             $filterApplied = true;
@@ -124,6 +127,12 @@ class GridService
 
             if ($this->saveFilter && $form->get('filter_and_save')->isClicked()) {
                 $this->saveFilter($filter);
+                $filterSaved = true;
+            }
+
+            if ($this->saveFilter && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
+                $this->deleteFilter($filter);
+                $filterDeleted = true;
             }
         }
 
@@ -150,9 +159,6 @@ class GridService
             $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
         }
 
-
-        dump($request, $request->query->all());
-
         return new Grid(
             $gridHelper,
             $pagination,
@@ -161,6 +167,8 @@ class GridService
             $currentPerPage,
             $this->saveFilter,
             $filterApplied,
+            $filterSaved,
+            $filterDeleted,
             $request->get('_route'),
             $request->get('_route_params'),
             $existingFilters
@@ -192,6 +200,16 @@ class GridService
         $filter->setHash($this->getHashForFilter($filter));
 
         $this->em->persist($filter);
+        $this->em->flush();
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function deleteFilter(Filter $filter): void
+    {
+        $this->em->remove($filter);
         $this->em->flush();
     }
 

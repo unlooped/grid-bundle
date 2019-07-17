@@ -30,8 +30,14 @@ class Grid
     private $currentPage;
     /** @var int */
     private $currentPerPage;
+    /** @var bool */
     private $saveFilter;
+    /** @var array */
     private $existingFilters;
+    /** @var bool */
+    private $filterSaved;
+    /** @var bool */
+    private $filterDeleted;
 
     public function __construct(
         GridHelper $gridHelper,
@@ -41,6 +47,8 @@ class Grid
         int $currentPerPage,
         bool $saveFilter = false,
         bool $filterApplied = false,
+        bool $filterSaved = false,
+        bool $filterDeleted = false,
         string $route = '',
         array  $routeParams = [],
         array $existingFilters = []
@@ -57,6 +65,8 @@ class Grid
         $this->routeParams = $routeParams;
         $this->saveFilter = $saveFilter;
         $this->existingFilters = $existingFilters;
+        $this->filterSaved = $filterSaved;
+        $this->filterDeleted = $filterDeleted;
     }
 
     public function getPagination(): PaginationInterface
@@ -170,4 +180,13 @@ class Grid
         return json_encode($res);
     }
 
+    public function wasFilterSaved(): bool
+    {
+        return $this->filterSaved;
+    }
+
+    public function wasFilterDeleted(): bool
+    {
+        return $this->filterDeleted;
+    }
 }
