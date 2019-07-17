@@ -40,16 +40,16 @@
                         <a class="nav-link{% if not grid.filterApplied %} active{% endif %}"
                            href="{{ path(baseRoute) }}">All {{ grid.title }}</a>
                     </li>
-                    {% for filter in grid.existingFilters %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if grid.filter.hash == filter.hash %}active{% endif %}" href="{{ path(baseRoute ~ '.filter', {'filterHash': filter.hash}) }}">{{ filter.name }}</a>
-                        </li>
-                    {% endfor %}
                     {% if grid.filterApplied and not grid.filter.hash %}
                         <li class="nav-item">
                             <a class="nav-link active">Current Filter</a>
                         </li>
                     {% endif %}
+                    {% for filter in grid.existingFilters %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if grid.filter.hash == filter.hash %}active{% endif %}" href="{{ path(baseRoute ~ '.filter', {'filterHash': filter.hash}) }}">{{ filter.name }}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
@@ -62,7 +62,7 @@
             </div>
             <div class="collapse{% if grid.filterApplied %} show{% endif %}" id="filterBox">
                 <div class="box-body">
-                    {{ form_start(grid.filterFormView) }}
+                    {{ form_start(grid.filterFormView, {'attr': {'data-ug-filter': grid.filtersAsJson}}) }}
                     <div class="row">
                         <div class="col-md-9">
                             <div class="row">

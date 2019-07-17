@@ -161,6 +161,9 @@ class GridHelper
         return $this->filter;
     }
 
+    /**
+     * @return array|FilterType[]
+     */
     public function getFilters(): array
     {
         return $this->filters;

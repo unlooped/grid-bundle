@@ -19,7 +19,6 @@ use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Model\Grid;
-use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\Helper\StringHelper;
 
 class GridService
@@ -75,19 +74,29 @@ class GridService
         $repo = $this->em->getRepository($className);
         $qb = $repo->createQueryBuilder($alias);
 
+        $filter = $this->getFilter($className, $filterHash);
+
+        if ($request = $this->requestStack->getCurrentRequest()) {
+            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
+        }
+
+        return GridHelper::create($qb, $options, $filter);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    protected function getFilter(string $className, ?string $filterHash = null): Filter
+    {
         if ($filterHash && $filter = $this->filterRepo->findOneByHash($filterHash)) {
-            return GridHelper::create($qb, $options, $filter);
+            return $filter;
         }
 
         $filter = new Filter();
         $filter->setEntity($className);
         $filter->addRow(new FilterRow());
 
-        if ($request = $this->requestStack->getCurrentRequest()) {
-            $filter->setRoute($request->get('_route'));
-        }
-
-        return GridHelper::create($qb, $options, $filter);
+        return $filter;
     }
 
     /**
@@ -141,6 +150,9 @@ class GridService
             $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
         }
 
+
+        dump($request, $request->query->all());
+
         return new Grid(
             $gridHelper,
             $pagination,
@@ -150,7 +162,7 @@ class GridService
             $this->saveFilter,
             $filterApplied,
             $request->get('_route'),
-            $request->query->all(),
+            $request->get('_route_params'),
             $existingFilters
         );
     }
@@ -171,7 +183,8 @@ class GridService
      */
     public function saveFilter(Filter $filter): void
     {
-        if (!$filter->getHash() && $existingFilter = $this->doesSameFilterExist($filter)) {
+        $existingFilter = $this->doesSameFilterExist($filter);
+        if ($existingFilter && $existingFilter->getId() !== $filter->getId()) {
             $this->flashBag->add('unlooped_grid.warning', 'Filter already Exists: ' . $existingFilter->getName());
             return;
         }

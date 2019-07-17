@@ -20,7 +20,8 @@
         "unlooped/helper": "^1.1.0",
         "symfony/property-access": "^4.2",
         "unlooped/ts-resources": "^0.1.0",
-        "nesbot/carbon": "^2.21"
+        "nesbot/carbon": "^2.21",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

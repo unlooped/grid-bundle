@@ -108,17 +108,15 @@ class FilterType
     {
         $resolver->setDefaults([
             'label'      => null,
-            'isSortable' => true,
-            'isMapped'   => true,
             'attr'       => [],
-            'options'    => [],
-            'template'   => $this->template,
+            'widget'     => 'text',
         ]);
 
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('attr', 'array');
-        $resolver->setAllowedTypes('options', 'array');
-        $resolver->setAllowedTypes('template', ['null', 'string']);
+        $resolver->setAllowedTypes('widget', 'string');
+
+        $resolver->setAllowedValues('widget', ['text']);
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
@@ -167,4 +165,8 @@ class FilterType
         return $value;
     }
 
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
 }

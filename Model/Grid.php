@@ -155,4 +155,19 @@ class Grid
         $this->existingFilters = $existingFilters;
     }
 
+    public function getFiltersAsJson(): string
+    {
+        $filters = $this->gridHelper->getFilters();
+        $res = [];
+        foreach ($filters as $field => $filterType) {
+            $res[$field] = [
+                'operators' => $filterType::getAvailableOperators(),
+                'type' => get_class($filterType),
+                'options' => $filterType->getOptions(),
+            ];
+        }
+
+        return json_encode($res);
+    }
+
 }

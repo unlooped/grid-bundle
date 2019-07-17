@@ -7,6 +7,7 @@ namespace Unlooped\GridBundle\FilterType;
 use Carbon\Carbon;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 
 class DateFilterType extends FilterType
@@ -57,6 +58,15 @@ class DateFilterType extends FilterType
             self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
             self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
         ];
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'widget'     => 'date',
+        ]);
+
+        $resolver->setAllowedValues('widget', ['text', 'date', 'datetime', 'datepicker', 'datetimepicker']);
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
