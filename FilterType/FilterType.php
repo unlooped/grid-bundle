@@ -4,6 +4,7 @@
 namespace Unlooped\GridBundle\FilterType;
 
 
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 
@@ -11,23 +12,23 @@ class FilterType
 {
     protected $template = '@UnloopedGrid/column_types/text.html.twig';
 
-    private $field;
-    private $alias;
-    private $options;
+    protected $field;
+    protected $options;
+
+    protected static $cnt = 0;
 
     public static function getAvailableOperators(): array
     {
         return FilterRow::getExprList();
     }
 
-    public function __construct(string $field, array $options = [], string $alias = null)
+    public function __construct(string $field, array $options = [])
     {
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
 
         $this->field = $field;
-        $this->alias = $alias;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -47,4 +48,17 @@ class FilterType
         $resolver->setAllowedTypes('template', ['null', 'string']);
     }
 
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    {
+        $i = self::$cnt++;
+
+        $op = $filterRow->getExpressionOperator();
+        $value = $filterRow->getExpressionValue();
+        if ($value) {
+            $qb->andWhere($qb->expr()->$op($filterRow->getField(), ':value_' . $i));
+            $qb->setParameter('value_' . $i, $value);
+        } else {
+            $qb->andWhere($qb->expr()->$op($filterRow->getField()));
+        }
+    }
 }

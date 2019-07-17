@@ -9,6 +9,8 @@ use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
+use Unlooped\GridBundle\Exception\TypeNotAFilterException;
+use Unlooped\GridBundle\FilterType\FilterType;
 
 class GridHelper
 {
@@ -62,6 +64,8 @@ class GridHelper
             'perPageOptions'          => [24, 48, 72, 96, 120, 144, 168, 192],
             'pageParameterName'       => 'page',
             'perPageParameterName'    => 'perPage',
+            'wrapQueries'             => false,
+            'distinctQuery'           => false,
         ]);
 
         $resolver->setAllowedTypes('name', 'string');
@@ -73,6 +77,8 @@ class GridHelper
         $resolver->setAllowedTypes('perPageOptions', 'array');
         $resolver->setAllowedTypes('pageParameterName', 'string');
         $resolver->setAllowedTypes('perPageParameterName', 'string');
+        $resolver->setAllowedTypes('wrapQueries', 'bool');
+        $resolver->setAllowedTypes('distinctQuery', 'bool');
 
         $resolver->setRequired(['title', 'listRow']);
     }
@@ -94,15 +100,20 @@ class GridHelper
 
     /**
      * @throws DuplicateFilterException
+     * @throws TypeNotAFilterException
      */
-    public function addFilter(string $identifier, ?string $type = null, array $options = []): self
+    public function addFilter(string $identifier, ?string $type = FilterType::class, array $options = []): self
     {
         if (in_array($identifier, $this->filterNames, true)) {
             throw new DuplicateFilterException('Filter ' . $identifier . ' already exists in ' . $this->name . ' Grid Helper');
         }
 
+        if (!is_a($type, FilterType::class, true)) {
+            throw new TypeNotAFilterException($type);
+        }
+
         $this->filterNames[] = $identifier;
-//        $this->filters[] = new $type();
+        $this->filters[$identifier] = new $type($identifier, $options);
 
         return $this;
     }
@@ -184,8 +195,23 @@ class GridHelper
         return $this->options['perPageParameterName'];
     }
 
+    public function getWrapQueries(): bool
+    {
+        return $this->options['wrapQueries'];
+    }
+
+    public function getDistinctQuery(): bool
+    {
+        return $this->options['distinctQuery'];
+    }
+
     public function getAlias(): string
     {
         return $this->alias;
+    }
+
+    public function getFilterTypeForField(string $field): FilterType
+    {
+        return $this->filters[$field];
     }
 }

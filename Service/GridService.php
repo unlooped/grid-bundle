@@ -90,6 +90,11 @@ class GridService
         return GridHelper::create($qb, $options, $filter);
     }
 
+    /**
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function getGrid(GridHelper $gridHelper): Grid
     {
         $request = $this->requestStack->getCurrentRequest();
@@ -106,7 +111,7 @@ class GridService
             $filterApplied = true;
             $qb = $gridHelper->getQueryBuilder();
 
-            $this->handleFilter($qb, $filter);
+            $this->handleFilter($qb, $filter, $gridHelper);
 
             if ($this->saveFilter && $form->get('filter_and_save')->isClicked()) {
                 $this->saveFilter($filter);
@@ -124,7 +129,11 @@ class GridService
         $pagination = $this->paginator->paginate(
             $gridHelper->getQueryBuilder(),
             $currentPage,
-            $currentPerPage
+            $currentPerPage,
+            [
+                'wrap-queries' => $gridHelper->getWrapQueries(),
+                'distinct'     => $gridHelper->getDistinctQuery(),
+            ]
         );
 
         $existingFilters = [];
@@ -146,19 +155,12 @@ class GridService
         );
     }
 
-    public function handleFilter(QueryBuilder $qb, Filter $filter): void
+    public function handleFilter(QueryBuilder $qb, Filter $filter, GridHelper $gridHelper): void
     {
-        $i = 0;
+
         foreach ($filter->getRows() as $row) {
-            $op = $row->getExpressionOperator();
-            $value = $row->getExpressionValue();
-            if ($value) {
-                $qb->andWhere($qb->expr()->$op($row->getField(), ':value_' . $i));
-                $qb->setParameter('value_' . $i, $value);
-            } else {
-                $qb->andWhere($qb->expr()->$op($row->getField()));
-            }
-            $i++;
+            $filterType = $gridHelper->getFilterTypeForField($row->getField());
+            $filterType->handleFilter($qb, $row);
         }
     }
 
