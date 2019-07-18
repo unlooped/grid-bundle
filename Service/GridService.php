@@ -280,7 +280,7 @@ class GridService
             'grid' => $grid,
         ];
 
-        $content = $this->templating->render('influencer/pool.html.twig', array_merge($parameters, $gridParameters));
+        $content = $this->templating->render($template, array_merge($parameters, $gridParameters));
 
         $response = new Response();
         $response->setContent($content);
