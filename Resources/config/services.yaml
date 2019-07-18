@@ -11,5 +11,7 @@ services:
           - '@form.factory'
           - '@doctrine.orm.entity_manager'
           - '@session.flash_bag'
+          - '@twig'
+          - '@router.default'
           -
           -

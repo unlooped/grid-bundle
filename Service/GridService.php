@@ -12,8 +12,15 @@ use Knp\Component\Pager\PaginatorInterface;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Form\FilterFormType;
@@ -34,6 +41,8 @@ class GridService
     private $useRouteInFilterReference;
     private $filterRepo;
     private $flashBag;
+    private $templating;
+    private $router;
 
     public function __construct(
         RequestStack $requestStack,
@@ -41,6 +50,8 @@ class GridService
         FormFactoryInterface $formFactory,
         EntityManager $em,
         FlashBagInterface $flashBag,
+        Environment $templating,
+        RouterInterface $router,
         bool $saveFilter,
         bool $useRouteInFilterReference
     )
@@ -52,6 +63,8 @@ class GridService
         $this->saveFilter = $saveFilter;
         $this->useRouteInFilterReference = $useRouteInFilterReference;
         $this->flashBag = $flashBag;
+        $this->templating = $templating;
+        $this->router = $router;
 
         if ($saveFilter) {
             $this->filterRepo = $em->getRepository(Filter::class);
@@ -237,5 +250,48 @@ class GridService
         sort($arr);
 
         return sha1(implode('-', $arr));
+    }
+
+    /**
+     * @param string $template #Template
+     *
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
+    {
+        $grid = $this->getGrid($gridHelper);
+        $baseRoute = str_replace('.filter', '', $grid->getRoute());
+
+        if ($grid->wasFilterSaved()) {
+            $filterRoute = $baseRoute . '.filter';
+            return $this->redirectToRoute($filterRoute, ['filterHash' => $grid->getFilter()->getHash()]);
+        }
+
+        if ($grid->wasFilterDeleted()) {
+            return $this->redirectToRoute($baseRoute);
+        }
+
+        $gridParameters = [
+            'grid' => $grid,
+        ];
+
+        $content = $this->templating->render('influencer/pool.html.twig', array_merge($parameters, $gridParameters));
+
+        $response = new Response();
+        $response->setContent($content);
+
+        return $response;
+    }
+
+    /**
+     * @param string $route #Route
+     */
+    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse {
+        return new RedirectResponse($this->router->generate($route, $parameters), $status);
     }
 }

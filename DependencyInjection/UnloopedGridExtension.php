@@ -25,7 +25,7 @@ class UnloopedGridExtension extends ConfigurableExtension {
 
 
         $gsDef = $container->getDefinition(GridService::class);
-        $gsDef->replaceArgument(5, $config['save_filter']);
-        $gsDef->replaceArgument(6, $config['use_route_in_filter_reference']);
+        $gsDef->replaceArgument(7, $config['save_filter']);
+        $gsDef->replaceArgument(8, $config['use_route_in_filter_reference']);
     }
 }
