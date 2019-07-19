@@ -117,6 +117,16 @@ class Grid
         return $this->gridHelper->getListRow();
     }
 
+    public function getPaginationTemplate(): string
+    {
+        return $this->gridHelper->getPaginationTemplate();
+    }
+
+    public function getListHeaderTemplate(): string
+    {
+        return $this->gridHelper->getListHeaderTemplate();
+    }
+
     public function getCreateRoute(): ?string
     {
         return $this->gridHelper->getCreateRoute();

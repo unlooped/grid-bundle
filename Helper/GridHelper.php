@@ -59,9 +59,12 @@ class GridHelper
             'name'                    => '',
             'allow_duplicate_columns' => false,
             'listRow'                 => '@UnloopedGrid/list_row.html.twig',
+            'paginationTemplate'      => '@UnloopedGrid/_pagination.html.twig',
+            'listHeaderTemplate'      => '@UnloopedGrid/column_headers.html.twig',
             'title'                   => '',
             'createRoute'             => null,
             'createLabel'             => null,
+            'defaultPerPage'          => null,
             'perPageOptions'          => [24, 48, 72, 96, 120, 144, 168, 192],
             'pageParameterName'       => 'page',
             'perPageParameterName'    => 'perPage',
@@ -72,9 +75,12 @@ class GridHelper
         $resolver->setAllowedTypes('name', 'string');
         $resolver->setAllowedTypes('allow_duplicate_columns', 'bool');
         $resolver->setAllowedTypes('listRow', 'string');
+        $resolver->setAllowedTypes('paginationTemplate', 'string');
+        $resolver->setAllowedTypes('listHeaderTemplate', 'string');
         $resolver->setAllowedTypes('title', 'string');
         $resolver->setAllowedTypes('createRoute', ['null', 'string']);
         $resolver->setAllowedTypes('createLabel', ['null', 'string']);
+        $resolver->setAllowedTypes('defaultPerPage', ['null', 'int']);
         $resolver->setAllowedTypes('perPageOptions', 'array');
         $resolver->setAllowedTypes('pageParameterName', 'string');
         $resolver->setAllowedTypes('perPageParameterName', 'string');
@@ -177,6 +183,16 @@ class GridHelper
     public function getListRow(): string
     {
         return $this->options['listRow'];
+    }
+
+    public function getPaginationTemplate(): string
+    {
+        return $this->options['paginationTemplate'];
+    }
+
+    public function getListHeaderTemplate(): string
+    {
+        return $this->options['listHeaderTemplate'];
     }
 
     public function getCreateRoute(): ?string

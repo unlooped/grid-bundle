@@ -126,7 +126,7 @@
         {% block list_header %}
             <div class="row align-items-end">
                 {% block pagination_top %}
-                    {% include '@UnloopedGrid/_pagination.html.twig' with {'grid': grid} only %}
+                    {% include grid.paginationTemplate with {'grid': grid} only %}
                 {% endblock %}
             </div>
         {% endblock %}
@@ -134,9 +134,7 @@
             <div class="box-body no-padding">
                 <table class="table table-hover mb-0">
                     <thead>
-                        <tr>
-                            {% include '@UnloopedGrid/column_headers.html.twig' with {'grid': grid} %}
-                        </tr>
+                        {% include grid.listHeaderTemplate with {'grid': grid} %}
                     </thead>
                     <tbody>
                     {% for data in grid.pagination %}
@@ -149,15 +147,17 @@
         {% block list_footer %}
             <div class="row align-items-end">
                 {% block pagination_bottom %}
-                    {% include '@UnloopedGrid/_pagination.html.twig' with {'grid': grid} only %}
+                    {% include grid.paginationTemplate with {'grid': grid} only %}
                 {% endblock %}
             </div>
         {% endblock %}
         {% if grid.createRoute %}
             <div class="row mt-3">
                 <div class="col">
-                    <a href="{{ path(grid.createRoute) }}" class="btn btn-primary">{{ grid.createLabel|trans }} <span
-                                class="icon-plus-circled"></span></a>
+                    <a href="{{ path(grid.createRoute) }}" class="btn btn-primary">
+                        {{ grid.createLabel|trans }}
+                        <span class="icon-plus-circled"></span>
+                    </a>
                 </div>
             </div>
         {% endif %}
