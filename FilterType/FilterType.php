@@ -168,8 +168,6 @@ class FilterType
             break;
         }
 
-        dump($alias);
-
         return $alias;
     }
 
