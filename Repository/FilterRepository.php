@@ -41,6 +41,18 @@ class FilterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findDefaultForRoute(string $route): ?Filter
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.route = :route')
+            ->andWhere('f.isDefault = :isDefault')
+            ->setParameter('route', $route)
+            ->setParameter('isDefault', true)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Filter[] Returns an array of Filter objects
     //  */

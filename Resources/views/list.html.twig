@@ -94,6 +94,12 @@
                     <div class="row justify-content-end">
                         <div class="col-md-4 text-right">
                             {% if grid.saveFilter %}
+                                {% if grid.filter.default %}
+                                    Remove as Default
+                                {% else %}
+                                    Make as Default
+                                {% endif %}
+
                                 {% if grid.filterFormView.delete_filter is defined %}
                                     <div class="btn-group">
                                         <div class="dropdown">

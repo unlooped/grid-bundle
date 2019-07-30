@@ -11,6 +11,7 @@ use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
 use ReflectionClass;
 use ReflectionException;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,6 +24,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Model\Grid;
@@ -89,10 +91,6 @@ class GridService
 
         $filter = $this->getFilter($className, $filterHash);
 
-        if ($request = $this->requestStack->getCurrentRequest()) {
-            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
-        }
-
         return GridHelper::create($qb, $options, $filter);
     }
 
@@ -105,17 +103,32 @@ class GridService
             return $filter;
         }
 
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request
+            && $request->get('_route')
+            && $filter = $this->filterRepo->findDefaultForRoute($request->get('_route'))
+        ) {
+            return $filter;
+        }
+
         $filter = new Filter();
         $filter->setEntity($className);
         $filter->addRow(new FilterRow());
+
+        if ($request) {
+            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
+        }
 
         return $filter;
     }
 
     /**
+     * @throws LoaderError
      * @throws NonUniqueResultException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
@@ -124,7 +137,11 @@ class GridService
         $filter = $gridHelper->getFilter();
         $filter->setIsSaveable($this->saveFilter);
 
-        $form = $this->formFactory->create(FilterFormType::class, $filter, ['fields' => $filter->getFields(), 'method' => 'post']);
+        $form = $this->formFactory->create(FilterFormType::class, $filter, [
+            'fields' => $filter->getFields(),
+            'filters' => $gridHelper->getFilters(),
+            'method' => 'get',
+        ]);
 
         $form->handleRequest($request);
 
@@ -146,6 +163,16 @@ class GridService
             if ($this->saveFilter && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
                 $this->deleteFilter($filter);
                 $filterDeleted = true;
+            }
+
+            if ($filter->getHash()) {
+                if ($form->has('remove_default') && $form->get('remove_default')->isClicked()) {
+                    $this->removeFilterAsDefault($filter);
+                    $filterSaved = true;
+                } else if ($form->has('make_default') && $form->get('make_default')->isClicked()) {
+                    $this->makeFilterAsDefault($filter);
+                    $filterSaved = true;
+                }
             }
         }
 
@@ -172,12 +199,15 @@ class GridService
             $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
         }
 
+        $filterData = $this->getFilterData($gridHelper);
+
         return new Grid(
             $gridHelper,
             $pagination,
             $form,
             $currentPage,
             $currentPerPage,
+            $filterData,
             $this->saveFilter,
             $filterApplied,
             $filterSaved,
@@ -195,6 +225,23 @@ class GridService
             $filterType = $gridHelper->getFilterTypeForField($row->getField());
             $filterType->handleFilter($qb, $row);
         }
+    }
+
+    public function getFilterData(GridHelper $gh)
+    {
+        $filters = $gh->getFilters();
+        $filterData = [];
+        foreach ($filters as $field => $filterType) {
+            $filterData[$field] = [
+                'operators' => $filterType::getAvailableOperators(),
+                'type' => get_class($filterType),
+                'options' => $filterType->getOptions(),
+                'template' => $this->getFilterTemplateForFilter($filterType),
+                'templatePath' => $filterType->getTemplate(),
+            ];
+        }
+
+        return $filterData;
     }
 
     /**
@@ -227,6 +274,36 @@ class GridService
     }
 
     /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function makeFilterAsDefault(Filter $filter): void
+    {
+        $defaultFilter = $this->filterRepo->findDefaultForRoute($filter->getRoute());
+        if ($defaultFilter) {
+            $defaultFilter->setIsDefault(false);
+            $this->em->persist($defaultFilter);
+        }
+
+        $filter->setIsDefault(true);
+
+        $this->em->persist($filter);
+        $this->em->flush();
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function removeFilterAsDefault(Filter $filter): void
+    {
+        $filter->setIsDefault(false);
+
+        $this->em->persist($filter);
+        $this->em->flush();
+    }
+
+    /**
      * @throws NonUniqueResultException
      */
     public function doesSameFilterExist(Filter $filter): ?Filter
@@ -250,6 +327,29 @@ class GridService
         sort($arr);
 
         return sha1(implode('-', $arr));
+    }
+
+    /**
+     * @param FilterType $filterType
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function getFilterTemplateForFilter(FilterType $filterType): string
+    {
+        $template = $filterType->getTemplate();
+
+        $formBuilder = $this->formFactory->createNamedBuilder('__filterrow__', FormType::class, null, ['csrf_protection' => false]);
+
+        $filterType->buildForm($formBuilder);
+
+        $form = $formBuilder->getForm();
+
+        $tpl = $this->templating->render($template, [
+            'data' => $form->createView(),
+        ]);
+
+        return str_replace('__filterrow__', 'filter_form[rows][__name__]', $tpl);
     }
 
     /**

@@ -43,6 +43,13 @@ class Filter
      */
     private $name;
 
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $isDefault = false;
+
     private $fields;
     private $isSaveable = false;
 
@@ -155,6 +162,17 @@ class Filter
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->isDefault;
+    }
+
+    public function setIsDefault(bool $isDefault): self
+    {
+        $this->isDefault = $isDefault;
         return $this;
     }
 

@@ -20,7 +20,7 @@ class FilterFormType extends AbstractType
                 'entry_type'    => FilterRowType::class,
                 'allow_add'     => true,
                 'allow_delete'  => true,
-                'entry_options' => ['fields' => $options['fields']],
+                'entry_options' => ['fields' => $options['fields'], 'filters' => $options['filters']],
                 'by_reference'  => false,
             ])
             ->add('filter', SubmitType::class)
@@ -47,6 +47,24 @@ class FilterFormType extends AbstractType
                     $form->add('name', null, ['attr' => ['placeholder' => 'Name']]);
                     $form->add('filter_and_save', SubmitType::class, ['label' => $label]);
                 }
+
+                if ($data->getHash()) {
+                    if ($data->isDefault()) {
+                        $form->add('remove_default', SubmitType::class, [
+                            'label' => 'Remove Default',
+                            'attr' => [
+                                'class' => 'btn btn-sm btn-outline-danger'
+                            ]
+                        ]);
+                    } else {
+                        $form->add('make_default', SubmitType::class, [
+                            'label' => 'Make Default',
+                            'attr' => [
+                                'class' => 'btn btn-sm btn-outline-primary'
+                            ]
+                        ]);
+                    }
+                }
             }
         });
     }
@@ -56,6 +74,7 @@ class FilterFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Filter::class,
             'fields'     => [],
+            'filters'    => null,
         ]);
 
         $resolver->setRequired('fields');

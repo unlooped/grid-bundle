@@ -27,13 +27,18 @@ export class FilterManager {
 
     private loadEvents() {
         this.filterForm.addEventListener('change', this.formChanged.bind(this));
+        let formCollection = this.filterForm.querySelector('[data-collection="form-collection"]');
+        // @ts-ignore
+        jQuery(formCollection).on('unl.row_added', (event: Event, row: Element) => {
+            this.updateForField(row.querySelector('[name*="[field]"]'));
+        });
     }
 
     private init() {
         let firstFieldSelect = this.filterForm.querySelectorAll('select[name$="[field]"]');
 
         firstFieldSelect.forEach((fieldSelect: HTMLSelectElement, idx: number) => {
-            this.updateForField(fieldSelect);
+            this.updateForField(fieldSelect, false);
         });
     }
 
@@ -43,7 +48,7 @@ export class FilterManager {
         }
     }
 
-    private updateForField(target: HTMLSelectElement) {
+    private updateForField(target: HTMLSelectElement, updateInput: boolean = true) {
         let row = target.closest('[role="collection-row"]');
         let fieldName = target.options[target.selectedIndex].value;
         let config = this.config[fieldName];
@@ -54,6 +59,10 @@ export class FilterManager {
         }
 
         filter.fieldWithFilterChosen(row, fieldName, config);
-        filter.updateValueInput(row, fieldName, config);
+        if (updateInput) {
+            filter.updateValueInput(row, fieldName, config);
+        }
+
+        filter.attachEventListeners(row);
     }
 }

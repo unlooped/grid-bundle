@@ -1,16 +1,17 @@
-<div class="row form-row">
+<div class="row form-row" data-row="{% if _key is defined %}{{_key}}{% else %}__name__{% endif %}">
     <div class="form-group col-2">
         {{ form_widget(data.field, {'label': false, 'attr': {'class': 'custom-select'}}) }}
     </div>
     <div class="form-group col-3">
         {{ form_widget(data.operator, {'label': false, 'attr': {'class': 'custom-select'}}) }}
     </div>
-    <div class="form-group col-7">
-        <div class="input-group">
-            {{ form_widget(data.value, {'label': false}) }}
-            <div class="input-group-append">
-                <button class="btn btn-sm btn-danger {{ deleteBtnSel|replace({'.': ''}) }}">X</button>
-            </div>
-        </div>
+    <div class="form-group col-7 d-flex justify-content-between align-items-center">
+        {% if data.vars.value.field is defined and grid.filterData[data.vars.value.field] is defined %}
+            {% include grid.filterData[data.vars.value.field].templatePath with {'data': data} %}
+        {% else %}
+            {% include '@UnloopedGrid/filter_types/text.html.twig' with {'data': data} %}
+        {% endif %}
+
+        <button class="ml-2 btn btn-sm btn-danger {{ deleteBtnSel|replace({'.': ''}) }}">X</button>
     </div>
 </div>

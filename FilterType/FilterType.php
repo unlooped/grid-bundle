@@ -5,6 +5,11 @@ namespace Unlooped\GridBundle\FilterType;
 
 
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\Helper\ConstantHelper;
@@ -12,7 +17,7 @@ use Unlooped\Helper\StringHelper;
 
 class FilterType
 {
-    protected $template = '@UnloopedGrid/column_types/text.html.twig';
+    protected $template = '@UnloopedGrid/filter_types/text.html.twig';
 
     protected $field;
     protected $options;
@@ -107,11 +112,13 @@ class FilterType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'template'   => $this->template,
             'label'      => null,
             'attr'       => [],
             'widget'     => 'text',
         ]);
 
+        $resolver->setAllowedTypes('template', ['string']);
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('attr', 'array');
         $resolver->setAllowedTypes('widget', 'string');
@@ -168,5 +175,32 @@ class FilterType
     public function getOptions(): array
     {
         return $this->options;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->options['template'];
+    }
+
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param array $options
+     * @param null $data
+     */
+    public function buildForm($builder, array $options = [], $data = null): void
+    {
+        $builder
+            ->add('value')
+        ;
+    }
+
+    public function postSetFormData(FormEvent $event): void
+    {
+        // nothing to do here
+    }
+
+    public function postFormSubmit(FormEvent $event)
+    {
+        // nothing to do here
     }
 }

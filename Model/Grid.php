@@ -38,6 +38,8 @@ class Grid
     private $filterSaved;
     /** @var bool */
     private $filterDeleted;
+    /** @var array */
+    private $filterData;
 
     public function __construct(
         GridHelper $gridHelper,
@@ -45,6 +47,7 @@ class Grid
         FormInterface $filterForm,
         int $currentPage,
         int $currentPerPage,
+        array $filterData,
         bool $saveFilter = false,
         bool $filterApplied = false,
         bool $filterSaved = false,
@@ -61,6 +64,7 @@ class Grid
         $this->filterApplied = $filterApplied;
         $this->currentPage = $currentPage;
         $this->currentPerPage = $currentPerPage;
+        $this->filterData = $filterData;
         $this->route = $route;
         $this->routeParams = $routeParams;
         $this->saveFilter = $saveFilter;
@@ -175,19 +179,14 @@ class Grid
         $this->existingFilters = $existingFilters;
     }
 
+    public function getFilterData(): ?array
+    {
+        return $this->filterData;
+    }
+
     public function getFiltersAsJson(): string
     {
-        $filters = $this->gridHelper->getFilters();
-        $res = [];
-        foreach ($filters as $field => $filterType) {
-            $res[$field] = [
-                'operators' => $filterType::getAvailableOperators(),
-                'type' => get_class($filterType),
-                'options' => $filterType->getOptions(),
-            ];
-        }
-
-        return json_encode($res);
+        return json_encode($this->filterData);
     }
 
     public function wasFilterSaved(): bool

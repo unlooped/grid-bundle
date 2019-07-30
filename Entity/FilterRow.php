@@ -39,6 +39,13 @@ class FilterRow
      */
     private $value;
 
+    /**
+     * @var array
+     *
+     * @ORM\Column(type="json_array")
+     */
+    private $metaData;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,14 +87,26 @@ class FilterRow
         return $this;
     }
 
-    public function getValue(): ?string
+    public function getValue()
     {
         return $this->value;
     }
 
-    public function setValue(string $value): self
+    public function setValue($value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getMetaData(): ?array
+    {
+        return $this->metaData;
+    }
+
+    public function setMetaData(array $metaData): self
+    {
+        $this->metaData = $metaData;
 
         return $this;
     }

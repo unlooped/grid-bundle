@@ -4,9 +4,11 @@ export class FilterType {
 
     }
 
+    public attachEventListeners(row: Element) {
+        // nothing to do
+    }
 
     public fieldWithFilterChosen(row: Element, fieldName: string, config: any) {
-        console.log('a');
         let operatorSelect = <HTMLSelectElement>row.querySelector('select[name$="[operator]"]');
         let currentValue = null;
         if (operatorSelect.selectedIndex) {
@@ -35,8 +37,7 @@ export class FilterType {
     }
 
     public updateValueInput(row: Element, fieldName: string, config: any) {
-        let valueInput = <HTMLInputElement>row.querySelector('input[name$="[value]"]');
-
-        valueInput.setAttribute('type', config.options.widget);
+        let container = <HTMLInputElement>row.querySelector('.filter-value-container');
+        container.innerHTML = config.template.replace(/__name__/g, row.getAttribute('data-row'));
     }
 }

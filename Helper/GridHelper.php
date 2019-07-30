@@ -164,6 +164,10 @@ class GridHelper
     {
         $this->filter->setFields($this->filterNames);
 
+        if ($this->filter->getRows()->count() === 1 && !$this->filter->getRows()->first()->getField()) {
+            $this->filter->getRows()->first()->setField($this->filter->getFields()[0]);
+        }
+
         return $this->filter;
     }
 
