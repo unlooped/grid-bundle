@@ -32,6 +32,11 @@ class DateFilterType extends FilterType
             'TOMORROW'           => 'TOMORROW',
             'DAY_AFTER_TOMORROW' => 'DAY_AFTER_TOMORROW',
 
+            'ONE_WEEK_AGO'    => 'ONE_WEEK_AGO',
+            'TWO_WEEKS_AGO'   => 'TWO_WEEKS_AGO',
+            'THREE_WEEKS_AGO' => 'THREE_WEEKS_AGO',
+            'FOUR_WEEKS_AGO' => 'FOUR_WEEKS_AGO',
+
             'START_OF_WEEK_MONDAY'      => 'START_OF_WEEK_MONDAY',
             'START_OF_WEEK_SUNDAY'      => 'START_OF_WEEK_SUNDAY',
             'START_OF_LAST_WEEK_MONDAY' => 'START_OF_LAST_WEEK_MONDAY',
@@ -141,6 +146,15 @@ class DateFilterType extends FilterType
                 return Carbon::now()->addDay()->startOfDay()->format('Y-m-d');
             case 'DAY_AFTER_TOMORROW':
                 return Carbon::now()->addDays(2)->startOfDay()->format('Y-m-d');
+
+            case 'ONE_WEEK_AGO':
+                return Carbon::now()->subWeek()->startOfDay()->format('Y-m-d');
+            case 'TWO_WEEKS_AGO':
+                return Carbon::now()->subWeeks(2)->startOfDay()->format('Y-m-d');
+            case 'THREE_WEEKS_AGO':
+                return Carbon::now()->subWeeks(3)->startOfDay()->format('Y-m-d');
+            case 'FOUR_WEEKS_AGO':
+                return Carbon::now()->subWeeks(4)->startOfDay()->format('Y-m-d');
 
             case 'START_OF_WEEK_MONDAY':
                 return Carbon::now()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
