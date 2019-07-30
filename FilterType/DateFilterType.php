@@ -95,8 +95,12 @@ class DateFilterType extends FilterType
     {
         $i = self::$cnt++;
 
+        $this->getFieldAlias($qb, $filterRow);
+
         $op = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
+        $field = $this->getFieldAlias($qb, $filterRow);
+
         if ($value) {
             if (is_string($value)) {
                 $value = $this->replaceVarsInValue($value);
@@ -111,18 +115,18 @@ class DateFilterType extends FilterType
             if ($op === self::EXPR_EQ) {
                 $endDate = $date->clone()->addDay()->startOfDay();
 
-                $qb->andWhere($qb->expr()->gte($filterRow->getField(), ':value_start_' . $i));
-                $qb->andWhere($qb->expr()->lt($filterRow->getField(), ':value_end_' . $i));
+                $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
+                $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
 
                 $qb->setParameter('value_start_' . $i, $date);
                 $qb->setParameter('value_end_' . $i, $endDate);
             } else {
-                $qb->andWhere($qb->expr()->$op($filterRow->getField(), ':value_' . $i));
+                $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
                 $qb->setParameter('value_' . $i, $date);
             }
 
         } else {
-            $qb->andWhere($qb->expr()->$op($filterRow->getField()));
+            $qb->andWhere($qb->expr()->$op($field));
         }
     }
 

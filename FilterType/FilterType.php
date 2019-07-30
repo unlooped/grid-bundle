@@ -4,6 +4,7 @@
 namespace Unlooped\GridBundle\FilterType;
 
 
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -132,12 +133,46 @@ class FilterType
 
         $op = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
+        $field = $this->getFieldAlias($qb, $filterRow);
         if ($value) {
-            $qb->andWhere($qb->expr()->$op($filterRow->getField(), ':value_' . $i));
+            $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
             $qb->setParameter('value_' . $i, $value);
         } else {
-            $qb->andWhere($qb->expr()->$op($filterRow->getField()));
+            $qb->andWhere($qb->expr()->$op($field));
         }
+    }
+
+    protected function getFieldAlias(QueryBuilder $qb, FilterRow $filterRow)
+    {
+        $classMetadataFactory = $qb->getEntityManager()->getMetadataFactory();
+        /** @var ClassMetadataInfo $md */
+        $md = $classMetadataFactory->getMetadataFor($filterRow->getFilter()->getEntity());
+
+        $fields = explode('.', $filterRow->getField());
+        $alias = $qb->getRootAliases()[0];
+
+        if (count($fields) === 1) {
+            return $alias . '.' . $fields[0];
+        }
+
+        foreach ($fields as $field) {
+            if ($md->hasAssociation($field)) {
+                $nAlias = $alias . '_' . $field;
+                $qb->leftJoin($alias . '.' . $field, $nAlias);
+                $alias = $nAlias;
+
+                $md = $classMetadataFactory->getMetadataFor($md->getAssociationMapping($field)['targetEntity']);
+                continue;
+            }
+
+            $alias .= '.' . $field;
+
+            break;
+        }
+
+        dump($alias);
+
+        return $alias;
     }
 
     public function getExpressionOperator(FilterRow $filterRow): string
