@@ -22,8 +22,6 @@ class GridHelper
     private $name;
     /** @var int */
     private $defaultPage = 1;
-    /** @var int */
-    private $perPage = 24;
 
     /** @var array|AbstractColumnType[] */
     private $columns = [];
@@ -64,7 +62,7 @@ class GridHelper
             'title'                   => '',
             'createRoute'             => null,
             'createLabel'             => null,
-            'defaultPerPage'          => null,
+            'defaultPerPage'          => 24,
             'perPageOptions'          => [24, 48, 72, 96, 120, 144, 168, 192],
             'pageParameterName'       => 'page',
             'perPageParameterName'    => 'perPage',
@@ -152,12 +150,7 @@ class GridHelper
 
     public function getPerPage(): int
     {
-        return $this->perPage;
-    }
-
-    public function setPerPage(int $perPage): void
-    {
-        $this->perPage = $perPage;
+        return $this->options['defaultPerPage'];
     }
 
     public function getFilter(): Filter
