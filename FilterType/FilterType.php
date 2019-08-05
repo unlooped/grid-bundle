@@ -83,6 +83,8 @@ class FilterType
         ],
     ];
 
+    protected $fieldAliases = [];
+
     public static function getVariables(): array
     {
         return [];
@@ -144,7 +146,14 @@ class FilterType
     {
         $classMetadataFactory = $qb->getEntityManager()->getMetadataFactory();
         /** @var ClassMetadataInfo $md */
-        $md = $classMetadataFactory->getMetadataFor($filterRow->getFilter()->getEntity());
+        $entity = $filterRow->getFilter()->getEntity();
+
+        $key = $entity . '::' . $filterRow->getField();
+        if (array_key_exists($key, $this->fieldAliases)) {
+            return $this->fieldAliases[$key];
+        }
+
+        $md = $classMetadataFactory->getMetadataFor($entity);
 
         $fields = explode('.', $filterRow->getField());
         $alias = $qb->getRootAliases()[0];
@@ -167,6 +176,8 @@ class FilterType
 
             break;
         }
+
+        $this->fieldAliases[$key] = $alias;
 
         return $alias;
     }
