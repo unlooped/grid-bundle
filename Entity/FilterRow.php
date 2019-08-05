@@ -42,7 +42,7 @@ class FilterRow
     /**
      * @var array
      *
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json_array", nullable=true)
      */
     private $metaData;
 
