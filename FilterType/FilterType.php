@@ -230,6 +230,10 @@ class FilterType
                 return null;
             }
 
+            if (!$value) {
+                return null;
+            }
+
             $value = $mapVal['prefix'].$value.$mapVal['suffix'];
         }
 
