@@ -113,12 +113,14 @@ class FilterType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'template'   => $this->template,
-            'label'      => null,
-            'attr'       => [],
-            'widget'     => 'text',
+            'show_filter' => false,
+            'template'    => $this->template,
+            'label'       => null,
+            'attr'        => [],
+            'widget'      => 'text',
         ]);
 
+        $resolver->setAllowedTypes('show_filter', ['boolean']);
         $resolver->setAllowedTypes('template', ['string']);
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('attr', 'array');
@@ -137,7 +139,7 @@ class FilterType
         if ($value) {
             $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
             $qb->setParameter('value_' . $i, $value);
-        } else {
+        } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->$op($field));
         }
     }
@@ -214,6 +216,16 @@ class FilterType
         return $value;
     }
 
+    public function hasExpressionValue(FilterRow $filterRow): bool
+    {
+        if (array_key_exists($filterRow->getOperator(), self::$valueMap)) {
+            $mapVal = self::$valueMap[$filterRow->getOperator()];
+            return $mapVal['value'];
+        }
+
+        return true;
+    }
+
     public function getOptions(): array
     {
         return $this->options;
@@ -236,13 +248,24 @@ class FilterType
         ;
     }
 
-    public function postSetFormData(FormEvent $event): void
+
+    public function preSubmitFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $this->buildForm($builder, $options, $data);
+    }
+
+    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $this->buildForm($builder, $options, $data);
+    }
+
+    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         // nothing to do here
     }
 
-    public function postFormSubmit(FormEvent $event)
+    public function getField(): string
     {
-        // nothing to do here
+        return $this->field;
     }
 }

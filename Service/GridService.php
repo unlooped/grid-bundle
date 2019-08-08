@@ -113,7 +113,6 @@ class GridService
 
         $filter = new Filter();
         $filter->setEntity($className);
-        $filter->addRow(new FilterRow());
 
         if ($request) {
             $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
@@ -341,7 +340,7 @@ class GridService
 
         $formBuilder = $this->formFactory->createNamedBuilder('__filterrow__', FormType::class, null, ['csrf_protection' => false]);
 
-        $filterType->buildForm($formBuilder);
+        $filterType->preSubmitFormData($formBuilder);
 
         $form = $formBuilder->getForm();
 

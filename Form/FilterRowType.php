@@ -29,12 +29,13 @@ class FilterRowType extends AbstractType
             if (null !== $event->getData()) {
                 /** @var FilterRow $data */
                 $data = $event->getData();
+                $form = $event->getForm();
                 $filters = $options['filters'];
 
                 if ($data->getField()) {
                     /** @var FilterType $filterType */
                     $filterType = $filters[$data->getField()];
-                    $filterType->postSetFormData($event);
+                    $filterType->postSetFormData($form, $options, $data, $event);
                 }
             }
         });
@@ -47,7 +48,7 @@ class FilterRowType extends AbstractType
 
                 /** @var FilterType $filterType */
                 $filterType = $filters[$data['field']];
-                $filterType->buildForm($form, $options, $data);
+                $filterType->preSubmitFormData($form, $options, $data, $event);
             }
         });
 
@@ -55,11 +56,12 @@ class FilterRowType extends AbstractType
             if (null !== $event->getData()) {
                 /** @var FilterRow $data */
                 $data = $event->getData();
+                $form = $event->getForm();
                 $filters = $options['filters'];
 
                 /** @var FilterType $filterType */
                 $filterType = $filters[$data->getField()];
-                $filterType->postFormSubmit($event);
+                $filterType->postFormSubmit($form, $options, $data, $event);
             }
         });
     }

@@ -250,46 +250,46 @@ class DateFilterType extends FilterType
         ;
     }
 
-    public function postSetFormData(FormEvent $event): void
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param array $options
+     * @param FilterRow $data
+     * @param FormEvent|null $event
+     */
+    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
-        if (null !== $event->getData()) {
-            $form = $event->getForm();
-            /** @var FilterRow $data */
-            $data = $event->getData();
+        $this->buildForm($builder, [], $data);
 
-            $this->buildForm($form, [], $data);
+        $valueType = $data->getMetaData()['value_type'];
 
-            $valueType = $data->getMetaData()['value_type'];
+        $builder->get('_valueChoices')->setData($valueType);
 
-            $form->get('_valueChoices')->setData($valueType);
-
-            if ($valueType === self::VALUE_CHOICE_VARIABLES) {
-                $form->get('_variables')->setData($data->getValue());
-            } else if ($valueType === self::VALUE_CHOICE_DATE) {
-                $form->get('_dateValue')->setData(Carbon::parse($data->getValue()));
-            }
+        if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+            $builder->get('_variables')->setData($data->getValue());
+        } else if ($valueType === self::VALUE_CHOICE_DATE) {
+            $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
         }
     }
 
-    public function postFormSubmit(FormEvent $event): void
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param array $options
+     * @param FilterRow $data
+     * @param FormEvent|null $event
+     */
+    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
-        if (null !== $event->getData()) {
-            /** @var FilterRow $data */
-            $data = $event->getData();
-            $form = $event->getForm();
-
-            $valueType = $form->get('_valueChoices')->getData();
-            if ($valueType === self::VALUE_CHOICE_DATE) {
-                $date = Carbon::parse($form->get('_dateValue')->getData());
-                $data->setValue($date->toRfc3339String());
-                $data->setMetaData(['value_type' => $valueType]);
-            } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
-                $data->setValue($form->get('_variables')->getData());
-                $data->setMetaData([
-                    'value_type' => $valueType,
-                    'variable' => $data->getValue(),
-                ]);
-            }
+        $valueType = $builder->get('_valueChoices')->getData();
+        if ($valueType === self::VALUE_CHOICE_DATE) {
+            $date = Carbon::parse($builder->get('_dateValue')->getData());
+            $data->setValue($date->toRfc3339String());
+            $data->setMetaData(['value_type' => $valueType]);
+        } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+            $data->setValue($builder->get('_variables')->getData());
+            $data->setMetaData([
+                'value_type' => $valueType,
+                'variable' => $data->getValue(),
+            ]);
         }
     }
 }

@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\ColumnType\AbstractColumnType;
 use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter;
+use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
 use Unlooped\GridBundle\Exception\TypeNotAColumnException;
@@ -30,6 +31,8 @@ class GridHelper
     /** @var Filter|null */
     private $filter;
     private $filters = [];
+    /** @var FilterType[] */
+    private $defaultShowFilters = [];
     private $filterNames = [];
     private $options;
     private $alias;
@@ -123,7 +126,13 @@ class GridHelper
         }
 
         $this->filterNames[] = $identifier;
-        $this->filters[$identifier] = new $type($identifier, $options);
+        /** @var FilterType $filterType */
+        $filterType = new $type($identifier, $options);
+        $this->filters[$identifier] = $filterType;
+        if ($filterType->getOptions()['show_filter'] === true) {
+            $this->defaultShowFilters[] = $filterType;
+            $this->filter->setHasDefaultShowFilter(true);
+        }
 
         return $this;
     }
@@ -156,6 +165,24 @@ class GridHelper
     public function getFilter(): Filter
     {
         $this->filter->setFields($this->filterNames);
+
+        if ($this->filter->getRows()->count() > 0) {
+            return $this->filter;
+        }
+
+        if (count($this->defaultShowFilters) > 0) {
+            foreach ($this->defaultShowFilters as $defaultShowFilter) {
+                $fRow = new FilterRow();
+                $fRow->setField($defaultShowFilter->getField());
+                $fRow->setOperator(array_key_first($defaultShowFilter::getAvailableOperators()));
+
+                $this->filter->addRow($fRow);
+            }
+        } else {
+            $fRow = new FilterRow();
+            $fRow->setField($this->filter->getFields()[0]);
+            $this->filter->addRow($fRow);
+        }
 
         if ($this->filter->getRows()->count() === 1 && !$this->filter->getRows()->first()->getField()) {
             $this->filter->getRows()->first()->setField($this->filter->getFields()[0]);

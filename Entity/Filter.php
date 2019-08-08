@@ -50,6 +50,7 @@ class Filter
      */
     private $isDefault = false;
 
+    private $hasDefaultShowFilter = false;
     private $fields;
     private $isSaveable = false;
 
@@ -173,6 +174,17 @@ class Filter
     public function setIsDefault(bool $isDefault): self
     {
         $this->isDefault = $isDefault;
+        return $this;
+    }
+
+    public function isHasDefaultShowFilter(): bool
+    {
+        return $this->hasDefaultShowFilter;
+    }
+
+    public function setHasDefaultShowFilter(bool $hasDefaultShowFilter): self
+    {
+        $this->hasDefaultShowFilter = $hasDefaultShowFilter;
         return $this;
     }
 
