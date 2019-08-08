@@ -4,6 +4,8 @@
 namespace Unlooped\GridBundle\FilterType;
 
 
+use App\Exception\OperatorDoesNotExistException;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -101,6 +103,22 @@ class FilterType
         return self::getExprList();
     }
 
+    /**
+     * @throws OperatorDoesNotExistException
+     */
+    public static function createDefaultData(string $operator, string $value = null): DefaultFilterDataStruct
+    {
+        if (!in_array($operator, self::getAvailableOperators(), true)) {
+            throw new OperatorDoesNotExistException($operator, self::class);
+        }
+
+        $dfds = new DefaultFilterDataStruct();
+        $dfds->operator = $operator;
+        $dfds->value = $value;
+
+        return $dfds;
+    }
+
     public function __construct(string $field, array $options = [])
     {
         $resolver = new OptionsResolver();
@@ -114,6 +132,7 @@ class FilterType
     {
         $resolver->setDefaults([
             'show_filter' => false,
+            'default_data' => null,
             'template'    => $this->template,
             'label'       => null,
             'attr'        => [],
@@ -125,6 +144,7 @@ class FilterType
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('attr', 'array');
         $resolver->setAllowedTypes('widget', 'string');
+        $resolver->setAllowedTypes('default_data', ['null', DefaultFilterDataStruct::class]);
 
         $resolver->setAllowedValues('widget', ['text']);
     }
@@ -244,7 +264,7 @@ class FilterType
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
-            ->add('value')
+            ->add('value', null, ['required' => false])
         ;
     }
 

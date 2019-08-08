@@ -122,12 +122,9 @@ class GridService
     }
 
     /**
-     * @throws LoaderError
      * @throws NonUniqueResultException
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws RuntimeError
-     * @throws SyntaxError
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
@@ -148,8 +145,8 @@ class GridService
         $filterSaved = false;
         $filterDeleted = false;
 
-        if ($filter->getHash() || ($form->isSubmitted() && $form->isValid())) {
-            $filterApplied = true;
+        if ($filter->getHash() || $filter->hasDefaultShowFilter() || ($form->isSubmitted() && $form->isValid())) {
+            $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
             $qb = $gridHelper->getQueryBuilder();
 
             $this->handleFilter($qb, $filter, $gridHelper);

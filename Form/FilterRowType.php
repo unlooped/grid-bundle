@@ -22,7 +22,7 @@ class FilterRowType extends AbstractType
             ->add('operator', ChoiceType::class, [
                 'choices' => FilterType::getExprList()
             ])
-            ->add('value')
+            ->add('value', null, ['required' => false])
         ;
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event) use ($options) {

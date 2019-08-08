@@ -4,7 +4,10 @@
 namespace Unlooped\GridBundle\FilterType;
 
 
+use App\Exception\DateFilterValueChoiceDoesNotExistException;
+use App\Exception\OperatorDoesNotExistException;
 use Carbon\Carbon;
+use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -14,6 +17,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\Helper\ConstantHelper;
 
 class DateFilterType extends FilterType
@@ -81,6 +85,45 @@ class DateFilterType extends FilterType
             self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
         ];
     }
+
+    /**
+     * @throws DateFilterValueChoiceDoesNotExistException
+     * @throws OperatorDoesNotExistException
+     */
+    public static function createDefaultData(
+        string $operator,
+        string $value = null,
+        string $valueChoice = self::VALUE_CHOICE_DATE
+    ): DefaultFilterDataStruct
+    {
+        $dfds = parent::createDefaultData($operator, $value);
+
+        if (!in_array($valueChoice, self::getValueChoices(), true)) {
+            throw new DateFilterValueChoiceDoesNotExistException($valueChoice, self::class);
+        }
+
+        $metaData = [
+            'value_type' => $valueChoice,
+        ];
+
+        if ($valueChoice === self::VALUE_CHOICE_VARIABLES) {
+            $metaData['variable'] = $value;
+        }
+
+        $dfds->metaData = $metaData;
+
+        return $dfds;
+    }
+
+    /**
+     * @throws DateFilterValueChoiceDoesNotExistException
+     * @throws OperatorDoesNotExistException
+     */
+    public static function createDefaultDataForDate(string $operator, DateTimeInterface $dateTime): DefaultFilterDataStruct
+    {
+        return self::createDefaultData($operator, Carbon::instance($dateTime)->toRfc3339String());
+    }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {

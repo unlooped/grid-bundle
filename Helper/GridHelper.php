@@ -13,6 +13,7 @@ use Unlooped\GridBundle\Exception\DuplicateFilterException;
 use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
 use Unlooped\GridBundle\FilterType\FilterType;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class GridHelper
 {
@@ -174,7 +175,14 @@ class GridHelper
             foreach ($this->defaultShowFilters as $defaultShowFilter) {
                 $fRow = new FilterRow();
                 $fRow->setField($defaultShowFilter->getField());
-                $fRow->setOperator(array_key_first($defaultShowFilter::getAvailableOperators()));
+                /** @var DefaultFilterDataStruct $defaultData */
+                if ($defaultData = $defaultShowFilter->getOptions()['default_data']) {
+                    $fRow->setOperator($defaultData->operator);
+                    $fRow->setValue($defaultData->value);
+                    $fRow->setMetaData($defaultData->metaData);
+                } else {
+                    $fRow->setOperator(array_key_first($defaultShowFilter::getAvailableOperators()));
+                }
 
                 $this->filter->addRow($fRow);
             }
