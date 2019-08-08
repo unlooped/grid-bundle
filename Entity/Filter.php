@@ -177,7 +177,7 @@ class Filter
         return $this;
     }
 
-    public function isHasDefaultShowFilter(): bool
+    public function hasDefaultShowFilter(): bool
     {
         return $this->hasDefaultShowFilter;
     }
