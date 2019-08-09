@@ -1,0 +1,176 @@
+<?php
+
+
+namespace Unlooped\GridBundle\FilterType;
+
+
+use Carbon\Carbon;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormInterface;
+use Unlooped\GridBundle\Entity\FilterRow;
+
+class DateRangeFilterType extends DateFilterType
+{
+
+    protected $template = '@UnloopedGrid/filter_types/date_range.html.twig';
+
+    public static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ => self::EXPR_EQ,
+        ];
+    }
+
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    {
+        $i = self::$cnt++;
+
+        $op = $this->getExpressionOperator($filterRow);
+        $field = $this->getFieldAlias($qb, $filterRow);
+
+        $metaData = $filterRow->getMetaData();
+        if ($metaData['value_type'] === self::VALUE_CHOICE_VARIABLES) {
+            $startValue = $metaData['variable_from'];
+            $endValue = $metaData['variable_to'];
+        } else {
+            $startValue = $metaData['dateValue_from'];
+            $endValue = $metaData['dateValue_to'];
+        }
+
+        if ($startValue || $endValue) {
+            if (is_string($startValue)) {
+                $startValue = $this->replaceVarsInValue($startValue);
+            }
+            if (is_string($endValue)) {
+                $endValue = $this->replaceVarsInValue($endValue);
+            }
+
+            $startDate = Carbon::parse($startValue)->startOfDay();
+            $endDate = Carbon::parse($endValue)->addDay()->startOfDay();
+
+            if ($op === self::EXPR_EQ) {
+                $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
+                $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
+
+                $qb->setParameter('value_start_' . $i, $startDate);
+                $qb->setParameter('value_end_' . $i, $endDate);
+            }
+
+        } elseif (!$this->hasExpressionValue($filterRow)) {
+            $qb->andWhere($qb->expr()->$op($field));
+        }
+    }
+
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param FilterRow|array $data
+     * @param array $options
+     */
+    public function buildForm($builder, array $options = [], $data = null): void
+    {
+        $hideVariables = true;
+        $hideDate = false;
+        if ($data
+            && is_a($data, FilterRow::class, true)
+            && $data->getMetaData()
+            && array_key_exists('value_type', $data->getMetaData())
+            && $data->getMetaData()['value_type'] === self::VALUE_CHOICE_VARIABLES)
+        {
+            $hideDate = true;
+            $hideVariables = false;
+        }
+
+        $builder
+            ->add('_valueChoices', ChoiceType::class, [
+                'mapped' => false,
+                'choices' => self::getValueChoices(),
+                'attr' => [
+                    'class' => 'custom-select'
+                ],
+            ])
+            ->add('_variables_from', ChoiceType::class, [
+                'mapped'  => false,
+                'choices' => self::getVariables(),
+                'attr'    => [
+                    'class' => 'custom-select' . ($hideVariables ? ' d-none' : ''),
+                ],
+            ])
+            ->add('_dateValue_from', DateType::class, [
+                'mapped' => false,
+                'widget' => 'single_text',
+                'attr'    => [
+                    'class' => $hideDate ? ' d-none' : '',
+                ],
+            ])
+            ->add('_variables_to', ChoiceType::class, [
+                'mapped'  => false,
+                'choices' => self::getVariables(),
+                'attr'    => [
+                    'class' => 'custom-select' . ($hideVariables ? ' d-none' : ''),
+                ],
+            ])
+            ->add('_dateValue_to', DateType::class, [
+                'mapped' => false,
+                'widget' => 'single_text',
+                'attr'    => [
+                    'class' => $hideDate ? ' d-none' : '',
+                ],
+            ])
+            ->remove('value')
+        ;
+    }
+
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param array $options
+     * @param FilterRow $data
+     * @param FormEvent|null $event
+     */
+    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $this->buildForm($builder, [], $data);
+
+        $valueType = $data->getMetaData()['value_type'];
+
+        $builder->get('_valueChoices')->setData($valueType);
+
+        if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+            $builder->get('_variables_from')->setData($data->getMetaData()['variable_from']);
+            $builder->get('_variables_to')->setData($data->getMetaData()['variable_to']);
+        } else if ($valueType === self::VALUE_CHOICE_DATE) {
+            $builder->get('_dateValue_from')->setData(Carbon::parse($data->getMetaData()['dateValue_from']));
+            $builder->get('_dateValue_to')->setData(Carbon::parse($data->getMetaData())['dateValue_to']);
+        }
+    }
+
+    /**
+     * @param FormBuilderInterface|FormInterface $builder
+     * @param array $options
+     * @param FilterRow $data
+     * @param FormEvent|null $event
+     */
+    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $valueType = $builder->get('_valueChoices')->getData();
+        if ($valueType === self::VALUE_CHOICE_DATE) {
+            $dateFrom = Carbon::parse($builder->get('_dateValue_from')->getData());;
+            $dateTo = Carbon::parse($builder->get('_dateValue_to')->getData());;
+            $data->setMetaData([
+                'value_type'     => $valueType,
+                'dateValue_from' => $dateFrom->toRfc3339String(),
+                'dateValue_to'   => $dateTo->toRfc3339String(),
+            ]);
+        } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+            $data->setMetaData([
+                'value_type'    => $valueType,
+                'variable_from' => $builder->get('_variables_from')->getData(),
+                'variable_to'   => $builder->get('_variables_to')->getData(),
+            ]);
+        }
+    }
+
+}

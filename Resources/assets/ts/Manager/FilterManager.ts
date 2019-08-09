@@ -1,5 +1,6 @@
 import {FilterType} from "../FilterType/FilterType";
 import {DateFilterType} from "../FilterType/DateFilterType";
+import {DateRangeFilterType} from "../FilterType/DateRangeFilterType";
 
 export class FilterManager {
 
@@ -9,7 +10,8 @@ export class FilterManager {
     private defaultFilter = new FilterType();
     private advancedFilterBtn: Element;
     private filters: any = {
-        'Unlooped\\GridBundle\\FilterType\\DateFilterType': new DateFilterType()
+        'Unlooped\\GridBundle\\FilterType\\DateFilterType': new DateFilterType(),
+        'Unlooped\\GridBundle\\FilterType\\DateRangeFilterType': new DateRangeFilterType(),
     };
 
     constructor(filterForm: Element, options = []) {
