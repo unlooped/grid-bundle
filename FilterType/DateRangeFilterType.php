@@ -5,6 +5,7 @@ namespace Unlooped\GridBundle\FilterType;
 
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -12,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class DateRangeFilterType extends DateFilterType
 {
@@ -23,6 +25,32 @@ class DateRangeFilterType extends DateFilterType
         return [
             self::EXPR_EQ => self::EXPR_EQ,
         ];
+    }
+
+    public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
+    {
+        $dfds = new DefaultFilterDataStruct();
+        $dfds->operator = self::EXPR_EQ;
+        $dfds->metaData = [
+            'value_type'    => self::VALUE_CHOICE_VARIABLES,
+            'variable_from' => $fromDate,
+            'variable_to'   => $toDate,
+        ];
+
+        return $dfds;
+    }
+
+    public static function createDefaultDataForDateRange(DateTimeInterface $fromDate, DateTimeInterface $toDate): DefaultFilterDataStruct
+    {
+        $dfds = new DefaultFilterDataStruct();
+        $dfds->operator = self::EXPR_EQ;
+        $dfds->metaData = [
+            'value_type' => self::VALUE_CHOICE_DATE,
+            'dateValue_from' => Carbon::instance($fromDate)->toRfc3339String(),
+            'dateValue_to' => Carbon::instance($toDate)->toRfc3339String(),
+        ];
+
+        return $dfds;
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
