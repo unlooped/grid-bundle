@@ -180,67 +180,67 @@ class DateFilterType extends FilterType
     {
         switch (strtoupper($value)) {
             case 'TODAY':
-                return Carbon::now()->startOfDay()->format('Y-m-d');
+                return Carbon::now()->startOfDay()->toRfc3339String();
             case 'YESTERDAY':
-                return Carbon::now()->subDay()->startOfDay()->format('Y-m-d');
+                return Carbon::now()->subDay()->startOfDay()->toRfc3339String();
             case 'TOMORROW':
-                return Carbon::now()->addDay()->startOfDay()->format('Y-m-d');
+                return Carbon::now()->addDay()->startOfDay()->toRfc3339String();
             case 'DAY_AFTER_TOMORROW':
-                return Carbon::now()->addDays(2)->startOfDay()->format('Y-m-d');
+                return Carbon::now()->addDays(2)->startOfDay()->toRfc3339String();
 
             case 'ONE_WEEK_AGO':
-                return Carbon::now()->subWeek()->startOfDay()->format('Y-m-d');
+                return Carbon::now()->subWeek()->startOfDay()->toRfc3339String();
             case 'TWO_WEEKS_AGO':
-                return Carbon::now()->subWeeks(2)->startOfDay()->format('Y-m-d');
+                return Carbon::now()->subWeeks(2)->startOfDay()->toRfc3339String();
             case 'THREE_WEEKS_AGO':
-                return Carbon::now()->subWeeks(3)->startOfDay()->format('Y-m-d');
+                return Carbon::now()->subWeeks(3)->startOfDay()->toRfc3339String();
             case 'FOUR_WEEKS_AGO':
-                return Carbon::now()->subWeeks(4)->startOfDay()->format('Y-m-d');
+                return Carbon::now()->subWeeks(4)->startOfDay()->toRfc3339String();
 
             case 'START_OF_WEEK_MONDAY':
-                return Carbon::now()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
+                return Carbon::now()->startOfWeek(Carbon::MONDAY)->toRfc3339String();
             case 'START_OF_WEEK_SUNDAY':
-                return Carbon::now()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+                return Carbon::now()->startOfWeek(Carbon::SUNDAY)->toRfc3339String();
             case 'START_OF_LAST_WEEK_MONDAY':
-                return Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
+                return Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY)->toRfc3339String();
             case 'START_OF_LAST_WEEK_SUNDAY':
-                return Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+                return Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY)->toRfc3339String();
 
             case 'END_OF_WEEK_SUNDAY':
-                return Carbon::now()->endOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+                return Carbon::now()->endOfWeek(Carbon::SUNDAY)->toRfc3339String();
             case 'END_OF_WEEK_SATURDAY':
-                return Carbon::now()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+                return Carbon::now()->endOfWeek(Carbon::SATURDAY)->toRfc3339String();
             case 'END_OF_LAST_WEEK_SUNDAY':
-                return Carbon::now()->subWeek()->endOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+                return Carbon::now()->subWeek()->endOfWeek(Carbon::SUNDAY)->toRfc3339String();
             case 'END_OF_LAST_WEEK_SATURDAY':
-                return Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+                return Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY)->toRfc3339String();
 
             case 'START_OF_MONTH':
-                return Carbon::now()->startOfMonth()->format('Y-m-d');
+                return Carbon::now()->startOfMonth()->toRfc3339String();
             case 'END_OF_MONTH':
-                return Carbon::now()->endOfMonth()->format('Y-m-d');
+                return Carbon::now()->endOfMonth()->toRfc3339String();
             case 'START_OF_LAST_MONTH':
-                return Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
+                return Carbon::now()->subMonth()->startOfMonth()->toRfc3339String();
             case 'END_OF_LAST_MONTH':
-                return Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
+                return Carbon::now()->subMonth()->endOfMonth()->toRfc3339String();
 
             case 'START_OF_QUARTER':
-                return Carbon::now()->startOfQuarter()->format('Y-m-d');
+                return Carbon::now()->startOfQuarter()->toRfc3339String();
             case 'END_OF_QUARTER':
-                return Carbon::now()->endOfQuarter()->format('Y-m-d');
+                return Carbon::now()->endOfQuarter()->toRfc3339String();
             case 'START_OF_LAST_QUARTER':
-                return Carbon::now()->subQuarter()->startOfQuarter()->format('Y-m-d');
+                return Carbon::now()->subQuarter()->startOfQuarter()->toRfc3339String();
             case 'END_OF_LAST_QUARTER':
-                return Carbon::now()->subQuarter()->endOfQuarter()->format('Y-m-d');
+                return Carbon::now()->subQuarter()->endOfQuarter()->toRfc3339String();
 
             case 'START_OF_YEAR':
-                return Carbon::now()->startOfYear()->format('Y-m-d');
+                return Carbon::now()->startOfYear()->toRfc3339String();
             case 'END_OF_YEAR':
-                return Carbon::now()->endOfYear()->format('Y-m-d');
+                return Carbon::now()->endOfYear()->toRfc3339String();
             case 'START_OF_LAST_YEAR':
-                return Carbon::now()->subYear()->startOfYear()->format('Y-m-d');
+                return Carbon::now()->subYear()->startOfYear()->toRfc3339String();
             case 'END_OF_LAST_YEAR':
-                return Carbon::now()->subYear()->endOfYear()->format('Y-m-d');
+                return Carbon::now()->subYear()->endOfYear()->toRfc3339String();
         }
 
         return $value;
