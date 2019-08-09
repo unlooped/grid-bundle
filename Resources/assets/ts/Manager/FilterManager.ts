@@ -7,6 +7,7 @@ export class FilterManager {
     private config: string;
     private options: any[];
     private defaultFilter = new FilterType();
+    private advancedFilterBtn: Element;
     private filters: any = {
         'Unlooped\\GridBundle\\FilterType\\DateFilterType': new DateFilterType()
     };
@@ -22,7 +23,7 @@ export class FilterManager {
     }
 
     private loadElements() {
-
+        this.advancedFilterBtn = this.filterForm.querySelector('button[data-toggle="advanced-filter"]');
     }
 
     private loadEvents() {
@@ -32,6 +33,8 @@ export class FilterManager {
         jQuery(formCollection).on('unl.row_added', (event: Event, row: Element) => {
             this.updateForField(row.querySelector('[name*="[field]"]'));
         });
+
+        this.advancedFilterBtn.addEventListener('click', this.toggleAdvancedFilter.bind(this));
     }
 
     private init() {
@@ -64,5 +67,22 @@ export class FilterManager {
         }
 
         filter.attachEventListeners(row);
+    }
+
+    private toggleAdvancedFilter(e: Event) {
+        e.preventDefault();
+        e.stopPropagation();
+        let conditionColumns = this.filterForm.querySelectorAll('.filter-condition-column');
+        if (conditionColumns.length > 0) {
+            if (conditionColumns[0].classList.contains('d-none')) {
+                conditionColumns.forEach((el: Element) => {
+                    el.classList.remove('d-none');
+                });
+            } else {
+                conditionColumns.forEach((el: Element) => {
+                    el.classList.add('d-none');
+                });
+            }
+        }
     }
 }

@@ -53,14 +53,14 @@
                 </ul>
                 <ul class="nav justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link {% if not grid.filterApplied %} collapsed{% endif %}" data-toggle="collapse"
+                        <a class="nav-link {% if not grid.filterApplied and not grid.filter.hasDefaultShowFilter %} collapsed{% endif %}" data-toggle="collapse"
                            href="#filterBox" role="button" aria-expanded="false" aria-controls="collapseExample">
                             Filter <span class="icon-filter"></span>
                         </a>
                     </li>
                 </ul>
             </div>
-            <div class="collapse{% if grid.filterApplied %} show{% endif %}" id="filterBox">
+            <div class="collapse{% if grid.filterApplied or grid.filter.hasDefaultShowFilter %} show{% endif %}" id="filterBox">
                 <div class="box-body">
                     {{ form_start(grid.filterFormView, {'attr': {'data-ug-filter': grid.filtersAsJson}}) }}
                     <div class="row">
@@ -69,7 +69,7 @@
                                 <div class="col-2">
                                     <label>Field</label>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-3 filter-condition-column">
                                     <label>Condition</label>
                                 </div>
                                 <div class="col-7">
@@ -84,11 +84,12 @@
                                 'showAddButton': false,
                             } %}
                         </div>
-                        <div class="col-md-3 mt-3 mt-md-0 mb-md-3 d-flex align-self-end justify-content-between">
+                        <div class="col-md-3 mt-3 mt-md-0 mb-md-3 d-flex align-self-end">
                             <button class="btn btn-sm btn-secondary align-self-end" id="add-filter-btn">
                                 {% trans %}Add Rule{% endtrans %}
                                 <span class="icon-plus-circled"></span>
                             </button>
+                            <button class="btn btn-sm btn-link" data-toggle="advanced-filter">Advanced Filter</button>
                         </div>
                     </div>
                     <div class="row justify-content-end">
