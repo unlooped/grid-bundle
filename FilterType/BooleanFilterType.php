@@ -20,7 +20,7 @@ class BooleanFilterType extends ChoiceFilterType
         parent::configureOptions($resolver);
         $resolver->setDefaults([
             'widget'        => 'select',
-            'choices'       => ['Any' => null, 'Yes' => 1, 'No' => 0],
+            'choices'       => ['Any' => null, 'Yes' => '1', 'No' => '0'],
         ]);
 
         $resolver->setAllowedValues('widget', ['select']);
