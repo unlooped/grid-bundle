@@ -85,7 +85,7 @@ class FilterType
         ],
     ];
 
-    protected $fieldAliases = [];
+    protected static $fieldAliases = [];
 
     public static function getVariables(): array
     {
@@ -170,9 +170,10 @@ class FilterType
         /** @var ClassMetadataInfo $md */
         $entity = $filterRow->getFilter()->getEntity();
 
-        $key = $entity . '::' . $filterRow->getField();
-        if (array_key_exists($key, $this->fieldAliases)) {
-            return $this->fieldAliases[$key];
+        $keyPrefix = $entity . '::';
+        $key = $keyPrefix . $filterRow->getField();
+        if (array_key_exists($key, self::$fieldAliases)) {
+            return self::$fieldAliases[$key];
         }
 
         $md = $classMetadataFactory->getMetadataFor($entity);
@@ -187,8 +188,13 @@ class FilterType
         foreach ($fields as $field) {
             if ($md->hasAssociation($field)) {
                 $nAlias = $alias . '_' . $field;
-                $qb->leftJoin($alias . '.' . $field, $nAlias);
-                $alias = $nAlias;
+                if (array_key_exists($keyPrefix . $nAlias, self::$fieldAliases)) {
+                    $alias = self::$fieldAliases[$keyPrefix . $nAlias];
+                } else {
+                    $qb->leftJoin($alias . '.' . $field, $nAlias);
+                    self::$fieldAliases[$keyPrefix . $nAlias] = $nAlias;
+                    $alias = $nAlias;
+                }
 
                 $md = $classMetadataFactory->getMetadataFor($md->getAssociationMapping($field)['targetEntity']);
                 continue;
@@ -199,7 +205,7 @@ class FilterType
             break;
         }
 
-        $this->fieldAliases[$key] = $alias;
+        self::$fieldAliases[$key] = $alias;
 
         return $alias;
     }
