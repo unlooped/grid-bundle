@@ -126,9 +126,10 @@ class GridHelper
             throw new TypeNotAFilterException($type);
         }
 
-        $this->filterNames[] = $identifier;
         /** @var FilterType $filterType */
         $filterType = new $type($identifier, $options);
+        $key = $filterType->getOptions()['label'] ?? $identifier;
+        $this->filterNames[$key] = $identifier;
         $this->filters[$identifier] = $filterType;
         if ($filterType->getOptions()['show_filter'] === true) {
             $this->defaultShowFilters[] = $filterType;

@@ -17,7 +17,7 @@ class FilterRowType extends AbstractType
     {
         $builder
             ->add('field', ChoiceType::class, [
-                'choices' => array_combine($options['fields'], $options['fields'])
+                'choices' => $options['fields'],
             ])
             ->add('operator', ChoiceType::class, [
                 'choices' => FilterType::getExprList()
