@@ -143,8 +143,6 @@ class DateFilterType extends FilterType
     {
         $i = self::$cnt++;
 
-        $this->getFieldAlias($qb, $filterRow);
-
         $op = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
         $field = $this->getFieldAlias($qb, $filterRow);
@@ -173,7 +171,7 @@ class DateFilterType extends FilterType
                 $qb->setParameter('value_' . $i, $date);
             }
 
-        } else {
+        } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->$op($field));
         }
     }
