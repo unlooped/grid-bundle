@@ -35,7 +35,7 @@ class FilterRow
     private $operator = FilterType::EXPR_CONTAINS;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $value;
 
