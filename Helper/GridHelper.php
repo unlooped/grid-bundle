@@ -172,6 +172,7 @@ class GridHelper
             return $this->filter;
         }
 
+        $fields = $this->filter->getFields();
         if (count($this->defaultShowFilters) > 0) {
             foreach ($this->defaultShowFilters as $defaultShowFilter) {
                 $fRow = new FilterRow();
@@ -189,12 +190,14 @@ class GridHelper
             }
         } else {
             $fRow = new FilterRow();
-            $fRow->setField($this->filter->getFields()[0]);
+            if (count($fields) > 0) {
+                $fRow->setField($fields[array_key_first($fields)]);
+            }
             $this->filter->addRow($fRow);
         }
 
         if ($this->filter->getRows()->count() === 1 && !$this->filter->getRows()->first()->getField()) {
-            $this->filter->getRows()->first()->setField($this->filter->getFields()[0]);
+            $this->filter->getRows()->first()->setField($fields[array_key_first($fields)]);
         }
 
         return $this->filter;
