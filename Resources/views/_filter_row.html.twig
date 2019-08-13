@@ -12,6 +12,6 @@
             {% include '@UnloopedGrid/filter_types/text.html.twig' with {'data': data} %}
         {% endif %}
 
-        <button class="ml-2 btn btn-sm btn-danger {{ deleteBtnSel|replace({'.': ''}) }}">X</button>
+        <button class="ml-2 btn btn-sm btn-link text-danger {{ deleteBtnSel|replace({'.': ''}) }}"><i class="fas fa-minus-circle"></i></button>
     </div>
 </div>
