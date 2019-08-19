@@ -267,6 +267,7 @@ class DateFilterType extends FilterType
 
         $builder
             ->add('_valueChoices', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'mapped' => false,
                 'choices' => self::getValueChoices(),
                 'attr' => [
@@ -274,6 +275,7 @@ class DateFilterType extends FilterType
                 ],
             ])
             ->add('_variables', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'mapped'  => false,
                 'choices' => self::getVariables(),
                 'attr'    => [

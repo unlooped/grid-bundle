@@ -17,9 +17,11 @@ class FilterRowType extends AbstractType
     {
         $builder
             ->add('field', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'choices' => $options['fields'],
             ])
             ->add('operator', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'choices' => FilterType::getExprList()
             ])
             ->add('value', null, ['required' => false])

@@ -114,6 +114,7 @@ class DateRangeFilterType extends DateFilterType
 
         $builder
             ->add('_valueChoices', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'mapped' => false,
                 'choices' => self::getValueChoices(),
                 'attr' => [
@@ -121,6 +122,7 @@ class DateRangeFilterType extends DateFilterType
                 ],
             ])
             ->add('_variables_from', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'mapped'  => false,
                 'choices' => self::getVariables(),
                 'attr'    => [
@@ -135,6 +137,7 @@ class DateRangeFilterType extends DateFilterType
                 ],
             ])
             ->add('_variables_to', ChoiceType::class, [
+                'translation_domain' => 'unlooped_grid',
                 'mapped'  => false,
                 'choices' => self::getVariables(),
                 'attr'    => [
