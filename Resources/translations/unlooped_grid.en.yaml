@@ -1,57 +1,50 @@
-date: date
-variables: variables
-TODAY: Today
-YESTERDAY: YESTERDAY
-TOMORROW: TOMORROW
-DAY_AFTER_TOMORROW: DAY_AFTER_TOMORROW
-ONE_WEEK_AGO: ONE_WEEK_AGO
-TWO_WEEKS_AGO: TWO_WEEKS_AGO
-THREE_WEEKS_AGO: THREE_WEEKS_AGO
-FOUR_WEEKS_AGO: FOUR_WEEKS_AGO
-START_OF_WEEK_MONDAY: START_OF_WEEK_MONDAY
-START_OF_WEEK_SUNDAY: START_OF_WEEK_SUNDAY
-START_OF_LAST_WEEK_MONDAY: START_OF_LAST_WEEK_MONDAY
-START_OF_LAST_WEEK_SUNDAY: START_OF_LAST_WEEK_SUNDAY
-END_OF_WEEK_SUNDAY: END_OF_WEEK_SUNDAY
-END_OF_WEEK_SATURDAY: END_OF_WEEK_SATURDAY
-END_OF_LAST_WEEK_SUNDAY: END_OF_LAST_WEEK_SUNDAY
-END_OF_LAST_WEEK_SATURDAY: END_OF_LAST_WEEK_SATURDAY
-START_OF_MONTH: START_OF_MONTH
-END_OF_MONTH: END_OF_MONTH
-START_OF_LAST_MONTH: START_OF_LAST_MONTH
-END_OF_LAST_MONTH: END_OF_LAST_MONTH
-START_OF_QUARTER: START_OF_QUARTER
-END_OF_QUARTER: END_OF_QUARTER
-START_OF_LAST_QUARTER: START_OF_LAST_QUARTER
-END_OF_LAST_QUARTER: END_OF_LAST_QUARTER
-START_OF_YEAR: START_OF_YEAR
-END_OF_YEAR: END_OF_YEAR
-START_OF_LAST_YEAR: START_OF_LAST_YEAR
-END_OF_LAST_YEAR: END_OF_LAST_YEAR
-Contacted: Contacted
-'In Review': 'In Review'
-'Wait for Evaluation': 'Wait for Evaluation'
-'Under Contract': 'Under Contract'
-Cancelled: Cancelled
-Any: Any
+date: 'date'
+variables: 'predefined'
+TODAY: 'Today'
+YESTERDAY: 'Yesterday'
+TOMORROW: 'Tomorrow'
+DAY_AFTER_TOMORROW: 'Day after tomorrow'
+ONE_WEEK_AGO: 'One week ago'
+TWO_WEEKS_AGO: 'Two weeks ago'
+THREE_WEEKS_AGO: 'Three weeks ago'
+FOUR_WEEKS_AGO: 'Four weeks ago'
+START_OF_WEEK_MONDAY: 'Monday (Start of week)'
+START_OF_WEEK_SUNDAY: 'Sunday (Start of week)'
+START_OF_LAST_WEEK_MONDAY: 'Last Monday (Start of week)'
+START_OF_LAST_WEEK_SUNDAY: 'Last Sunday (Start of week)'
+END_OF_WEEK_SUNDAY: 'Sunday (End of week)'
+END_OF_WEEK_SATURDAY: 'Saturday (End of week)'
+END_OF_LAST_WEEK_SUNDAY: 'Last Sunday (End of week)'
+END_OF_LAST_WEEK_SATURDAY: 'Last Saturday (End of week)'
+START_OF_MONTH: 'Beginning of this month'
+END_OF_MONTH: 'End of this month'
+START_OF_LAST_MONTH: 'Beginning of last month'
+END_OF_LAST_MONTH: 'End of last month'
+START_OF_QUARTER: 'Beginning of this quarter'
+END_OF_QUARTER: 'End of this quarter'
+START_OF_LAST_QUARTER: 'Beginning of last quarter'
+END_OF_LAST_QUARTER: 'End of last quarter'
+START_OF_YEAR: 'Beginning of this year'
+END_OF_YEAR: 'End of this year'
+START_OF_LAST_YEAR: 'Beginning of last year'
+END_OF_LAST_YEAR: 'End of last year'
+Any: 'Any'
 'Yes': 'Yes'
 'No': 'No'
-Influencer: Influencer
 'Started At': 'Started At'
-Status: Status
-'Is Longterm': 'Is Longterm'
-contains: contains
-not_contains: not_contains
-eq: eq
-neq: neq
-lt: lt
-lte: lte
-gt: gt
-gte: gte
-like: like
-not_like: not_like
-begins_with: begins_with
-ends_with: ends_with
-is_empty: is_empty
-is_not_empty: is_not_empty
-in: in
+Status: 'Status'
+contains: 'contains'
+not_contains: 'does not contain'
+eq: '='
+neq: '≠'
+lt: '<'
+lte: '≤'
+gt: '>'
+gte: '≥'
+like: 'like'
+not_like: 'is not like'
+begins_with: 'begins with'
+ends_with: 'ends with'
+is_empty: 'is maintained'
+is_not_empty: 'is not maintained'
+in: 'in'
