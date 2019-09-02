@@ -25,6 +25,7 @@ class AutocompleteFilterType extends FilterType
         $resolver->setDefaults([
             'route' => '',
             'entity' => '',
+            'text_property' => null,
             'minimum_input_length' => 2,
         ]);
 
@@ -35,6 +36,7 @@ class AutocompleteFilterType extends FilterType
         $resolver->setAllowedTypes('route', 'string');
         $resolver->setAllowedTypes('entity', 'string');
         $resolver->setAllowedTypes('minimum_input_length', 'int');
+        $resolver->setAllowedTypes('text_property', ['string', 'null']);
     }
 
 
@@ -48,6 +50,7 @@ class AutocompleteFilterType extends FilterType
                 'class' => $this->getOptions()['entity'],
                 'primary_key' => 'id',
                 'minimum_input_length' => $this->getOptions()['entity'],
+                'text_property' => $this->getOptions()['text_property'],
                 'page_limit' => 10,
                 'allow_clear' => true,
                 'delay' => 250,

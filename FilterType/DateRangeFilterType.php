@@ -58,7 +58,7 @@ class DateRangeFilterType extends DateFilterType
         $i = self::$cnt++;
 
         $op = $this->getExpressionOperator($filterRow);
-        $field = $this->getFieldAlias($qb, $filterRow);
+        $field = $this->getFieldInfo($qb, $filterRow);
 
         $metaData = $filterRow->getMetaData();
         if ($metaData['value_type'] === self::VALUE_CHOICE_VARIABLES) {

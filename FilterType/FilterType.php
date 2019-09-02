@@ -5,14 +5,19 @@ namespace Unlooped\GridBundle\FilterType;
 
 
 use App\Exception\OperatorDoesNotExistException;
-use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Persistence\Mapping\MappingException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\QueryBuilder;
+use ReflectionException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
+use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 use Unlooped\Helper\ConstantHelper;
 use Unlooped\Helper\StringHelper;
 
@@ -85,6 +90,7 @@ class FilterType
         ],
     ];
 
+    /** @var FieldMetaDataStruct[] */
     protected static $fieldAliases = [];
 
     public static function getVariables(): array
@@ -155,19 +161,24 @@ class FilterType
 
         $op = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
-        $field = $this->getFieldAlias($qb, $filterRow);
+
+        $fieldInfo = $this->getFieldInfo($qb, $filterRow);
+        $alias = $fieldInfo->alias;
+
         if ($value) {
-            $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
+            if ($fieldInfo->fieldData && $fieldInfo->fieldData['type'] === ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS) {
+                $qb->andWhere($qb->expr()->isMemberOf(':value_' . $i, $alias));
+            } else {
+                $qb->andWhere($qb->expr()->$op($alias, ':value_' . $i));
+            }
             $qb->setParameter('value_' . $i, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
-            $qb->andWhere($qb->expr()->$op($field));
+            $qb->andWhere($qb->expr()->$op($alias));
         }
     }
 
-    protected function getFieldAlias(QueryBuilder $qb, FilterRow $filterRow)
+    protected function getFieldInfo(QueryBuilder $qb, FilterRow $filterRow): FieldMetaDataStruct
     {
-        $classMetadataFactory = $qb->getEntityManager()->getMetadataFactory();
-        /** @var ClassMetadataInfo $md */
         $entity = $filterRow->getFilter()->getEntity();
 
         $keyPrefix = $entity . '::';
@@ -176,27 +187,32 @@ class FilterType
             return self::$fieldAliases[$key];
         }
 
-        $md = $classMetadataFactory->getMetadataFor($entity);
-
         $fields = explode('.', $filterRow->getField());
         $alias = $qb->getRootAliases()[0];
 
+        $md = $this->getMetadataForEntity($qb, $entity);
+
         if (count($fields) === 1) {
-            return $alias . '.' . $fields[0];
+            $fieldData = null;
+            if ($md->hasAssociation($fields[0])) {
+                $fieldData = $md = $md->getAssociationMapping($fields[0]);
+            }
+            return FieldMetaDataStruct::create($alias . '.' . $fields[0], $fieldData);
         }
 
         foreach ($fields as $field) {
             if ($md->hasAssociation($field)) {
                 $nAlias = $alias . '_' . $field;
+                $associationMapping = $md->getAssociationMapping($field);
+                $md = $this->getMetadataForEntity($qb, $associationMapping['targetEntity']);
+
                 if (array_key_exists($keyPrefix . $nAlias, self::$fieldAliases)) {
-                    $alias = self::$fieldAliases[$keyPrefix . $nAlias];
+                    $alias = self::$fieldAliases[$keyPrefix . $nAlias]->alias;
                 } else {
                     $qb->leftJoin($alias . '.' . $field, $nAlias);
-                    self::$fieldAliases[$keyPrefix . $nAlias] = $nAlias;
+                    self::$fieldAliases[$keyPrefix . $nAlias] = FieldMetaDataStruct::create($nAlias, $associationMapping);
                     $alias = $nAlias;
                 }
-
-                $md = $classMetadataFactory->getMetadataFor($md->getAssociationMapping($field)['targetEntity']);
                 continue;
             }
 
@@ -205,9 +221,28 @@ class FilterType
             break;
         }
 
-        self::$fieldAliases[$key] = $alias;
+        $fmds = FieldMetaDataStruct::create($alias);
 
-        return $alias;
+        self::$fieldAliases[$key] = $fmds;
+
+        return $fmds;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param $entity
+     * @return ClassMetadata
+     * @throws MappingException
+     * @throws ReflectionException
+     */
+    protected function getMetadataForEntity(QueryBuilder $qb, $entity): ClassMetadata
+    {
+        /** @var EntityManager $em */
+        $em = $qb->getEntityManager();
+        /** @var ClassMetadataFactory $classMetadataFactory */
+        $classMetadataFactory = $em->getMetadataFactory();
+
+        return $classMetadataFactory->getMetadataFor($entity);
     }
 
     public function getExpressionOperator(FilterRow $filterRow): string

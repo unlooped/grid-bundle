@@ -145,7 +145,7 @@ class DateFilterType extends FilterType
 
         $op = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
-        $field = $this->getFieldAlias($qb, $filterRow);
+        $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
             if (is_string($value)) {
