@@ -121,7 +121,7 @@ class DateFilterType extends FilterType
      */
     public static function createDefaultDataForDate(string $operator, DateTimeInterface $dateTime): DefaultFilterDataStruct
     {
-        return self::createDefaultData($operator, Carbon::instance($dateTime)->toRfc3339String());
+        return self::createDefaultData($operator, Carbon::instance($dateTime)->toFormattedDateString());
     }
 
 
@@ -132,11 +132,15 @@ class DateFilterType extends FilterType
             'widget'        => 'date',
             'value_choices' => self::getValueChoices(),
             'choices'       => self::getVariables(),
+            'view_timezone' => date_default_timezone_get(),
+            'target_timezone' => 'UTC',
         ]);
 
         $resolver->setAllowedValues('widget', ['text', 'date', 'datetime', 'datepicker', 'datetimepicker']);
         $resolver->setAllowedTypes('value_choices', ['array']);
         $resolver->setAllowedTypes('choices', ['array']);
+        $resolver->setAllowedTypes('view_timezone', ['null', 'string']);
+        $resolver->setAllowedTypes('target_timezone', ['string']);
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
@@ -153,9 +157,9 @@ class DateFilterType extends FilterType
             }
 
             try {
-                $date = Carbon::parse($value)->startOfDay();
+                $date = Carbon::parse($value, $this->options['view_timezone'])->startOfDay();
             } catch (Exception $e) {
-                $date = Carbon::now()->startOfDay();
+                $date = Carbon::now($this->options['view_timezone'])->startOfDay();
             }
 
             if ($op === self::EXPR_EQ) {
@@ -164,11 +168,11 @@ class DateFilterType extends FilterType
                 $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
                 $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
 
-                $qb->setParameter('value_start_' . $i, $date);
-                $qb->setParameter('value_end_' . $i, $endDate);
+                $qb->setParameter('value_start_' . $i, $date->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
             } else {
                 $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
-                $qb->setParameter('value_' . $i, $date);
+                $qb->setParameter('value_' . $i, $date->timezone($this->options['target_timezone']));
             }
 
         } elseif (!$this->hasExpressionValue($filterRow)) {
@@ -178,69 +182,70 @@ class DateFilterType extends FilterType
 
     public function replaceVarsInValue(string $value): string
     {
+        $now = Carbon::now($this->options['view_timezone']);
         switch (strtoupper($value)) {
             case 'TODAY':
-                return Carbon::now()->startOfDay()->toRfc3339String();
+                return $now->startOfDay()->toFormattedDateString();
             case 'YESTERDAY':
-                return Carbon::now()->subDay()->startOfDay()->toRfc3339String();
+                return $now->subDay()->startOfDay()->toFormattedDateString();
             case 'TOMORROW':
-                return Carbon::now()->addDay()->startOfDay()->toRfc3339String();
+                return $now->addDay()->startOfDay()->toFormattedDateString();
             case 'DAY_AFTER_TOMORROW':
-                return Carbon::now()->addDays(2)->startOfDay()->toRfc3339String();
+                return $now->addDays(2)->startOfDay()->toFormattedDateString();
 
             case 'ONE_WEEK_AGO':
-                return Carbon::now()->subWeek()->startOfDay()->toRfc3339String();
+                return $now->subWeek()->startOfDay()->toFormattedDateString();
             case 'TWO_WEEKS_AGO':
-                return Carbon::now()->subWeeks(2)->startOfDay()->toRfc3339String();
+                return $now->subWeeks(2)->startOfDay()->toFormattedDateString();
             case 'THREE_WEEKS_AGO':
-                return Carbon::now()->subWeeks(3)->startOfDay()->toRfc3339String();
+                return $now->subWeeks(3)->startOfDay()->toFormattedDateString();
             case 'FOUR_WEEKS_AGO':
-                return Carbon::now()->subWeeks(4)->startOfDay()->toRfc3339String();
+                return $now->subWeeks(4)->startOfDay()->toFormattedDateString();
 
             case 'START_OF_WEEK_MONDAY':
-                return Carbon::now()->startOfWeek(Carbon::MONDAY)->toRfc3339String();
+                return $now->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
             case 'START_OF_WEEK_SUNDAY':
-                return Carbon::now()->startOfWeek(Carbon::SUNDAY)->toRfc3339String();
+                return $now->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'START_OF_LAST_WEEK_MONDAY':
-                return Carbon::now()->subWeek()->startOfWeek(Carbon::MONDAY)->toRfc3339String();
+                return $now->subWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
             case 'START_OF_LAST_WEEK_SUNDAY':
-                return Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY)->toRfc3339String();
+                return $now->subWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_WEEK_SUNDAY':
-                return Carbon::now()->endOfWeek(Carbon::SUNDAY)->toRfc3339String();
+                return $now->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'END_OF_WEEK_SATURDAY':
-                return Carbon::now()->endOfWeek(Carbon::SATURDAY)->toRfc3339String();
+                return $now->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
             case 'END_OF_LAST_WEEK_SUNDAY':
-                return Carbon::now()->subWeek()->endOfWeek(Carbon::SUNDAY)->toRfc3339String();
+                return $now->subWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'END_OF_LAST_WEEK_SATURDAY':
-                return Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY)->toRfc3339String();
+                return $now->subWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
 
             case 'START_OF_MONTH':
-                return Carbon::now()->startOfMonth()->toRfc3339String();
+                return $now->startOfMonth()->toFormattedDateString();
             case 'END_OF_MONTH':
-                return Carbon::now()->endOfMonth()->toRfc3339String();
+                return $now->endOfMonth()->toFormattedDateString();
             case 'START_OF_LAST_MONTH':
-                return Carbon::now()->subMonth()->startOfMonth()->toRfc3339String();
+                return $now->subMonth()->startOfMonth()->toFormattedDateString();
             case 'END_OF_LAST_MONTH':
-                return Carbon::now()->subMonth()->endOfMonth()->toRfc3339String();
+                return $now->subMonth()->endOfMonth()->toFormattedDateString();
 
             case 'START_OF_QUARTER':
-                return Carbon::now()->startOfQuarter()->toRfc3339String();
+                return $now->startOfQuarter()->toFormattedDateString();
             case 'END_OF_QUARTER':
-                return Carbon::now()->endOfQuarter()->toRfc3339String();
+                return $now->endOfQuarter()->toFormattedDateString();
             case 'START_OF_LAST_QUARTER':
-                return Carbon::now()->subQuarter()->startOfQuarter()->toRfc3339String();
+                return $now->subQuarter()->startOfQuarter()->toFormattedDateString();
             case 'END_OF_LAST_QUARTER':
-                return Carbon::now()->subQuarter()->endOfQuarter()->toRfc3339String();
+                return $now->subQuarter()->endOfQuarter()->toFormattedDateString();
 
             case 'START_OF_YEAR':
-                return Carbon::now()->startOfYear()->toRfc3339String();
+                return $now->startOfYear()->toFormattedDateString();
             case 'END_OF_YEAR':
-                return Carbon::now()->endOfYear()->toRfc3339String();
+                return $now->endOfYear()->toFormattedDateString();
             case 'START_OF_LAST_YEAR':
-                return Carbon::now()->subYear()->startOfYear()->toRfc3339String();
+                return $now->subYear()->startOfYear()->toFormattedDateString();
             case 'END_OF_LAST_YEAR':
-                return Carbon::now()->subYear()->endOfYear()->toRfc3339String();
+                return $now->subYear()->endOfYear()->toFormattedDateString();
         }
 
         return $value;
@@ -325,7 +330,7 @@ class DateFilterType extends FilterType
         $valueType = $builder->get('_valueChoices')->getData();
         if ($valueType === self::VALUE_CHOICE_DATE) {
             $date = Carbon::parse($builder->get('_dateValue')->getData());
-            $data->setValue($date->toRfc3339String());
+            $data->setValue($date->toFormattedDateString());
             $data->setMetaData(['value_type' => $valueType]);
         } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
             $data->setValue($builder->get('_variables')->getData());

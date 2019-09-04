@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Unlooped\GridBundle\FilterType;
-
 
 use Carbon\Carbon;
 use DateTimeInterface;
@@ -46,8 +44,8 @@ class DateRangeFilterType extends DateFilterType
         $dfds->operator = self::EXPR_EQ;
         $dfds->metaData = [
             'value_type' => self::VALUE_CHOICE_DATE,
-            'dateValue_from' => Carbon::instance($fromDate)->toRfc3339String(),
-            'dateValue_to' => Carbon::instance($toDate)->toRfc3339String(),
+            'dateValue_from' => Carbon::instance($fromDate)->toFormattedDateString(),
+            'dateValue_to' => Carbon::instance($toDate)->toFormattedDateString(),
         ];
 
         return $dfds;
@@ -77,15 +75,17 @@ class DateRangeFilterType extends DateFilterType
                 $endValue = $this->replaceVarsInValue($endValue);
             }
 
-            $startDate = Carbon::parse($startValue)->startOfDay();
-            $endDate = Carbon::parse($endValue)->addDay()->startOfDay();
+            $startDate = Carbon::parse($startValue, $this->options['view_timezone'])->startOfDay();
+            $endDate = Carbon::parse($endValue, $this->options['view_timezone'])->addDay()->startOfDay();
 
             if ($op === self::EXPR_EQ) {
                 $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
                 $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
 
-                $qb->setParameter('value_start_' . $i, $startDate);
-                $qb->setParameter('value_end_' . $i, $endDate);
+                dump($startDate, $endDate);
+
+                $qb->setParameter('value_start_' . $i, $startDate->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
             }
 
         } elseif (!$this->hasExpressionValue($filterRow)) {
@@ -192,8 +192,8 @@ class DateRangeFilterType extends DateFilterType
             $dateTo = Carbon::parse($builder->get('_dateValue_to')->getData());;
             $data->setMetaData([
                 'value_type'     => $valueType,
-                'dateValue_from' => $dateFrom->toRfc3339String(),
-                'dateValue_to'   => $dateTo->toRfc3339String(),
+                'dateValue_from' => $dateFrom->toFormattedDateString(),
+                'dateValue_to'   => $dateTo->toFormattedDateString(),
             ]);
         } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
             $data->setMetaData([
