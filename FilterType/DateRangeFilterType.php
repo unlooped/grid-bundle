@@ -82,8 +82,6 @@ class DateRangeFilterType extends DateFilterType
                 $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
                 $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
 
-                dump($startDate, $endDate);
-
                 $qb->setParameter('value_start_' . $i, $startDate->timezone($this->options['target_timezone']));
                 $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
             }
