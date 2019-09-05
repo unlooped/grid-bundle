@@ -21,14 +21,14 @@ class DateRangeFilterType extends DateFilterType
     public static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_EQ => self::EXPR_EQ,
+            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
         ];
     }
 
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {
         $dfds = new DefaultFilterDataStruct();
-        $dfds->operator = self::EXPR_EQ;
+        $dfds->operator = self::EXPR_IN_RANGE;
         $dfds->metaData = [
             'value_type'    => self::VALUE_CHOICE_VARIABLES,
             'variable_from' => $fromDate,
@@ -41,7 +41,7 @@ class DateRangeFilterType extends DateFilterType
     public static function createDefaultDataForDateRange(DateTimeInterface $fromDate, DateTimeInterface $toDate): DefaultFilterDataStruct
     {
         $dfds = new DefaultFilterDataStruct();
-        $dfds->operator = self::EXPR_EQ;
+        $dfds->operator = self::EXPR_IN_RANGE;
         $dfds->metaData = [
             'value_type' => self::VALUE_CHOICE_DATE,
             'dateValue_from' => Carbon::instance($fromDate)->toFormattedDateString(),
@@ -55,10 +55,9 @@ class DateRangeFilterType extends DateFilterType
     {
         $i = self::$cnt++;
 
-        $op = $this->getExpressionOperator($filterRow);
         $field = $this->getFieldInfo($qb, $filterRow);
-
         $metaData = $filterRow->getMetaData();
+
         if ($metaData['value_type'] === self::VALUE_CHOICE_VARIABLES) {
             $startValue = $metaData['variable_from'];
             $endValue = $metaData['variable_to'];
@@ -67,27 +66,25 @@ class DateRangeFilterType extends DateFilterType
             $endValue = $metaData['dateValue_to'];
         }
 
-        if ($startValue || $endValue) {
+        if ($startValue) {
             if (is_string($startValue)) {
                 $startValue = $this->replaceVarsInValue($startValue);
             }
+
+            $startDate = Carbon::parse($startValue, $this->options['view_timezone'])->startOfDay();
+
+            $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
+            $qb->setParameter('value_start_' . $i, $startDate->timezone($this->options['target_timezone']));
+        }
+
+        if ($endValue) {
             if (is_string($endValue)) {
                 $endValue = $this->replaceVarsInValue($endValue);
             }
 
-            $startDate = Carbon::parse($startValue, $this->options['view_timezone'])->startOfDay();
             $endDate = Carbon::parse($endValue, $this->options['view_timezone'])->addDay()->startOfDay();
-
-            if ($op === self::EXPR_EQ) {
-                $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
-                $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
-
-                $qb->setParameter('value_start_' . $i, $startDate->timezone($this->options['target_timezone']));
-                $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
-            }
-
-        } elseif (!$this->hasExpressionValue($filterRow)) {
-            $qb->andWhere($qb->expr()->$op($field));
+            $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
+            $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
         }
     }
 
@@ -122,6 +119,7 @@ class DateRangeFilterType extends DateFilterType
             ->add('_variables_from', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'  => false,
+                'required' => false,
                 'choices' => self::getVariables(),
                 'attr'    => [
                     'class' => 'custom-select' . ($hideVariables ? ' d-none' : ''),
@@ -129,6 +127,7 @@ class DateRangeFilterType extends DateFilterType
             ])
             ->add('_dateValue_from', DateType::class, [
                 'mapped' => false,
+                'required' => false,
                 'widget' => 'single_text',
                 'attr'    => [
                     'class' => $hideDate ? ' d-none' : '',
@@ -137,6 +136,7 @@ class DateRangeFilterType extends DateFilterType
             ->add('_variables_to', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'  => false,
+                'required' => false,
                 'choices' => self::getVariables(),
                 'attr'    => [
                     'class' => 'custom-select' . ($hideVariables ? ' d-none' : ''),
@@ -145,6 +145,7 @@ class DateRangeFilterType extends DateFilterType
             ->add('_dateValue_to', DateType::class, [
                 'mapped' => false,
                 'widget' => 'single_text',
+                'required' => false,
                 'attr'    => [
                     'class' => $hideDate ? ' d-none' : '',
                 ],
@@ -186,12 +187,13 @@ class DateRangeFilterType extends DateFilterType
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if ($valueType === self::VALUE_CHOICE_DATE) {
-            $dateFrom = Carbon::parse($builder->get('_dateValue_from')->getData());;
-            $dateTo = Carbon::parse($builder->get('_dateValue_to')->getData());;
+            $dateFrom = $builder->get('_dateValue_from')->getData() !== null ? Carbon::parse($builder->get('_dateValue_from')->getData())->toFormattedDateString() : null;
+            $dateTo = $builder->get('_dateValue_to')->getData() !== null ? Carbon::parse($builder->get('_dateValue_to')->getData())->toFormattedDateString() : null;
+
             $data->setMetaData([
                 'value_type'     => $valueType,
-                'dateValue_from' => $dateFrom->toFormattedDateString(),
-                'dateValue_to'   => $dateTo->toFormattedDateString(),
+                'dateValue_from' => $dateFrom,
+                'dateValue_to'   => $dateTo,
             ]);
         } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
             $data->setMetaData([

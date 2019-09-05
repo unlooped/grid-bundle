@@ -35,16 +35,10 @@ export class DateFilterType extends FilterType {
 
         if (widget === 'date') {
             dateEl.classList.remove('d-none');
-            dateEl.required = true;
-
             variablesEl.classList.add('d-none');
-            variablesEl.required = false;
         } else if (widget === 'variables') {
             variablesEl.classList.remove('d-none');
-            variablesEl.required = true;
-
             dateEl.classList.add('d-none');
-            dateEl.required = false;
         }
     }
 }

@@ -329,8 +329,8 @@ class DateFilterType extends FilterType
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if ($valueType === self::VALUE_CHOICE_DATE) {
-            $date = Carbon::parse($builder->get('_dateValue')->getData());
-            $data->setValue($date->toFormattedDateString());
+            $date = $builder->get('_dateValue')->getData() !== null ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
+            $data->setValue($date);
             $data->setMetaData(['value_type' => $valueType]);
         } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
             $data->setValue($builder->get('_variables')->getData());

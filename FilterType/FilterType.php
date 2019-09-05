@@ -45,6 +45,7 @@ class FilterType
     public const EXPR_IS_EMPTY = 'is_empty';
     public const EXPR_IS_NOT_EMPTY = 'is_not_empty';
     public const EXPR_IN = 'in';
+    public const EXPR_IN_RANGE = 'in_range';
 
     public const IEXPR_IS_NULL = 'is_null';
     public const IEXPR_IS_NOT_NULL = 'is_not_null';

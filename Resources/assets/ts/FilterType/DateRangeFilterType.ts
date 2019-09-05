@@ -12,24 +12,16 @@ export class DateRangeFilterType extends DateFilterType {
 
         if (widget === 'date') {
             dateFromEl.classList.remove('d-none');
-            dateFromEl.required = true;
             dateToEl.classList.remove('d-none');
-            dateToEl.required = true;
 
             variablesFromEl.classList.add('d-none');
-            variablesFromEl.required = false;
             variablesToEl.classList.add('d-none');
-            variablesToEl.required = false;
         } else if (widget === 'variables') {
             variablesFromEl.classList.remove('d-none');
-            variablesFromEl.required = true;
             variablesToEl.classList.remove('d-none');
-            variablesToEl.required = true;
 
             dateFromEl.classList.add('d-none');
-            dateFromEl.required = false;
             dateToEl.classList.add('d-none');
-            dateToEl.required = false;
         }
     }
 }
