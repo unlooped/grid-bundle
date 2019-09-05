@@ -48,6 +48,7 @@ class ChoiceFilterType extends FilterType
         $builder
             ->remove('value')
             ->add('value', ChoiceType::class, [
+                'required' => false,
                 'translation_domain' => 'unlooped_grid',
                 'choices' => $this->options['choices'],
                 'attr' => [
