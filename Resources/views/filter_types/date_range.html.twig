@@ -1,7 +1,13 @@
 <div class="input-group filter-value-container">
     {{ form_widget(data._valueChoices) }}
+    <div class="input-group-prepend">
+        <div class="input-group-text">From:</div>
+    </div>
     {{ form_widget(data._variables_from) }}
     {{ form_widget(data._dateValue_from) }}
+    <div class="input-group-prepend">
+        <div class="input-group-text">To:</div>
+    </div>
     {{ form_widget(data._variables_to) }}
     {{ form_widget(data._dateValue_to) }}
 </div>
