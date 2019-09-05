@@ -11,5 +11,5 @@
     {% endfor %}
 </div>
 {% if showAddButton is defined and showAddButton %}
-    <button class="btn btn-secondary" id="{{ addBtnSel|replace({'#': ''}) }}">{{ addBtnText|trans }}</button>
+    <button type="button" class="btn btn-secondary" id="{{ addBtnSel|replace({'#': ''}) }}">{{ addBtnText|trans }}</button>
 {% endif %}

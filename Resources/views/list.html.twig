@@ -85,11 +85,11 @@
                             } %}
                         </div>
                         <div class="col-md-3 mt-3 mt-md-0 mb-md-3 d-flex align-self-end">
-                            <button class="btn btn-sm btn-secondary align-self-end" id="add-filter-btn">
+                            <button type="button" class="btn btn-sm btn-secondary align-self-end" id="add-filter-btn">
                                 {% trans %}Add Rule{% endtrans %}
                                 <span class="icon-plus-circled"></span>
                             </button>
-                            <button class="btn btn-sm btn-link" data-toggle="advanced-filter">Advanced Filter</button>
+                            <button type="button" class="btn btn-sm btn-link" data-toggle="advanced-filter">Advanced Filter</button>
                         </div>
                     </div>
                     <div class="row justify-content-end">
@@ -113,6 +113,7 @@
                                         </div>
                                     </div>
                                 {% endif %}
+                                {{ form_widget(grid.filterFormView.filter, {'attr': {'class': 'btn-primary ml-2 d-inline-block float-right'}}) }}
                                 <div class="input-group">
                                     {{ form_widget(grid.filterFormView.name) }}
                                     <div class="input-group-append">
@@ -120,7 +121,6 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            {{ form_widget(grid.filterFormView.filter, {'attr': {'class': 'btn-primary ml-2'}}) }}
                         </div>
                     </div>
                     {{ form_end(grid.filterFormView) }}
