@@ -166,7 +166,7 @@ class FilterType
         $fieldInfo = $this->getFieldInfo($qb, $filterRow);
         $alias = $fieldInfo->alias;
 
-        if ($value) {
+        if ($value !== null) {
             if ($fieldInfo->fieldData && $fieldInfo->fieldData['type'] === ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS) {
                 $qb->andWhere($qb->expr()->isMemberOf(':value_' . $i, $alias));
             } else {
