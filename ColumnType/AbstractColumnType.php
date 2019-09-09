@@ -56,6 +56,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
             try {
                 return $this->propertyAccessor->getValue($object, $this->field);
             } catch (Exception $e) {
+                return null;
             }
         }
 
