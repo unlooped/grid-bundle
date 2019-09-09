@@ -2,6 +2,7 @@
 
 namespace Unlooped\GridBundle\ColumnType;
 
+use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -26,7 +27,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
         $this->configureOptions($resolver);
         $this->options = $resolver->resolve($options);
 
-        $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $this->propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()->disableExceptionOnInvalidPropertyPath()->getPropertyAccessor();
 
         $this->field = $field;
         $this->alias = $alias;
@@ -52,7 +53,10 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
     public function getValue($object)
     {
         if ($this->options['isMapped']) {
-            return $this->propertyAccessor->getValue($object, $this->field);
+            try {
+                return $this->propertyAccessor->getValue($object, $this->field);
+            } catch (Exception $e) {
+            }
         }
 
         return $this->options['label'] ?? $this->field;
