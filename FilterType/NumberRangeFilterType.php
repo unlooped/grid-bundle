@@ -72,8 +72,8 @@ class NumberRangeFilterType extends FilterType
     {
         $this->buildForm($builder, [], $data);
 
-        $builder->get('_number_from')->setData($data->getMetaData()['number_from']);
-        $builder->get('_number_to')->setData($data->getMetaData()['number_to']);
+        $builder->get('_number_from')->setData($data->getMetaData()['from']);
+        $builder->get('_number_to')->setData($data->getMetaData()['to']);
     }
 
     /**
