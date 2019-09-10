@@ -173,7 +173,7 @@ class DateRangeFilterType extends DateFilterType
             $builder->get('_variables_to')->setData($data->getMetaData()['variable_to']);
         } else if ($valueType === self::VALUE_CHOICE_DATE) {
             $builder->get('_dateValue_from')->setData(Carbon::parse($data->getMetaData()['dateValue_from']));
-            $builder->get('_dateValue_to')->setData(Carbon::parse($data->getMetaData())['dateValue_to']);
+            $builder->get('_dateValue_to')->setData(Carbon::parse($data->getMetaData()['dateValue_to']));
         }
     }
 
