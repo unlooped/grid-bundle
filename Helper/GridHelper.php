@@ -72,6 +72,7 @@ class GridHelper
             'perPageParameterName'    => 'perPage',
             'wrapQueries'             => false,
             'distinctQuery'           => false,
+            'allow_save_filter'       => true,
         ]);
 
         $resolver->setAllowedTypes('name', 'string');
@@ -88,6 +89,7 @@ class GridHelper
         $resolver->setAllowedTypes('perPageParameterName', 'string');
         $resolver->setAllowedTypes('wrapQueries', 'bool');
         $resolver->setAllowedTypes('distinctQuery', 'bool');
+        $resolver->setAllowedTypes('allow_save_filter', 'bool');
 
         $resolver->setRequired(['title', 'listRow']);
     }
@@ -274,5 +276,10 @@ class GridHelper
     public function getFilterTypeForField(string $field): FilterType
     {
         return $this->filters[$field];
+    }
+
+    public function getAllowSaveFilter(): bool
+    {
+        return $this->options['allow_save_filter'];
     }
 }

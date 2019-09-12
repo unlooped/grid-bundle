@@ -104,7 +104,8 @@ class GridService
         }
 
         $request = $this->requestStack->getCurrentRequest();
-        if ($request
+        if ($this->saveFilter
+            && $request
             && $request->get('_route')
             && $filter = $this->filterRepo->findDefaultForRoute($request->get('_route'))
         ) {
@@ -129,9 +130,10 @@ class GridService
     public function getGrid(GridHelper $gridHelper): Grid
     {
         $request = $this->requestStack->getCurrentRequest();
+        $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
 
         $filter = $gridHelper->getFilter();
-        $filter->setIsSaveable($this->saveFilter);
+        $filter->setIsSaveable($filterAllowedToSave);
 
         $form = $this->formFactory->create(FilterFormType::class, $filter, [
             'fields' => $filter->getFields(),
@@ -151,12 +153,12 @@ class GridService
 
             $this->handleFilter($qb, $filter, $gridHelper);
 
-            if ($this->saveFilter && $form->get('filter_and_save')->isClicked()) {
+            if ($filterAllowedToSave && $form->get('filter_and_save')->isClicked()) {
                 $this->saveFilter($filter);
                 $filterSaved = true;
             }
 
-            if ($this->saveFilter && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
+            if ($filterAllowedToSave && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
                 $this->deleteFilter($filter);
                 $filterDeleted = true;
             }
@@ -204,7 +206,7 @@ class GridService
             $currentPage,
             $currentPerPage,
             $filterData,
-            $this->saveFilter,
+            $filterAllowedToSave,
             $filterApplied,
             $filterSaved,
             $filterDeleted,
