@@ -192,10 +192,7 @@ class GridService
             ]
         );
 
-        $existingFilters = [];
-        if ($this->saveFilter) {
-            $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
-        }
+        $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
 
         $filterData = $this->getFilterData($gridHelper);
 
