@@ -67,10 +67,7 @@ class GridService
         $this->flashBag = $flashBag;
         $this->templating = $templating;
         $this->router = $router;
-
-        if ($saveFilter) {
-            $this->filterRepo = $em->getRepository(Filter::class);
-        }
+        $this->filterRepo = $em->getRepository(Filter::class);
     }
 
     /**

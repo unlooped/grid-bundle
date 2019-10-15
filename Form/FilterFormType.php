@@ -56,7 +56,7 @@ class FilterFormType extends AbstractType
                                 'class' => 'btn btn-sm btn-outline-danger'
                             ]
                         ]);
-                    } else {
+                    } elseif ($data->isSaveable()) {
                         $form->add('make_default', SubmitType::class, [
                             'label' => 'Make Default',
                             'attr' => [
