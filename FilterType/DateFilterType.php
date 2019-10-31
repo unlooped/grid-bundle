@@ -92,7 +92,7 @@ class DateFilterType extends FilterType
      */
     public static function createDefaultData(
         string $operator,
-        string $value = null,
+        $value = null,
         string $valueChoice = self::VALUE_CHOICE_DATE
     ): DefaultFilterDataStruct
     {

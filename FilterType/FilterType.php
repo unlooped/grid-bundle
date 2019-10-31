@@ -113,7 +113,7 @@ class FilterType
     /**
      * @throws OperatorDoesNotExistException
      */
-    public static function createDefaultData(string $operator, string $value = null): DefaultFilterDataStruct
+    public static function createDefaultData(string $operator, $value = null): DefaultFilterDataStruct
     {
         if (!in_array($operator, self::getAvailableOperators(), true)) {
             throw new OperatorDoesNotExistException($operator, self::class);
