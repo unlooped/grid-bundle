@@ -3,8 +3,8 @@
 namespace Unlooped\GridBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Unlooped\GridBundle\Entity\Filter;
 
 /**
@@ -15,7 +15,7 @@ use Unlooped\GridBundle\Entity\Filter;
  */
 class FilterRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Filter::class);
     }
