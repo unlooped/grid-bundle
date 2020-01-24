@@ -39,32 +39,42 @@ class DateFilterType extends FilterType
             'ONE_WEEK_AGO'    => 'ONE_WEEK_AGO',
             'TWO_WEEKS_AGO'   => 'TWO_WEEKS_AGO',
             'THREE_WEEKS_AGO' => 'THREE_WEEKS_AGO',
-            'FOUR_WEEKS_AGO' => 'FOUR_WEEKS_AGO',
+            'FOUR_WEEKS_AGO'  => 'FOUR_WEEKS_AGO',
 
             'START_OF_WEEK_MONDAY'      => 'START_OF_WEEK_MONDAY',
             'START_OF_WEEK_SUNDAY'      => 'START_OF_WEEK_SUNDAY',
             'START_OF_LAST_WEEK_MONDAY' => 'START_OF_LAST_WEEK_MONDAY',
             'START_OF_LAST_WEEK_SUNDAY' => 'START_OF_LAST_WEEK_SUNDAY',
+            'START_OF_NEXT_WEEK_MONDAY' => 'START_OF_NEXT_WEEK_MONDAY',
+            'START_OF_NEXT_WEEK_SUNDAY' => 'START_OF_NEXT_WEEK_SUNDAY',
 
             'END_OF_WEEK_SUNDAY'        => 'END_OF_WEEK_SUNDAY',
             'END_OF_WEEK_SATURDAY'      => 'END_OF_WEEK_SATURDAY',
             'END_OF_LAST_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
             'END_OF_LAST_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
+            'END_OF_NEXT_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
+            'END_OF_NEXT_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
 
             'START_OF_MONTH'      => 'START_OF_MONTH',
             'END_OF_MONTH'        => 'END_OF_MONTH',
             'START_OF_LAST_MONTH' => 'START_OF_LAST_MONTH',
             'END_OF_LAST_MONTH'   => 'END_OF_LAST_MONTH',
+            'START_OF_NEXT_MONTH' => 'START_OF_NEXT_MONTH',
+            'END_OF_NEXT_MONTH'   => 'END_OF_NEXT_MONTH',
 
             'START_OF_QUARTER'      => 'START_OF_QUARTER',
             'END_OF_QUARTER'        => 'END_OF_QUARTER',
             'START_OF_LAST_QUARTER' => 'START_OF_LAST_QUARTER',
             'END_OF_LAST_QUARTER'   => 'END_OF_LAST_QUARTER',
+            'START_OF_NEXT_QUARTER' => 'START_OF_NEXT_QUARTER',
+            'END_OF_NEXT_QUARTER'   => 'END_OF_NEXT_QUARTER',
 
             'START_OF_YEAR'      => 'START_OF_YEAR',
             'END_OF_YEAR'        => 'END_OF_YEAR',
             'START_OF_LAST_YEAR' => 'START_OF_LAST_YEAR',
             'END_OF_LAST_YEAR'   => 'END_OF_LAST_YEAR',
+            'START_OF_NEXT_YEAR' => 'START_OF_NEXT_YEAR',
+            'END_OF_NEXT_YEAR'   => 'END_OF_NEXT_YEAR',
         ];
     }
 
@@ -210,6 +220,10 @@ class DateFilterType extends FilterType
                 return $now->subWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
             case 'START_OF_LAST_WEEK_SUNDAY':
                 return $now->subWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+            case 'START_OF_NEXT_WEEK_MONDAY':
+                return $now->addWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+            case 'START_OF_NEXT_WEEK_SUNDAY':
+                return $now->addWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_WEEK_SUNDAY':
                 return $now->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
@@ -219,6 +233,10 @@ class DateFilterType extends FilterType
                 return $now->subWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'END_OF_LAST_WEEK_SATURDAY':
                 return $now->subWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+            case 'END_OF_NEXT_WEEK_SUNDAY':
+                return $now->addWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+            case 'END_OF_NEXT_WEEK_SATURDAY':
+                return $now->addWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
 
             case 'START_OF_MONTH':
                 return $now->startOfMonth()->toFormattedDateString();
@@ -228,6 +246,10 @@ class DateFilterType extends FilterType
                 return $now->subMonth()->startOfMonth()->toFormattedDateString();
             case 'END_OF_LAST_MONTH':
                 return $now->subMonth()->endOfMonth()->toFormattedDateString();
+            case 'START_OF_NEXT_MONTH':
+                return $now->addMonth()->startOfMonth()->toFormattedDateString();
+            case 'END_OF_NEXT_MONTH':
+                return $now->addMonth()->endOfMonth()->toFormattedDateString();
 
             case 'START_OF_QUARTER':
                 return $now->startOfQuarter()->toFormattedDateString();
@@ -237,6 +259,10 @@ class DateFilterType extends FilterType
                 return $now->subQuarter()->startOfQuarter()->toFormattedDateString();
             case 'END_OF_LAST_QUARTER':
                 return $now->subQuarter()->endOfQuarter()->toFormattedDateString();
+            case 'START_OF_NEXT_QUARTER':
+                return $now->addQuarter()->startOfQuarter()->toFormattedDateString();
+            case 'END_OF_NEXT_QUARTER':
+                return $now->addQuarter()->endOfQuarter()->toFormattedDateString();
 
             case 'START_OF_YEAR':
                 return $now->startOfYear()->toFormattedDateString();
@@ -246,6 +272,10 @@ class DateFilterType extends FilterType
                 return $now->subYear()->startOfYear()->toFormattedDateString();
             case 'END_OF_LAST_YEAR':
                 return $now->subYear()->endOfYear()->toFormattedDateString();
+            case 'START_OF_NEXT_YEAR':
+                return $now->addYear()->startOfYear()->toFormattedDateString();
+            case 'END_OF_NEXT_YEAR':
+                return $now->addYear()->endOfYear()->toFormattedDateString();
         }
 
         return $value;
