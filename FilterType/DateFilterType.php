@@ -31,50 +31,58 @@ class DateFilterType extends FilterType
     public static function getVariables(): array
     {
         return [
-            'TODAY'              => 'TODAY',
-            'YESTERDAY'          => 'YESTERDAY',
-            'TOMORROW'           => 'TOMORROW',
-            'DAY_AFTER_TOMORROW' => 'DAY_AFTER_TOMORROW',
-
-            'ONE_WEEK_AGO'    => 'ONE_WEEK_AGO',
-            'TWO_WEEKS_AGO'   => 'TWO_WEEKS_AGO',
-            'THREE_WEEKS_AGO' => 'THREE_WEEKS_AGO',
-            'FOUR_WEEKS_AGO'  => 'FOUR_WEEKS_AGO',
-
-            'START_OF_WEEK_MONDAY'      => 'START_OF_WEEK_MONDAY',
-            'START_OF_WEEK_SUNDAY'      => 'START_OF_WEEK_SUNDAY',
-            'START_OF_LAST_WEEK_MONDAY' => 'START_OF_LAST_WEEK_MONDAY',
-            'START_OF_LAST_WEEK_SUNDAY' => 'START_OF_LAST_WEEK_SUNDAY',
-            'START_OF_NEXT_WEEK_MONDAY' => 'START_OF_NEXT_WEEK_MONDAY',
-            'START_OF_NEXT_WEEK_SUNDAY' => 'START_OF_NEXT_WEEK_SUNDAY',
-
-            'END_OF_WEEK_SUNDAY'        => 'END_OF_WEEK_SUNDAY',
-            'END_OF_WEEK_SATURDAY'      => 'END_OF_WEEK_SATURDAY',
-            'END_OF_LAST_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
-            'END_OF_LAST_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
-            'END_OF_NEXT_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
-            'END_OF_NEXT_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
-
-            'START_OF_MONTH'      => 'START_OF_MONTH',
-            'END_OF_MONTH'        => 'END_OF_MONTH',
-            'START_OF_LAST_MONTH' => 'START_OF_LAST_MONTH',
-            'END_OF_LAST_MONTH'   => 'END_OF_LAST_MONTH',
-            'START_OF_NEXT_MONTH' => 'START_OF_NEXT_MONTH',
-            'END_OF_NEXT_MONTH'   => 'END_OF_NEXT_MONTH',
-
-            'START_OF_QUARTER'      => 'START_OF_QUARTER',
-            'END_OF_QUARTER'        => 'END_OF_QUARTER',
-            'START_OF_LAST_QUARTER' => 'START_OF_LAST_QUARTER',
-            'END_OF_LAST_QUARTER'   => 'END_OF_LAST_QUARTER',
-            'START_OF_NEXT_QUARTER' => 'START_OF_NEXT_QUARTER',
-            'END_OF_NEXT_QUARTER'   => 'END_OF_NEXT_QUARTER',
-
-            'START_OF_YEAR'      => 'START_OF_YEAR',
-            'END_OF_YEAR'        => 'END_OF_YEAR',
-            'START_OF_LAST_YEAR' => 'START_OF_LAST_YEAR',
-            'END_OF_LAST_YEAR'   => 'END_OF_LAST_YEAR',
-            'START_OF_NEXT_YEAR' => 'START_OF_NEXT_YEAR',
-            'END_OF_NEXT_YEAR'   => 'END_OF_NEXT_YEAR',
+            'DAYS' => [
+                'TODAY'              => 'TODAY',
+                'YESTERDAY'          => 'YESTERDAY',
+                'TOMORROW'           => 'TOMORROW',
+                'DAY_AFTER_TOMORROW' => 'DAY_AFTER_TOMORROW',
+            ],
+            'WEEKS' => [
+                'ONE_WEEK_AGO'    => 'ONE_WEEK_AGO',
+                'TWO_WEEKS_AGO'   => 'TWO_WEEKS_AGO',
+                'THREE_WEEKS_AGO' => 'THREE_WEEKS_AGO',
+                'FOUR_WEEKS_AGO'  => 'FOUR_WEEKS_AGO',
+            ],
+            'MONDAYS_WEEKS' => [
+                'START_OF_WEEK_MONDAY'      => 'START_OF_WEEK_MONDAY',
+                'START_OF_LAST_WEEK_MONDAY' => 'START_OF_LAST_WEEK_MONDAY',
+                'START_OF_NEXT_WEEK_MONDAY' => 'START_OF_NEXT_WEEK_MONDAY',
+                'END_OF_WEEK_SUNDAY'        => 'END_OF_WEEK_SUNDAY',
+                'END_OF_LAST_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
+                'END_OF_NEXT_WEEK_SUNDAY'   => 'END_OF_LAST_WEEK_SUNDAY',
+            ],
+            'SUNDAY_WEEKS' => [
+                'START_OF_WEEK_SUNDAY'      => 'START_OF_WEEK_SUNDAY',
+                'START_OF_LAST_WEEK_SUNDAY' => 'START_OF_LAST_WEEK_SUNDAY',
+                'START_OF_NEXT_WEEK_SUNDAY' => 'START_OF_NEXT_WEEK_SUNDAY',
+                'END_OF_WEEK_SATURDAY'      => 'END_OF_WEEK_SATURDAY',
+                'END_OF_LAST_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
+                'END_OF_NEXT_WEEK_SATURDAY' => 'END_OF_LAST_WEEK_SATURDAY',
+            ],
+            'MONTHS' => [
+                'START_OF_MONTH'      => 'START_OF_MONTH',
+                'END_OF_MONTH'        => 'END_OF_MONTH',
+                'START_OF_LAST_MONTH' => 'START_OF_LAST_MONTH',
+                'END_OF_LAST_MONTH'   => 'END_OF_LAST_MONTH',
+                'START_OF_NEXT_MONTH' => 'START_OF_NEXT_MONTH',
+                'END_OF_NEXT_MONTH'   => 'END_OF_NEXT_MONTH',
+            ],
+            'QUARTERS' => [
+                'START_OF_QUARTER'      => 'START_OF_QUARTER',
+                'END_OF_QUARTER'        => 'END_OF_QUARTER',
+                'START_OF_LAST_QUARTER' => 'START_OF_LAST_QUARTER',
+                'END_OF_LAST_QUARTER'   => 'END_OF_LAST_QUARTER',
+                'START_OF_NEXT_QUARTER' => 'START_OF_NEXT_QUARTER',
+                'END_OF_NEXT_QUARTER'   => 'END_OF_NEXT_QUARTER',
+            ],
+            'YEARS' => [
+                'START_OF_YEAR'      => 'START_OF_YEAR',
+                'END_OF_YEAR'        => 'END_OF_YEAR',
+                'START_OF_LAST_YEAR' => 'START_OF_LAST_YEAR',
+                'END_OF_LAST_YEAR'   => 'END_OF_LAST_YEAR',
+                'START_OF_NEXT_YEAR' => 'START_OF_NEXT_YEAR',
+                'END_OF_NEXT_YEAR'   => 'END_OF_NEXT_YEAR',
+            ],
         ];
     }
 
