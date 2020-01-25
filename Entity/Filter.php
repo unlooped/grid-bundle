@@ -4,6 +4,7 @@ namespace Unlooped\GridBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -93,6 +94,19 @@ class Filter
         }
 
         return $this;
+    }
+
+    public function getRowForField(string $field): ?FilterRow
+    {
+        $c = Criteria::create();
+        $c->andWhere(Criteria::expr()->eq('field', $field));
+
+        $res = $this->rows->matching($c);
+        if ($res) {
+            return $res->first();
+        }
+
+        return null;
     }
 
     public function getFields()
