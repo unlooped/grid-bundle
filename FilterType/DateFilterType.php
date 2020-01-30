@@ -201,6 +201,8 @@ class DateFilterType extends FilterType
     public function replaceVarsInValue(string $value): string
     {
         $now = Carbon::now($this->options['view_timezone']);
+        $now->settings(['monthOverflow' => false]);
+
         switch (strtoupper($value)) {
             case 'TODAY':
                 return $now->startOfDay()->toFormattedDateString();
