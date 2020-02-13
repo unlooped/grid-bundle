@@ -5,7 +5,14 @@
 {% block column_content %}
     <div class="btn-group mr-2" role="group">
         {% for action in type.options.actions %}
-            <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': data.id}) }}"{% endif %}><span class="{{ action.icon }}"></span> {{ action.label|trans }}</a>
+            {% if action.template is defined and action.template %}
+                {% include action.template with {'action': action, 'data': data} only %}
+            {% else %}
+                <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': data.id}) }}"{% endif %}>
+                    <span class="{{ action.icon }}"></span>
+                    {{ action.label|trans }}
+                </a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
