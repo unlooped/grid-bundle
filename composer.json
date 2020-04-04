@@ -12,11 +12,11 @@
     "require": {
         "php": ">=7.1",
         "symfony/options-resolver": "^4.2",
-        "twig/twig": "^2.9",
+        "twig/twig": "^3",
         "doctrine/orm": "^2.6",
         "doctrine/doctrine-bundle": "^2",
         "symfony/form": "^4.2",
-        "knplabs/knp-paginator-bundle": "^3.0",
+        "knplabs/knp-paginator-bundle": "^5.0",
         "unlooped/helper": "^1.1.0",
         "symfony/property-access": "^4.2",
         "unlooped/ts-resources": "^0.1.0",
