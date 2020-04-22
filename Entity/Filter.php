@@ -102,7 +102,7 @@ class Filter
         $c->andWhere(Criteria::expr()->eq('field', $field));
 
         $res = $this->rows->matching($c);
-        if ($res) {
+        if ($res && $res->first()) {
             return $res->first();
         }
 
