@@ -341,6 +341,15 @@ class DateFilterType extends FilterType
         ;
     }
 
+    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $builder
+            ->remove('_valueChoices')
+            ->remove('_variables')
+            ->remove('_dateValue')
+        ;
+    }
+
     /**
      * @param FormBuilderInterface|FormInterface $builder
      * @param array $options
@@ -351,14 +360,16 @@ class DateFilterType extends FilterType
     {
         $this->buildForm($builder, [], $data);
 
-        $valueType = $data->getMetaData()['value_type'];
+        $valueType = array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : self::VALUE_CHOICE_DATE;
 
         $builder->get('_valueChoices')->setData($valueType);
 
         if ($valueType === self::VALUE_CHOICE_VARIABLES) {
             $builder->get('_variables')->setData($data->getValue());
         } else if ($valueType === self::VALUE_CHOICE_DATE) {
-            $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
+            if ($data->getValue()) {
+                $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
+            }
         }
     }
 

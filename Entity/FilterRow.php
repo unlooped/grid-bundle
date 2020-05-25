@@ -42,9 +42,9 @@ class FilterRow
     /**
      * @var array
      *
-     * @ORM\Column(type="json_array", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
-    private $metaData;
+    private $metaData = [];
 
     public function getId(): ?int
     {
@@ -106,7 +106,7 @@ class FilterRow
 
     public function setMetaData(array $metaData): self
     {
-        $this->metaData = $metaData;
+        $this->metaData = array_merge($this->metaData, $metaData);
 
         return $this;
     }

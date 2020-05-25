@@ -58,7 +58,10 @@ class DateRangeFilterType extends DateFilterType
         $field = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
-        if ($metaData['value_type'] === self::VALUE_CHOICE_VARIABLES) {
+        if (!array_key_exists('value_type', $metaData)) {
+            $startValue = null;
+            $endValue = null;
+        } else if ($metaData['value_type'] === self::VALUE_CHOICE_VARIABLES) {
             $startValue = $metaData['variable_from'];
             $endValue = $metaData['variable_to'];
         } else {
@@ -154,6 +157,18 @@ class DateRangeFilterType extends DateFilterType
         ;
     }
 
+    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $builder
+            ->remove('_valueChoices')
+            ->remove('_variables_from')
+            ->remove('_dateValue_from')
+            ->remove('_variables_to')
+            ->remove('_dateValue_to')
+        ;
+    }
+
+
     /**
      * @param FormBuilderInterface|FormInterface $builder
      * @param array $options
@@ -164,16 +179,20 @@ class DateRangeFilterType extends DateFilterType
     {
         $this->buildForm($builder, [], $data);
 
-        $valueType = $data->getMetaData()['value_type'];
+        $metaData = $data->getMetaData();
+        if (!array_key_exists('value_type', $metaData)) {
+            return;
+        }
 
+        $valueType = $metaData['value_type'];
         $builder->get('_valueChoices')->setData($valueType);
 
         if ($valueType === self::VALUE_CHOICE_VARIABLES) {
-            $builder->get('_variables_from')->setData($data->getMetaData()['variable_from']);
-            $builder->get('_variables_to')->setData($data->getMetaData()['variable_to']);
+            $builder->get('_variables_from')->setData($metaData['variable_from']);
+            $builder->get('_variables_to')->setData($metaData['variable_to']);
         } else if ($valueType === self::VALUE_CHOICE_DATE) {
-            $builder->get('_dateValue_from')->setData(Carbon::parse($data->getMetaData()['dateValue_from']));
-            $builder->get('_dateValue_to')->setData(Carbon::parse($data->getMetaData()['dateValue_to']));
+            $builder->get('_dateValue_from')->setData(Carbon::parse($metaData['dateValue_from']));
+            $builder->get('_dateValue_to')->setData(Carbon::parse($metaData['dateValue_to']));
         }
     }
 

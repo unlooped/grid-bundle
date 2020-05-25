@@ -37,7 +37,24 @@ class FilterRowType extends AbstractType
                 if ($data->getField()) {
                     /** @var FilterType $filterType */
                     $filterType = $filters[$data->getField()];
+                    $md = $data->getMetaData();
+                    $md['_original_field'] = $data->getField();
+                    $data->setMetaData($md);
                     $filterType->postSetFormData($form, $options, $data, $event);
+                }
+            }
+        });
+
+        $builder->addEventListener(FormEvents::SUBMIT, static function (FormEvent $event) use ($options) {
+            if (null !== $event->getData()) {
+                $data = $event->getData();
+                $form = $event->getForm();
+                $filters = $options['filters'];
+
+                if (array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
+                    /** @var FilterType $originalFilterType */
+                    $originalFilterType = $filters[$data->getMetaData()['_original_field']];
+                    $originalFilterType->resetForm($form);
                 }
             }
         });

@@ -270,6 +270,11 @@ class FilterType
         // nothing to do here
     }
 
+    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        // nothing to do here
+    }
+
     public function getField(): string
     {
         return $this->field;

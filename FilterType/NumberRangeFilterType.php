@@ -28,18 +28,15 @@ class NumberRangeFilterType extends FilterType
         $field = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
-        $fromValue = $metaData['from'];
-        $toValue = $metaData['to'];
-
-        if ($fromValue) {
+        if (array_key_exists('from', $metaData) && $fromValue = $metaData['from']) {
             $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
             $qb->setParameter('value_start_' . $i, $fromValue);
         }
-
-        if ($toValue) {
+        if (array_key_exists('to', $metaData) && $toValue = $metaData['to']) {
             $qb->andWhere($qb->expr()->lte($field, ':value_end_' . $i));
             $qb->setParameter('value_end_' . $i, $toValue);
         }
+
     }
 
     /**
@@ -62,6 +59,14 @@ class NumberRangeFilterType extends FilterType
         ;
     }
 
+    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    {
+        $builder
+            ->remove('_number_from')
+            ->remove('_number_to')
+        ;
+    }
+
     /**
      * @param FormBuilderInterface|FormInterface $builder
      * @param array $options
@@ -72,8 +77,15 @@ class NumberRangeFilterType extends FilterType
     {
         $this->buildForm($builder, [], $data);
 
-        $builder->get('_number_from')->setData($data->getMetaData()['from']);
-        $builder->get('_number_to')->setData($data->getMetaData()['to']);
+
+        $metaData = $data->getMetaData();
+
+        if (array_key_exists('from', $metaData)) {
+            $builder->get('_number_from')->setData($metaData['from']);
+        }
+        if (array_key_exists('to', $metaData)) {
+            $builder->get('_number_to')->setData($metaData['to']);
+        }
     }
 
     /**
