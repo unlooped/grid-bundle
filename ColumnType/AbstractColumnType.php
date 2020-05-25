@@ -83,6 +83,11 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
         return $this->field;
     }
 
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
     public function getFieldWithAlias(): string
     {
         return $this->alias . '.' . $this->field;

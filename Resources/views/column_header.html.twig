@@ -11,7 +11,7 @@
 {% endfor %}
     >
         {% if column.sortable %}
-            {{ knp_pagination_sortable(pagination, column.label|trans, column.fieldWithAlias) }}
+            {{ knp_pagination_sortable(pagination, column.label|trans, column.alias) }}
         {% else %}
             {{ column.label|trans }}
         {% endif %}

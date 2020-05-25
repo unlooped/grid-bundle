@@ -108,8 +108,10 @@ class GridHelper
             throw new TypeNotAColumnException($type);
         }
 
+        $alias = RelationsHelper::getAliasForEntityAndField($this->getQueryBuilder(), $this->filter->getEntity(), $identifier);
+
         $this->columnNames[] = $identifier;
-        $this->columns[] = new $type($identifier, $options, $this->alias);
+        $this->columns[] = new $type($identifier, $options, $alias);
 
         return $this;
     }
@@ -144,6 +146,17 @@ class GridHelper
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    public function getColumnForAlias(string $alias): ?AbstractColumnType
+    {
+        foreach ($this->columns as $column) {
+            if ($column->getAlias() === $alias) {
+                return $column;
+            }
+        }
+
+        return null;
     }
 
     public function getQueryBuilder(): QueryBuilder

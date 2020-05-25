@@ -27,6 +27,7 @@ use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
+use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\Helper\StringHelper;
 
@@ -144,9 +145,9 @@ class GridService
         $filterSaved = false;
         $filterDeleted = false;
 
+        $qb = $gridHelper->getQueryBuilder();
         if ($filter->getHash() || $filter->hasDefaultShowFilter() || ($form->isSubmitted() && $form->isValid())) {
             $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
-            $qb = $gridHelper->getQueryBuilder();
 
             $this->handleFilter($qb, $filter, $gridHelper);
 
@@ -179,8 +180,15 @@ class GridService
             $currentPerPage = 1;
         }
 
+        $request = $this->requestStack->getCurrentRequest();
+        if (($sort = $request->get('sort'))
+            && ($col = $gridHelper->getColumnForAlias($sort)))
+        {
+            RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
+        }
+
         $pagination = $this->paginator->paginate(
-            $gridHelper->getQueryBuilder(),
+            $qb,
             $currentPage,
             $currentPerPage,
             [
@@ -212,7 +220,6 @@ class GridService
 
     public function handleFilter(QueryBuilder $qb, Filter $filter, GridHelper $gridHelper): void
     {
-
         foreach ($filter->getRows() as $row) {
             $filterType = $gridHelper->getFilterTypeForField($row->getField());
             $filterType->handleFilter($qb, $row);
