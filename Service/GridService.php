@@ -213,7 +213,7 @@ class GridService
             $filterSaved,
             $filterDeleted,
             $request->get('_route'),
-            $request->get('_route_params'),
+            $request->query->all(),
             $existingFilters
         );
     }
