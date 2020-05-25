@@ -348,7 +348,7 @@ class GridService
             'data' => $form->createView(),
         ]);
 
-        return str_replace('__filterrow__', 'filter_form[rows][__name__]', $tpl);
+        return str_replace(['__filterrow__', 'filterrow___value'], ['filter_form[rows][__name__]', 'filterrow____name____value'], $tpl);
     }
 
     /**
