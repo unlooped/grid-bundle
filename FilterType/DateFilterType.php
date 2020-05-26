@@ -341,13 +341,13 @@ class DateFilterType extends FilterType
         ;
     }
 
-    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function getFormFieldNames(): array
     {
-        $builder
-            ->remove('_valueChoices')
-            ->remove('_variables')
-            ->remove('_dateValue')
-        ;
+        return [
+            '_valueChoices',
+            '_variables',
+            '_dateValue',
+        ];
     }
 
     /**

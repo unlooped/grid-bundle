@@ -59,12 +59,12 @@ class NumberRangeFilterType extends FilterType
         ;
     }
 
-    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function getFormFieldNames(): array
     {
-        $builder
-            ->remove('_number_from')
-            ->remove('_number_to')
-        ;
+        return [
+            '_number_from',
+            '_number_to',
+        ];
     }
 
     /**

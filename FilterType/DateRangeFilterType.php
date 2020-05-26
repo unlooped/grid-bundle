@@ -157,17 +157,16 @@ class DateRangeFilterType extends DateFilterType
         ;
     }
 
-    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function getFormFieldNames(): array
     {
-        $builder
-            ->remove('_valueChoices')
-            ->remove('_variables_from')
-            ->remove('_dateValue_from')
-            ->remove('_variables_to')
-            ->remove('_dateValue_to')
-        ;
+        return [
+            '_valueChoices',
+            '_variables_from',
+            '_dateValue_from',
+            '_variables_to',
+            '_dateValue_to',
+        ];
     }
-
 
     /**
      * @param FormBuilderInterface|FormInterface $builder

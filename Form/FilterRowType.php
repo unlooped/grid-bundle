@@ -54,7 +54,16 @@ class FilterRowType extends AbstractType
                 if (array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
                     /** @var FilterType $originalFilterType */
                     $originalFilterType = $filters[$data->getMetaData()['_original_field']];
-                    $originalFilterType->resetForm($form);
+                    $origFields = $originalFilterType->getFormFieldNames();
+
+                    /** @var FilterType $filterType */
+                    $filterType = $filters[$data->getField()];
+                    $newFields = $filterType->getFormFieldNames();
+
+                    $fieldsToRemove = array_diff($origFields, $newFields);
+                    foreach ($fieldsToRemove as $fieldToRemove) {
+                        $form->remove($fieldToRemove);
+                    }
                 }
             }
         });
