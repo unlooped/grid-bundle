@@ -42,12 +42,14 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
             'isMapped'   => true,
             'attr'       => [],
             'template'   => $this->template,
+            'meta'       => [],
         ]);
 
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('isSortable', 'bool');
         $resolver->setAllowedTypes('attr', 'array');
         $resolver->setAllowedTypes('template', ['null', 'string']);
+        $resolver->setAllowedTypes('meta', 'array');
     }
 
     public function getValue($object)
