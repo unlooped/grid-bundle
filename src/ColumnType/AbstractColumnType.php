@@ -28,7 +28,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
     protected $propertyAccessor;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $alias;
 
@@ -41,7 +41,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         $this->propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()->disableExceptionOnInvalidPropertyPath()->getPropertyAccessor();
 
         $this->field = $field;
-        $this->alias = $alias;
+        $this->alias = $alias ?? '';
     }
 
     public function configureOptions(OptionsResolver $resolver): void
