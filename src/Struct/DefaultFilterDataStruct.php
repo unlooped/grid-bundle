@@ -2,7 +2,8 @@
 
 namespace Unlooped\GridBundle\Struct;
 
-class DefaultFilterDataStruct {
+class DefaultFilterDataStruct
+{
     /** @var string */
     public $operator;
     /** @var string */

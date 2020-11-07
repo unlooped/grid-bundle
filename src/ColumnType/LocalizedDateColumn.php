@@ -6,8 +6,8 @@ use DateTimeZone;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LocalizedDateColumn extends AbstractColumnType {
-
+class LocalizedDateColumn extends AbstractColumnType
+{
     protected $template = '@UnloopedGrid/column_types/localized_date.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -28,12 +28,12 @@ class LocalizedDateColumn extends AbstractColumnType {
         $resolver->setAllowedTypes('time_format', 'string');
         $resolver->setAllowedValues('time_format', ['none', 'short', 'medium', 'long', 'full']);
 
-        $locales = Intl::getLocaleBundle()->getLocales();
+        $locales   = Intl::getLocaleBundle()->getLocales();
         $locales[] = null;
         $resolver->setAllowedTypes('locale', ['null', 'string']);
         $resolver->setAllowedValues('locale', $locales);
 
-        $timeZones = DateTimeZone::listIdentifiers();
+        $timeZones   = DateTimeZone::listIdentifiers();
         $timeZones[] = null;
         $resolver->setAllowedTypes('timezone', ['null', 'string']);
         $resolver->setAllowedValues('timezone', $timeZones);
@@ -42,5 +42,4 @@ class LocalizedDateColumn extends AbstractColumnType {
         $resolver->setAllowedTypes('calendar', ['null', 'string']);
         $resolver->setAllowedValues('calendar', ['gregorian', 'traditional']);
     }
-
 }

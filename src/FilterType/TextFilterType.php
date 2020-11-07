@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Unlooped\GridBundle\FilterType;
-
 
 class TextFilterType extends FilterType
 {
@@ -19,5 +17,4 @@ class TextFilterType extends FilterType
             self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
         ];
     }
-
 }

@@ -172,7 +172,6 @@ class Filter
         return $this->name;
     }
 
-
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -188,6 +187,7 @@ class Filter
     public function setIsDefault(bool $isDefault): self
     {
         $this->isDefault = $isDefault;
+
         return $this;
     }
 
@@ -199,7 +199,7 @@ class Filter
     public function setHasDefaultShowFilter(bool $hasDefaultShowFilter): self
     {
         $this->hasDefaultShowFilter = $hasDefaultShowFilter;
+
         return $this;
     }
-
 }

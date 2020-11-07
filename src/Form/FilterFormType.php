@@ -37,9 +37,9 @@ class FilterFormType extends AbstractType
                 if ($data->isSaveable() && $data->getHash()) {
                     $form->add('delete_filter', SubmitType::class, [
                         'label' => 'Yes Delete Filter',
-                        'attr' => [
+                        'attr'  => [
                             'class' => 'btn-danger btn-block',
-                        ]
+                        ],
                     ]);
                 }
 
@@ -52,16 +52,16 @@ class FilterFormType extends AbstractType
                     if ($data->isDefault()) {
                         $form->add('remove_default', SubmitType::class, [
                             'label' => 'Remove Default',
-                            'attr' => [
-                                'class' => 'btn btn-sm btn-outline-danger'
-                            ]
+                            'attr'  => [
+                                'class' => 'btn btn-sm btn-outline-danger',
+                            ],
                         ]);
                     } elseif ($data->isSaveable()) {
                         $form->add('make_default', SubmitType::class, [
                             'label' => 'Make Default',
-                            'attr' => [
-                                'class' => 'btn btn-sm btn-outline-primary'
-                            ]
+                            'attr'  => [
+                                'class' => 'btn btn-sm btn-outline-primary',
+                            ],
                         ]);
                     }
                 }

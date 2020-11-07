@@ -11,7 +11,6 @@ use Unlooped\GridBundle\Helper\GridHelper;
 
 class Grid
 {
-
     /** @var GridHelper */
     private $gridHelper;
     /** @var PaginationInterface */
@@ -53,24 +52,23 @@ class Grid
         bool $filterSaved = false,
         bool $filterDeleted = false,
         string $route = '',
-        array  $routeParams = [],
+        array $routeParams = [],
         array $existingFilters = []
-    )
-    {
-        $this->gridHelper = $gridHelper;
-        $this->pagination = $pagination;
-        $this->filterForm = $filterForm;
-        $this->filterFormView = $filterForm->createView();
-        $this->filterApplied = $filterApplied;
-        $this->currentPage = $currentPage;
-        $this->currentPerPage = $currentPerPage;
-        $this->filterData = $filterData;
-        $this->route = $route;
-        $this->routeParams = $routeParams;
-        $this->saveFilter = $saveFilter;
+    ) {
+        $this->gridHelper      = $gridHelper;
+        $this->pagination      = $pagination;
+        $this->filterForm      = $filterForm;
+        $this->filterFormView  = $filterForm->createView();
+        $this->filterApplied   = $filterApplied;
+        $this->currentPage     = $currentPage;
+        $this->currentPerPage  = $currentPerPage;
+        $this->filterData      = $filterData;
+        $this->route           = $route;
+        $this->routeParams     = $routeParams;
+        $this->saveFilter      = $saveFilter;
         $this->existingFilters = $existingFilters;
-        $this->filterSaved = $filterSaved;
-        $this->filterDeleted = $filterDeleted;
+        $this->filterSaved     = $filterSaved;
+        $this->filterDeleted   = $filterDeleted;
     }
 
     public function getPagination(): PaginationInterface
@@ -84,7 +82,7 @@ class Grid
     }
 
     /**
-     * @return array|AbstractColumnType[]
+     * @return AbstractColumnType[]|array
      */
     public function getColumns(): array
     {

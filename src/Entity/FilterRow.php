@@ -10,7 +10,6 @@ use Unlooped\GridBundle\FilterType\FilterType;
  */
 class FilterRow
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -110,5 +109,4 @@ class FilterRow
 
         return $this;
     }
-
 }

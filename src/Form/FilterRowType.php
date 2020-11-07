@@ -18,11 +18,11 @@ class FilterRowType extends AbstractType
         $builder
             ->add('field', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'choices' => $options['fields'],
+                'choices'            => $options['fields'],
             ])
             ->add('operator', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'choices' => FilterType::getExprList()
+                'choices'            => FilterType::getExprList(),
             ])
             ->add('value', null, ['required' => false])
         ;
@@ -51,7 +51,7 @@ class FilterRowType extends AbstractType
                 $form = $event->getForm();
                 $filters = $options['filters'];
 
-                if (array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
+                if (\array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
                     /** @var FilterType $originalFilterType */
                     $originalFilterType = $filters[$data->getMetaData()['_original_field']];
                     $origFields = $originalFilterType->getFormFieldNames();
@@ -97,8 +97,8 @@ class FilterRowType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class'  => FilterRow::class,
-            'fields'      => [],
+            'data_class'   => FilterRow::class,
+            'fields'       => [],
             'filters'      => null,
         ]);
 
