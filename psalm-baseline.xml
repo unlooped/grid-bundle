@@ -20,6 +20,11 @@
       <code>Select2EntityType</code>
     </UndefinedClass>
   </file>
+  <file src="src/Form/EntityType.php">
+    <InvalidCast occurrences="1">
+      <code>$entity</code>
+    </InvalidCast>
+  </file>
   <file src="src/Helper/RelationsHelper.php">
     <UndefinedInterfaceMethod occurrences="2">
       <code>getAssociationMapping</code>
