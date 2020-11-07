@@ -6,7 +6,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BooleanFilterType extends ChoiceFilterType
 {
-
     public static function getAvailableOperators(): array
     {
         return [
@@ -26,5 +25,4 @@ class BooleanFilterType extends ChoiceFilterType
         $resolver->setAllowedValues('widget', ['select']);
         $resolver->setAllowedTypes('choices', ['array']);
     }
-
 }

@@ -6,8 +6,8 @@ use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-abstract class AbstractColumnType implements ColumnTypeInterface {
-
+abstract class AbstractColumnType implements ColumnTypeInterface
+{
     protected $template = '@UnloopedGrid/column_types/text.html.twig';
 
     protected $options;
@@ -17,9 +17,6 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
 
     /**
      * Text constructor.
-     * @param string $field
-     * @param array $options
-     * @param string|null $alias
      */
     public function __construct(string $field, array $options = [], string $alias = null)
     {
@@ -31,7 +28,6 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
 
         $this->field = $field;
         $this->alias = $alias;
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -92,7 +88,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
 
     public function getFieldWithAlias(): string
     {
-        return $this->alias . '.' . $this->field;
+        return $this->alias.'.'.$this->field;
     }
 
     public function isSortable(): bool
@@ -109,5 +105,4 @@ abstract class AbstractColumnType implements ColumnTypeInterface {
     {
         return $this->options['attr'];
     }
-
 }

@@ -4,8 +4,8 @@ namespace Unlooped\GridBundle\ColumnType;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ActionsColumn extends AbstractColumnType {
-
+class ActionsColumn extends AbstractColumnType
+{
     protected $template = '@UnloopedGrid/column_types/actions.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -13,14 +13,11 @@ class ActionsColumn extends AbstractColumnType {
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'actions'  => [],
-            'isMapped' => false,
+            'actions'    => [],
+            'isMapped'   => false,
             'isSortable' => false,
-
         ]);
 
         $resolver->setAllowedTypes('actions', ['array']);
     }
-
-
 }

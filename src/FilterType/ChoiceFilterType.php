@@ -1,19 +1,15 @@
 <?php
 
-
 namespace Unlooped\GridBundle\FilterType;
-
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 
 class ChoiceFilterType extends FilterType
 {
-
     protected $template = '@UnloopedGrid/filter_types/choice.html.twig';
 
     public static function getAvailableOperators(): array
@@ -40,18 +36,17 @@ class ChoiceFilterType extends FilterType
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow|array $data
-     * @param array $options
+     * @param array|FilterRow                    $data
      */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
             ->remove('value')
             ->add('value', ChoiceType::class, [
-                'required' => false,
+                'required'           => false,
                 'translation_domain' => 'unlooped_grid',
-                'choices' => $this->options['choices'],
-                'attr' => [
+                'choices'            => $this->options['choices'],
+                'attr'               => [
                     'class' => 'custom-select',
                 ],
             ])

@@ -2,6 +2,6 @@
 
 namespace Unlooped\GridBundle\ColumnType;
 
-class TextColumn extends AbstractColumnType {
-
+class TextColumn extends AbstractColumnType
+{
 }

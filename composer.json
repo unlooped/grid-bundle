@@ -1,7 +1,7 @@
 {
     "name": "unlooped/grid-bundle",
-    "description": "Simple Grid Bundle",
     "type": "symfony-bundle",
+    "description": "Simple Grid Bundle",
     "license": "MIT",
     "authors": [
         {
@@ -10,25 +10,48 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "symfony/options-resolver": "^4.2",
-        "twig/twig": "^2 | ^3",
-        "doctrine/orm": "^2.6",
+        "php": "^7.4 || ^8.0",
+        "ext-json": "*",
         "doctrine/doctrine-bundle": "^2",
-        "symfony/form": "^4.2",
+        "doctrine/orm": "^2.6",
         "knplabs/knp-paginator-bundle": "^5.0",
-        "unlooped/helper": "^1.1.0",
-        "symfony/property-access": "^4.2",
-        "unlooped/ts-resources": "^0.1.0",
         "nesbot/carbon": "^2.21",
-        "ext-json": "*"
+        "symfony/form": "^4.2",
+        "symfony/options-resolver": "^4.2",
+        "symfony/property-access": "^4.2",
+        "twig/twig": "^2 || ^3",
+        "unlooped/helper": "^1.1.0",
+        "unlooped/ts-resources": "^0.1.0"
+    },
+    "require-dev": {
+        "bamarni/composer-bin-plugin": "^1.2",
+        "ergebnis/composer-normalize": "^2.0.1",
+        "symfony/var-dumper": "^4.3"
+    },
+    "config": {
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
             "Unlooped\\GridBundle\\": "src/"
         }
     },
-    "require-dev": {
-        "symfony/var-dumper": "^4.3"
+    "autoload-dev": {
+        "psr-4": {
+            "Unlooped\\GridBundle\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@composer bin all install --ansi"
+        ],
+        "post-update-cmd": [
+            "@composer bin all install --ansi"
+        ],
+        "cs": "PHP_CS_FIXER_IGNORE_ENV=1 && vendor/bin/php-cs-fixer fix --verbose",
+        "cs-diff": "PHP_CS_FIXER_IGNORE_ENV=1 && vendor/bin/php-cs-fixer fix  --verbose --diff --diff-format=udiff --dry-run",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "psalm": "vendor/bin/psalm",
+        "test": "vendor/bin/phpunit --colors=always"
     }
 }

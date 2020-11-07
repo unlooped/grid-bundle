@@ -9,20 +9,17 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Unlooped\GridBundle\Service\GridService;
 
-class UnloopedGridExtension extends ConfigurableExtension {
-
+class UnloopedGridExtension extends ConfigurableExtension
+{
     /**
      * Loads a specific configuration.
      *
-     * @param array $config
-     * @param ContainerBuilder $container
      * @throws Exception
      */
     public function loadInternal(array $config, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yaml');
-
 
         $gsDef = $container->getDefinition(GridService::class);
         $gsDef->replaceArgument(7, $config['save_filter']);

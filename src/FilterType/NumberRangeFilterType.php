@@ -11,7 +11,6 @@ use Unlooped\GridBundle\Entity\FilterRow;
 
 class NumberRangeFilterType extends FilterType
 {
-
     protected $template = '@UnloopedGrid/filter_types/number_range.html.twig';
 
     public static function getAvailableOperators(): array
@@ -25,34 +24,32 @@ class NumberRangeFilterType extends FilterType
     {
         $i = self::$cnt++;
 
-        $field = $this->getFieldInfo($qb, $filterRow);
+        $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
-        if (array_key_exists('from', $metaData) && $fromValue = $metaData['from']) {
-            $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
-            $qb->setParameter('value_start_' . $i, $fromValue);
+        if (\array_key_exists('from', $metaData) && $fromValue = $metaData['from']) {
+            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
+            $qb->setParameter('value_start_'.$i, $fromValue);
         }
-        if (array_key_exists('to', $metaData) && $toValue = $metaData['to']) {
-            $qb->andWhere($qb->expr()->lte($field, ':value_end_' . $i));
-            $qb->setParameter('value_end_' . $i, $toValue);
+        if (\array_key_exists('to', $metaData) && $toValue = $metaData['to']) {
+            $qb->andWhere($qb->expr()->lte($field, ':value_end_'.$i));
+            $qb->setParameter('value_end_'.$i, $toValue);
         }
-
     }
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow|array $data
-     * @param array $options
+     * @param array|FilterRow                    $data
      */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
             ->add('_number_from', NumberType::class, [
-                'mapped' => false,
+                'mapped'   => false,
                 'required' => false,
             ])
             ->add('_number_to', NumberType::class, [
-                'mapped' => false,
+                'mapped'   => false,
                 'required' => false,
             ])
             ->remove('value')
@@ -69,30 +66,25 @@ class NumberRangeFilterType extends FilterType
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param array $options
-     * @param FilterRow $data
-     * @param FormEvent|null $event
+     * @param FilterRow                          $data
      */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
 
-
         $metaData = $data->getMetaData();
 
-        if (array_key_exists('from', $metaData)) {
+        if (\array_key_exists('from', $metaData)) {
             $builder->get('_number_from')->setData($metaData['from']);
         }
-        if (array_key_exists('to', $metaData)) {
+        if (\array_key_exists('to', $metaData)) {
             $builder->get('_number_to')->setData($metaData['to']);
         }
     }
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param array $options
-     * @param FilterRow $data
-     * @param FormEvent|null $event
+     * @param FilterRow                          $data
      */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
@@ -101,5 +93,4 @@ class NumberRangeFilterType extends FilterType
             'to'   => $builder->get('_number_to')->getData(),
         ]);
     }
-
 }

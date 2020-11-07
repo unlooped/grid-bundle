@@ -2,6 +2,6 @@
 
 namespace Unlooped\GridBundle\ColumnType;
 
-class DateColumn extends AbstractColumnType {
-
+class DateColumn extends AbstractColumnType
+{
 }

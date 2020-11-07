@@ -3,8 +3,8 @@
 namespace Unlooped\GridBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ManagerRegistry;
 use Unlooped\GridBundle\Entity\Filter;
 
 /**
@@ -29,7 +29,8 @@ class FilterRepository extends ServiceEntityRepository
             ->andWhere('f.hash = :hash')
             ->setParameter('hash', $hash)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     public function findByRoute(string $route)
@@ -38,7 +39,8 @@ class FilterRepository extends ServiceEntityRepository
             ->andWhere('f.route = :route')
             ->setParameter('route', $route)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+        ;
     }
 
     public function findDefaultForRoute(string $route): ?Filter
@@ -50,7 +52,8 @@ class FilterRepository extends ServiceEntityRepository
             ->setParameter('isDefault', true)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getOneOrNullResult()
+        ;
     }
 
     // /**

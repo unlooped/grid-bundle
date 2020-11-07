@@ -23,7 +23,6 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Entity\Filter;
-use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
@@ -57,67 +56,35 @@ class GridService
         RouterInterface $router,
         bool $saveFilter,
         bool $useRouteInFilterReference
-    )
-    {
-        $this->requestStack = $requestStack;
-        $this->paginator = $paginator;
-        $this->formFactory = $formFactory;
-        $this->em = $em;
-        $this->saveFilter = $saveFilter;
+    ) {
+        $this->requestStack              = $requestStack;
+        $this->paginator                 = $paginator;
+        $this->formFactory               = $formFactory;
+        $this->em                        = $em;
+        $this->saveFilter                = $saveFilter;
         $this->useRouteInFilterReference = $useRouteInFilterReference;
-        $this->flashBag = $flashBag;
-        $this->templating = $templating;
-        $this->router = $router;
-        $this->filterRepo = $em->getRepository(Filter::class);
+        $this->flashBag                  = $flashBag;
+        $this->templating                = $templating;
+        $this->router                    = $router;
+        $this->filterRepo                = $em->getRepository(Filter::class);
     }
 
     /**
-     * @param string $className
-     * @param array $options
-     * @return GridHelper
      * @throws ReflectionException
      * @throws NonUniqueResultException
      */
     public function getGridHelper(string $className, array $options = [], string $filterHash = null): GridHelper
     {
         $reflect = new ReflectionClass($className);
-        $alias = StringHelper::first($reflect->getShortName(), 1)->toLowerCase()->toString();
+        $alias   = StringHelper::first($reflect->getShortName(), 1)->toLowerCase()->toString();
 
         /** @var ServiceEntityRepository $repo */
         $repo = $this->em->getRepository($className);
-        $qb = $repo->createQueryBuilder($alias);
+        $qb   = $repo->createQueryBuilder($alias);
 
         $filter = $this->getFilter($className, $filterHash);
 
         return GridHelper::create($qb, $options, $filter);
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     */
-    protected function getFilter(string $className, ?string $filterHash = null): Filter
-    {
-        if ($filterHash && $filter = $this->filterRepo->findOneByHash($filterHash)) {
-            return $filter;
-        }
-
-        $request = $this->requestStack->getCurrentRequest();
-        if ($this->saveFilter
-            && $request
-            && $request->get('_route')
-            && $filter = $this->filterRepo->findDefaultForRoute($request->get('_route'))
-        ) {
-            return $filter;
-        }
-
-        $filter = new Filter();
-        $filter->setEntity($className);
-
-        if ($request) {
-            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
-        }
-
-        return $filter;
     }
 
     /**
@@ -127,22 +94,22 @@ class GridService
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $request             = $this->requestStack->getCurrentRequest();
         $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
 
         $filter = $gridHelper->getFilter();
         $filter->setIsSaveable($filterAllowedToSave);
 
         $form = $this->formFactory->create(FilterFormType::class, $filter, [
-            'fields' => $filter->getFields(),
+            'fields'  => $filter->getFields(),
             'filters' => $gridHelper->getFilters(),
-            'method' => 'get',
+            'method'  => 'get',
         ]);
 
         $form->handleRequest($request);
 
         $filterApplied = false;
-        $filterSaved = false;
+        $filterSaved   = false;
         $filterDeleted = false;
 
         $qb = $gridHelper->getQueryBuilder();
@@ -165,7 +132,7 @@ class GridService
                 if ($form->has('remove_default') && $form->get('remove_default')->isClicked()) {
                     $this->removeFilterAsDefault($filter);
                     $filterSaved = true;
-                } else if ($form->has('make_default') && $form->get('make_default')->isClicked()) {
+                } elseif ($form->has('make_default') && $form->get('make_default')->isClicked()) {
                     $this->makeFilterAsDefault($filter);
                     $filterSaved = true;
                 }
@@ -173,17 +140,16 @@ class GridService
         }
 
         if ($request) {
-            $currentPage = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
+            $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
             $currentPerPage = $request->query->getInt($gridHelper->getPerPageParameterName(), $gridHelper->getPerPage());
         } else {
-            $currentPage = 1;
+            $currentPage    = 1;
             $currentPerPage = 1;
         }
 
         $request = $this->requestStack->getCurrentRequest();
         if (($sort = $request->get('sort'))
-            && ($col = $gridHelper->getColumnForAlias($sort)))
-        {
+            && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
         }
 
@@ -228,14 +194,14 @@ class GridService
 
     public function getFilterData(GridHelper $gh)
     {
-        $filters = $gh->getFilters();
+        $filters    = $gh->getFilters();
         $filterData = [];
         foreach ($filters as $field => $filterType) {
             $filterData[$field] = [
-                'operators' => $filterType::getAvailableOperators(),
-                'type' => get_class($filterType),
-                'options' => $filterType->getOptions(),
-                'template' => $this->getFilterTemplateForFilter($filterType),
+                'operators'    => $filterType::getAvailableOperators(),
+                'type'         => \get_class($filterType),
+                'options'      => $filterType->getOptions(),
+                'template'     => $this->getFilterTemplateForFilter($filterType),
                 'templatePath' => $filterType->getTemplate(),
             ];
         }
@@ -252,7 +218,8 @@ class GridService
     {
         $existingFilter = $this->doesSameFilterExist($filter);
         if ($existingFilter && $existingFilter->getId() !== $filter->getId()) {
-            $this->flashBag->add('unlooped_grid.alert', 'Filter already Exists: ' . $existingFilter->getName());
+            $this->flashBag->add('unlooped_grid.alert', 'Filter already Exists: '.$existingFilter->getName());
+
             return;
         }
 
@@ -320,7 +287,7 @@ class GridService
         }
 
         foreach ($filter->getRows() as $row) {
-            $arr[]= $row->getField() . $row->getOperator() . $row->getValue();
+            $arr[]= $row->getField().$row->getOperator().$row->getValue();
         }
 
         sort($arr);
@@ -329,7 +296,6 @@ class GridService
     }
 
     /**
-     * @param FilterType $filterType
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -363,11 +329,12 @@ class GridService
      */
     public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
     {
-        $grid = $this->getGrid($gridHelper);
+        $grid      = $this->getGrid($gridHelper);
         $baseRoute = str_replace('.filter', '', $grid->getRoute());
 
         if ($grid->wasFilterSaved()) {
-            $filterRoute = $baseRoute . '.filter';
+            $filterRoute = $baseRoute.'.filter';
+
             return $this->redirectToRoute($filterRoute, ['filterHash' => $grid->getFilter()->getHash()]);
         }
 
@@ -388,9 +355,38 @@ class GridService
     }
 
     /**
+     * @throws NonUniqueResultException
+     */
+    protected function getFilter(string $className, ?string $filterHash = null): Filter
+    {
+        if ($filterHash && $filter = $this->filterRepo->findOneByHash($filterHash)) {
+            return $filter;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+        if ($this->saveFilter
+            && $request
+            && $request->get('_route')
+            && $filter = $this->filterRepo->findDefaultForRoute($request->get('_route'))
+        ) {
+            return $filter;
+        }
+
+        $filter = new Filter();
+        $filter->setEntity($className);
+
+        if ($request) {
+            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
+        }
+
+        return $filter;
+    }
+
+    /**
      * @param string $route #Route
      */
-    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse {
+    protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
+    {
         return new RedirectResponse($this->router->generate($route, $parameters), $status);
     }
 }

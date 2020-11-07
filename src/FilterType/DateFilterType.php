@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Unlooped\GridBundle\FilterType;
-
 
 use App\Exception\DateFilterValueChoiceDoesNotExistException;
 use App\Exception\OperatorDoesNotExistException;
@@ -22,8 +20,7 @@ use Unlooped\Helper\ConstantHelper;
 
 class DateFilterType extends FilterType
 {
-
-    public const VALUE_CHOICE_DATE = 'date';
+    public const VALUE_CHOICE_DATE      = 'date';
     public const VALUE_CHOICE_VARIABLES = 'variables';
 
     protected $template = '@UnloopedGrid/filter_types/date.html.twig';
@@ -105,6 +102,8 @@ class DateFilterType extends FilterType
     }
 
     /**
+     * @param mixed|null $value
+     *
      * @throws DateFilterValueChoiceDoesNotExistException
      * @throws OperatorDoesNotExistException
      */
@@ -112,11 +111,10 @@ class DateFilterType extends FilterType
         string $operator,
         $value = null,
         string $valueChoice = self::VALUE_CHOICE_DATE
-    ): DefaultFilterDataStruct
-    {
+    ): DefaultFilterDataStruct {
         $dfds = parent::createDefaultData($operator, $value);
 
-        if (!in_array($valueChoice, self::getValueChoices(), true)) {
+        if (!\in_array($valueChoice, self::getValueChoices(), true)) {
             throw new DateFilterValueChoiceDoesNotExistException($valueChoice, self::class);
         }
 
@@ -124,7 +122,7 @@ class DateFilterType extends FilterType
             'value_type' => $valueChoice,
         ];
 
-        if ($valueChoice === self::VALUE_CHOICE_VARIABLES) {
+        if (self::VALUE_CHOICE_VARIABLES === $valueChoice) {
             $metaData['variable'] = $value;
         }
 
@@ -142,15 +140,14 @@ class DateFilterType extends FilterType
         return self::createDefaultData($operator, Carbon::instance($dateTime)->toFormattedDateString());
     }
 
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'widget'        => 'date',
-            'value_choices' => self::getValueChoices(),
-            'choices'       => self::getVariables(),
-            'view_timezone' => date_default_timezone_get(),
+            'widget'          => 'date',
+            'value_choices'   => self::getValueChoices(),
+            'choices'         => self::getVariables(),
+            'view_timezone'   => date_default_timezone_get(),
             'target_timezone' => 'UTC',
         ]);
 
@@ -165,12 +162,12 @@ class DateFilterType extends FilterType
     {
         $i = self::$cnt++;
 
-        $op = $this->getExpressionOperator($filterRow);
+        $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
         $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
-            if (is_string($value)) {
+            if (\is_string($value)) {
                 $value = $this->replaceVarsInValue($value);
             }
 
@@ -180,21 +177,20 @@ class DateFilterType extends FilterType
                 $date = Carbon::now($this->options['view_timezone'])->startOfDay();
             }
 
-            if ($op === self::EXPR_EQ) {
+            if (self::EXPR_EQ === $op) {
                 $endDate = $date->clone()->addDay()->startOfDay();
 
-                $qb->andWhere($qb->expr()->gte($field, ':value_start_' . $i));
-                $qb->andWhere($qb->expr()->lt($field, ':value_end_' . $i));
+                $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
+                $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$i));
 
-                $qb->setParameter('value_start_' . $i, $date->timezone($this->options['target_timezone']));
-                $qb->setParameter('value_end_' . $i, $endDate->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_start_'.$i, $date->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_end_'.$i, $endDate->timezone($this->options['target_timezone']));
             } else {
-                $qb->andWhere($qb->expr()->$op($field, ':value_' . $i));
-                $qb->setParameter('value_' . $i, $date->timezone($this->options['target_timezone']));
+                $qb->andWhere($qb->expr()->{$op}($field, ':value_'.$i));
+                $qb->setParameter('value_'.$i, $date->timezone($this->options['target_timezone']));
             }
-
         } elseif (!$this->hasExpressionValue($filterRow)) {
-            $qb->andWhere($qb->expr()->$op($field));
+            $qb->andWhere($qb->expr()->{$op}($field));
         }
     }
 
@@ -203,7 +199,7 @@ class DateFilterType extends FilterType
         $now = Carbon::now($this->options['view_timezone']);
         $now->settings([
             'monthOverflow' => false,
-            'yearOverflow' => false,
+            'yearOverflow'  => false,
         ]);
 
         switch (strtoupper($value)) {
@@ -215,7 +211,6 @@ class DateFilterType extends FilterType
                 return $now->addDay()->startOfDay()->toFormattedDateString();
             case 'DAY_AFTER_TOMORROW':
                 return $now->addDays(2)->startOfDay()->toFormattedDateString();
-
             case 'ONE_WEEK_AGO':
                 return $now->subWeek()->startOfDay()->toFormattedDateString();
             case 'TWO_WEEKS_AGO':
@@ -224,7 +219,6 @@ class DateFilterType extends FilterType
                 return $now->subWeeks(3)->startOfDay()->toFormattedDateString();
             case 'FOUR_WEEKS_AGO':
                 return $now->subWeeks(4)->startOfDay()->toFormattedDateString();
-
             case 'START_OF_WEEK_MONDAY':
                 return $now->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
             case 'START_OF_WEEK_SUNDAY':
@@ -237,7 +231,6 @@ class DateFilterType extends FilterType
                 return $now->addWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
             case 'START_OF_NEXT_WEEK_SUNDAY':
                 return $now->addWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
-
             case 'END_OF_WEEK_SUNDAY':
                 return $now->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'END_OF_WEEK_SATURDAY':
@@ -250,7 +243,6 @@ class DateFilterType extends FilterType
                 return $now->addWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
             case 'END_OF_NEXT_WEEK_SATURDAY':
                 return $now->addWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
-
             case 'START_OF_MONTH':
                 return $now->startOfMonth()->toFormattedDateString();
             case 'END_OF_MONTH':
@@ -263,7 +255,6 @@ class DateFilterType extends FilterType
                 return $now->addMonth()->startOfMonth()->toFormattedDateString();
             case 'END_OF_NEXT_MONTH':
                 return $now->addMonth()->endOfMonth()->toFormattedDateString();
-
             case 'START_OF_QUARTER':
                 return $now->startOfQuarter()->toFormattedDateString();
             case 'END_OF_QUARTER':
@@ -276,7 +267,6 @@ class DateFilterType extends FilterType
                 return $now->addQuarter()->startOfQuarter()->toFormattedDateString();
             case 'END_OF_NEXT_QUARTER':
                 return $now->addQuarter()->endOfQuarter()->toFormattedDateString();
-
             case 'START_OF_YEAR':
                 return $now->startOfYear()->toFormattedDateString();
             case 'END_OF_YEAR':
@@ -296,43 +286,41 @@ class DateFilterType extends FilterType
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow|array $data
-     * @param array $options
+     * @param array|FilterRow                    $data
      */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $hideVariables = true;
-        $hideDate = false;
+        $hideDate      = false;
         if ($data
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
-            && array_key_exists('value_type', $data->getMetaData())
-            && $data->getMetaData()['value_type'] === self::VALUE_CHOICE_VARIABLES)
-        {
-            $hideDate = true;
+            && \array_key_exists('value_type', $data->getMetaData())
+            && self::VALUE_CHOICE_VARIABLES === $data->getMetaData()['value_type']) {
+            $hideDate      = true;
             $hideVariables = false;
         }
 
         $builder
             ->add('_valueChoices', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'mapped' => false,
-                'choices' => self::getValueChoices(),
-                'attr' => [
-                    'class' => 'custom-select'
+                'mapped'             => false,
+                'choices'            => self::getValueChoices(),
+                'attr'               => [
+                    'class' => 'custom-select',
                 ],
             ])
             ->add('_variables', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'mapped'  => false,
-                'choices' => self::getVariables(),
-                'attr'    => [
-                    'class' => 'custom-select' . ($hideVariables ? ' d-none' : ''),
+                'mapped'             => false,
+                'choices'            => self::getVariables(),
+                'attr'               => [
+                    'class' => 'custom-select'.($hideVariables ? ' d-none' : ''),
                 ],
             ])
             ->add('_dateValue', DateType::class, [
-                'mapped' => false,
-                'widget' => 'single_text',
+                'mapped'  => false,
+                'widget'  => 'single_text',
                 'attr'    => [
                     'class' => $hideDate ? ' d-none' : '',
                 ],
@@ -352,21 +340,19 @@ class DateFilterType extends FilterType
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param array $options
-     * @param FilterRow $data
-     * @param FormEvent|null $event
+     * @param FilterRow                          $data
      */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
 
-        $valueType = array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : self::VALUE_CHOICE_DATE;
+        $valueType = \array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : self::VALUE_CHOICE_DATE;
 
         $builder->get('_valueChoices')->setData($valueType);
 
-        if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+        if (self::VALUE_CHOICE_VARIABLES === $valueType) {
             $builder->get('_variables')->setData($data->getValue());
-        } else if ($valueType === self::VALUE_CHOICE_DATE) {
+        } elseif (self::VALUE_CHOICE_DATE === $valueType) {
             if ($data->getValue()) {
                 $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
             }
@@ -375,22 +361,20 @@ class DateFilterType extends FilterType
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param array $options
-     * @param FilterRow $data
-     * @param FormEvent|null $event
+     * @param FilterRow                          $data
      */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
-        if ($valueType === self::VALUE_CHOICE_DATE) {
-            $date = $builder->get('_dateValue')->getData() !== null ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
+        if (self::VALUE_CHOICE_DATE === $valueType) {
+            $date = null !== $builder->get('_dateValue')->getData() ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
             $data->setValue($date);
             $data->setMetaData(['value_type' => $valueType]);
-        } else if ($valueType === self::VALUE_CHOICE_VARIABLES) {
+        } elseif (self::VALUE_CHOICE_VARIABLES === $valueType) {
             $data->setValue($builder->get('_variables')->getData());
             $data->setMetaData([
                 'value_type' => $valueType,
-                'variable' => $data->getValue(),
+                'variable'   => $data->getValue(),
             ]);
         }
     }
