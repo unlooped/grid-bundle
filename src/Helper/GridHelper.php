@@ -24,17 +24,30 @@ class GridHelper
     /** @var int */
     private $defaultPage = 1;
 
-    /** @var AbstractColumnType[]|array */
-    private $columns     = [];
-    private $columnNames = [];
+    /** @var AbstractColumnType[] */
+    private array $columns = [];
+    private $columnNames   = [];
 
     /** @var Filter|null */
     private $filter;
+
+    /**
+     * @var FilterType[]
+     */
     private $filters = [];
     /** @var FilterType[] */
     private $defaultShowFilters = [];
+
+    /**
+     * @var array<string, string>
+     */
     private $filterNames        = [];
+
+    /**
+     * @var array<string, mixed>
+     */
     private $options;
+
     private $alias;
 
     public function __construct(QueryBuilder $queryBuilder, array $options = [], Filter $filter = null)
@@ -96,10 +109,12 @@ class GridHelper
     /**
      * @throws DuplicateColumnException
      * @throws TypeNotAColumnException
+     *
+     * @phpstan-param class-string<\Unlooped\GridBundle\ColumnType\ColumnTypeInterface> $type
      */
     public function addColumn(string $identifier, string $type = TextColumn::class, array $options = []): self
     {
-        if (!$this->options['allow_duplicate_columns'] && \in_array($identifier, $this->columnNames, true)) {
+        if (false === $this->options['allow_duplicate_columns'] && \in_array($identifier, $this->columnNames, true)) {
             throw new DuplicateColumnException('Column '.$identifier.' already exists in '.$this->name.' Grid Helper');
         }
 
@@ -118,6 +133,9 @@ class GridHelper
     /**
      * @throws DuplicateFilterException
      * @throws TypeNotAFilterException
+     *
+     * @phpstan-param class-string<FilterType> $type
+     * @phpstan-param array<string, mixed> $options
      */
     public function addFilter(string $identifier, ?string $type = FilterType::class, array $options = []): self
     {
@@ -129,7 +147,6 @@ class GridHelper
             throw new TypeNotAFilterException($type);
         }
 
-        /** @var FilterType $filterType */
         $filterType                 = new $type($identifier, $options);
         $key                        = $filterType->getOptions()['label'] ?? $identifier;
         $this->filterNames[$key]    = $identifier;
@@ -142,6 +159,9 @@ class GridHelper
         return $this;
     }
 
+    /**
+     * @return AbstractColumnType[]
+     */
     public function getColumns(): array
     {
         return $this->columns;
@@ -218,7 +238,7 @@ class GridHelper
     }
 
     /**
-     * @return array|FilterType[]
+     * @return FilterType[]
      */
     public function getFilters(): array
     {

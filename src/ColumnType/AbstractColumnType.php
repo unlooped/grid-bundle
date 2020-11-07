@@ -5,19 +5,33 @@ namespace Unlooped\GridBundle\ColumnType;
 use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class AbstractColumnType implements ColumnTypeInterface
 {
     protected $template = '@UnloopedGrid/column_types/text.html.twig';
 
+    /**
+     * @var array
+     */
     protected $options;
-    protected $field;
-    protected $propertyAccessor;
-    protected $alias;
 
     /**
-     * Text constructor.
+     * @var string
      */
+    protected $field;
+
+    /**
+     * @var PropertyAccessorInterface
+     */
+    protected $propertyAccessor;
+
+    /**
+     * @var string
+     */
+    protected $alias;
+
     public function __construct(string $field, array $options = [], string $alias = null)
     {
         $resolver = new OptionsResolver();
@@ -27,18 +41,19 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         $this->propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()->disableExceptionOnInvalidPropertyPath()->getPropertyAccessor();
 
         $this->field = $field;
-        $this->alias = $alias;
+        $this->alias = $alias ?? '';
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'label'      => null,
-            'isSortable' => true,
-            'isMapped'   => true,
-            'attr'       => [],
-            'template'   => $this->template,
-            'meta'       => [],
+            'label'       => null,
+            'isSortable'  => true,
+            'isMapped'    => true,
+            'attr'        => [],
+            'template'    => $this->template,
+            'meta'        => [],
+            'permissions' => [],
         ]);
 
         $resolver->setAllowedTypes('label', ['null', 'string']);
@@ -46,6 +61,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         $resolver->setAllowedTypes('attr', 'array');
         $resolver->setAllowedTypes('template', ['null', 'string']);
         $resolver->setAllowedTypes('meta', 'array');
+        $resolver->setAllowedTypes('permissions', 'array');
     }
 
     public function getValue($object)
@@ -74,6 +90,27 @@ abstract class AbstractColumnType implements ColumnTypeInterface
     public function getTemplate(): string
     {
         return $this->template;
+    }
+
+    public function isVisible(?UserInterface $user): bool
+    {
+        $permissions = $this->options['permissions'];
+
+        if (0 === \count($permissions)) {
+            return true;
+        }
+
+        if (null === $user) {
+            return false;
+        }
+
+        foreach ($user->getRoles() as $role) {
+            if (\in_array((string) $role, $permissions, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getField(): string
