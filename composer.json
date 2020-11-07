@@ -19,6 +19,7 @@
         "symfony/form": "^4.2",
         "symfony/options-resolver": "^4.2",
         "symfony/property-access": "^4.2",
+        "symfony/security-core": "^4.2",
         "twig/twig": "^2 || ^3",
         "unlooped/helper": "^1.1.0",
         "unlooped/ts-resources": "^0.1.0"

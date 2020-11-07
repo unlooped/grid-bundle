@@ -1,6 +1,6 @@
 {% block ug_list_header %}
     <tr>
-    {% for column in grid.columns %}
+    {% for column in grid.columns|filter(column => column.isVisible(app.user)) %}
         {% include '@UnloopedGrid/column_header.html.twig' with {'column': column, 'pagination': grid.pagination} %}
     {% endfor %}
     </tr>
