@@ -1,6 +1,8 @@
 {% block column %}
-    <td {% for key, value in column.options.attr if column.options.attr %}
-    {{ key }}="{{ value }}"
+    <td {% for key, value in column.options.attr %}
+    {% if column.options.attr %}
+        {{ key }}="{{ value }}"
+    {% endif %}
 {% endfor %}>
         {% block column_content %}
             {{ type.value(data) }}
