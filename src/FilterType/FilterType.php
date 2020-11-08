@@ -2,7 +2,6 @@
 
 namespace Unlooped\GridBundle\FilterType;
 
-use App\Exception\OperatorDoesNotExistException;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\MappingException;
@@ -12,6 +11,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
