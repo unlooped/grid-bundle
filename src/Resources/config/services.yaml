@@ -15,3 +15,11 @@ services:
           - '@router.default'
           -
           -
+
+    Unlooped\GridBundle\Form\EntityType:
+        public: true
+        tags:
+            - 'form.type'
+        arguments:
+            - '@doctrine'
+            - '@property_accessor'
