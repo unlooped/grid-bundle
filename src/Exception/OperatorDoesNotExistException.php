@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exception;
+namespace Unlooped\GridBundle\Exception;
 
 use Exception;
 use Throwable;

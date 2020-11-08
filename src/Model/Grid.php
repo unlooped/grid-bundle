@@ -31,7 +31,7 @@ class Grid
     private $currentPerPage;
     /** @var bool */
     private $saveFilter;
-    /** @var array */
+    /** @var Filter[] */
     private $existingFilters;
     /** @var bool */
     private $filterSaved;
@@ -165,13 +165,16 @@ class Grid
     }
 
     /**
-     * @return array|Filter[]
+     * @return Filter[]
      */
     public function getExistingFilters(): array
     {
         return $this->existingFilters;
     }
 
+    /**
+     * @param Filter[] $existingFilters
+     */
     public function setExistingFilters(array $existingFilters): void
     {
         $this->existingFilters = $existingFilters;

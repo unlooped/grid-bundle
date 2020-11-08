@@ -2,8 +2,6 @@
 
 namespace Unlooped\GridBundle\FilterType;
 
-use App\Exception\DateFilterValueChoiceDoesNotExistException;
-use App\Exception\OperatorDoesNotExistException;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -15,6 +13,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Exception\DateFilterValueChoiceDoesNotExistException;
+use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\Helper\ConstantHelper;
 

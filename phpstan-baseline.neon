@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Casting to string something that's already string\\.$#"
+			count: 1
+			path: src/ColumnType/AbstractColumnType.php
+
+		-
 			message: "#^Call to an undefined static method Symfony\\\\Component\\\\Intl\\\\Intl\\:\\:getLocaleBundle\\(\\)\\.$#"
 			count: 1
 			path: src/ColumnType/LocalizedDateColumn.php
@@ -31,12 +36,12 @@ parameters:
 			path: src/Form/FilterRowType.php
 
 		-
-			message: "#^Only booleans are allowed in &&, mixed given on the right side\\.$#"
+			message: "#^Only booleans are allowed in &&, mixed given on the left side\\.$#"
 			count: 1
 			path: src/Service/GridService.php
 
 		-
-			message: "#^Only booleans are allowed in &&, mixed given on the left side\\.$#"
+			message: "#^Only booleans are allowed in &&, mixed given on the right side\\.$#"
 			count: 1
 			path: src/Service/GridService.php
 

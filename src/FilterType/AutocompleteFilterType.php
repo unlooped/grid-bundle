@@ -45,7 +45,7 @@ class AutocompleteFilterType extends FilterType
                 'remote_route'         => $this->getOptions()['route'],
                 'class'                => $this->getOptions()['entity'],
                 'primary_key'          => 'id',
-                'minimum_input_length' => $this->getOptions()['entity'],
+                'minimum_input_length' => 1,
                 'text_property'        => $this->getOptions()['text_property'],
                 'page_limit'           => 10,
                 'allow_clear'          => true,
