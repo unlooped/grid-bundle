@@ -1,4 +1,5 @@
 version: 2
+
 updates:
 - package-ecosystem: composer
   directory: "/"
@@ -7,27 +8,17 @@ updates:
     interval: daily
     time: '04:00'
   open-pull-requests-limit: 10
-  reviewers:
-  - core23
-  assignees:
-  - core23
-  labels:
-  - dependency
+
 - package-ecosystem: composer
   directory: "/vendor-bin/tools/"
   schedule:
     interval: daily
     time: '03:00'
   open-pull-requests-limit: 10
-  labels:
-  - pedantic
-  - automerge
+
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: daily
     time: '03:00'
   open-pull-requests-limit: 10
-  labels:
-  - pedantic
-  - automerge
