@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Casting to string something that's already string\\.$#"
-			count: 1
-			path: src/ColumnType/AbstractColumnType.php
-
-		-
 			message: "#^Call to an undefined static method Symfony\\\\Component\\\\Intl\\\\Intl\\:\\:getLocaleBundle\\(\\)\\.$#"
 			count: 1
 			path: src/ColumnType/LocalizedDateColumn.php

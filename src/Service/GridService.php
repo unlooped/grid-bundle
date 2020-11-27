@@ -22,6 +22,7 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
@@ -46,6 +47,8 @@ class GridService
     private $templating;
     private $router;
 
+    private ColumnRegistry $columnRegistry;
+
     public function __construct(
         RequestStack $requestStack,
         PaginatorInterface $paginator,
@@ -54,6 +57,7 @@ class GridService
         FlashBagInterface $flashBag,
         Environment $templating,
         RouterInterface $router,
+        ColumnRegistry $columnRegistry,
         bool $saveFilter,
         bool $useRouteInFilterReference
     ) {
@@ -67,6 +71,7 @@ class GridService
         $this->templating                = $templating;
         $this->router                    = $router;
         $this->filterRepo                = $em->getRepository(Filter::class);
+        $this->columnRegistry            = $columnRegistry;
     }
 
     /**
@@ -84,7 +89,7 @@ class GridService
 
         $filter = $this->getFilter($className, $filterHash);
 
-        return GridHelper::create($qb, $options, $filter);
+        return new GridHelper($qb, $this->columnRegistry, $options, $filter);
     }
 
     /**
@@ -148,8 +153,8 @@ class GridService
         }
 
         $request = $this->requestStack->getCurrentRequest();
-        if (($sort = $request->get('sort'))
-            && ($col = $gridHelper->getColumnForAlias($sort))) {
+
+        if (($sort = $request->get('sort')) && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
         }
 

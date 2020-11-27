@@ -1,5 +1,5 @@
 {# @var column \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
-{% if column.sortable and pagination.isSorted(column.field) %}
+{% if column.isSortable and pagination.isSorted(column.field) %}
     {% set attr = column.attr|merge({class: (column.attr.class|default('') ~ ' sorted sorted-' ~ pagination.direction)|trim}) %}
 {% else %}
     {% set attr = column.attr %}
@@ -10,7 +10,7 @@
     {{ attr }}="{{ value }}"
 {% endfor %}
     >
-        {% if column.sortable %}
+        {% if column.isSortable %}
             {{ knp_pagination_sortable(pagination, column.label|trans, column.alias) }}
         {% else %}
             {{ column.label|trans }}

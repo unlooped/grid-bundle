@@ -5,7 +5,7 @@ namespace Unlooped\GridBundle\Model;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Unlooped\GridBundle\ColumnType\AbstractColumnType;
+use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Helper\GridHelper;
 
@@ -82,7 +82,7 @@ class Grid
     }
 
     /**
-     * @return AbstractColumnType[]|array
+     * @return Column[]
      */
     public function getColumns(): array
     {
