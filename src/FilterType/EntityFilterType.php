@@ -5,7 +5,7 @@ namespace Unlooped\GridBundle\FilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Form\EntityType;
 
-final class EntityFilterType extends FilterType
+final class EntityFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/entity.html.twig';
 

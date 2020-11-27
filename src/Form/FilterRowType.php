@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\FilterType\AbstractFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 
 class FilterRowType extends AbstractType
@@ -22,7 +23,7 @@ class FilterRowType extends AbstractType
             ])
             ->add('operator', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'choices'            => FilterType::getExprList(),
+                'choices'            => AbstractFilterType::getExprList(),
             ])
             ->add('value', null, ['required' => false])
         ;

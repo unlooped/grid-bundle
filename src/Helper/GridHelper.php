@@ -14,6 +14,7 @@ use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
 use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
+use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
@@ -147,8 +148,10 @@ class GridHelper
      * @phpstan-param class-string<FilterType> $type
      * @phpstan-param array<string, mixed> $options
      */
-    public function addFilter(string $identifier, ?string $type = FilterType::class, array $options = []): self
+    public function addFilter(string $identifier, ?string $type = null, array $options = []): self
     {
+        $type = $type ?? DefaultFilterType::class;
+
         if (\in_array($identifier, $this->filterNames, true)) {
             throw new DuplicateFilterException('Filter '.$identifier.' already exists in '.$this->name.' Grid Helper');
         }

@@ -6,6 +6,11 @@ parameters:
 			path: src/ColumnType/LocalizedDateColumn.php
 
 		-
+			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
+			count: 2
+			path: src/FilterType/AbstractFilterType.php
+
+		-
 			message: "#^Class Tetranz\\\\Select2EntityBundle\\\\Form\\\\Type\\\\Select2EntityType not found\\.$#"
 			count: 1
 			path: src/FilterType/AutocompleteFilterType.php
@@ -14,11 +19,6 @@ parameters:
 			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
 			count: 2
 			path: src/FilterType/DateFilterType.php
-
-		-
-			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
-			count: 2
-			path: src/FilterType/FilterType.php
 
 		-
 			message: "#^Anonymous function should have native return typehint \"void\"\\.$#"

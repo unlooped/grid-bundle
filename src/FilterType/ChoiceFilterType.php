@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 
-class ChoiceFilterType extends FilterType
+class ChoiceFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/choice.html.twig';
 

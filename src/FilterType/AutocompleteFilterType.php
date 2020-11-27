@@ -5,7 +5,7 @@ namespace Unlooped\GridBundle\FilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
-class AutocompleteFilterType extends FilterType
+class AutocompleteFilterType extends AbstractFilterType
 {
     public static function getAvailableOperators(): array
     {

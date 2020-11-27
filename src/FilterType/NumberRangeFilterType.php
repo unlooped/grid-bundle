@@ -9,7 +9,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Unlooped\GridBundle\Entity\FilterRow;
 
-class NumberRangeFilterType extends FilterType
+class NumberRangeFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/number_range.html.twig';
 

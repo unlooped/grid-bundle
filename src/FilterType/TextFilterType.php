@@ -2,7 +2,7 @@
 
 namespace Unlooped\GridBundle\FilterType;
 
-class TextFilterType extends FilterType
+class TextFilterType extends AbstractFilterType
 {
     public static function getAvailableOperators(): array
     {

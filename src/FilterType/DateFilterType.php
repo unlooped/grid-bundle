@@ -18,7 +18,7 @@ use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\Helper\ConstantHelper;
 
-class DateFilterType extends FilterType
+class DateFilterType extends AbstractFilterType
 {
     public const VALUE_CHOICE_DATE      = 'date';
     public const VALUE_CHOICE_VARIABLES = 'variables';
