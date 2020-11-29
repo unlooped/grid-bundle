@@ -253,17 +253,7 @@ abstract class AbstractFilterType implements FilterType
         $this->buildForm($builder, $options, $data);
     }
 
-    public function submitFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
-    {
-        $this->buildForm($builder, $options, $data);
-    }
-
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
-    {
-        // nothing to do here
-    }
-
-    public function resetForm($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         // nothing to do here
     }
