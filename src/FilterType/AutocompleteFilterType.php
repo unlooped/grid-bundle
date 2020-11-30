@@ -7,14 +7,6 @@ use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
 class AutocompleteFilterType extends AbstractFilterType
 {
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_NEQ          => self::EXPR_NEQ,
-        ];
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -55,5 +47,13 @@ class AutocompleteFilterType extends AbstractFilterType
                 'language'             => 'en',
             ])
         ;
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ           => self::EXPR_EQ,
+            self::EXPR_NEQ          => self::EXPR_NEQ,
+        ];
     }
 }

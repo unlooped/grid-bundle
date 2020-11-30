@@ -6,14 +6,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BooleanFilterType extends ChoiceFilterType
 {
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_NEQ          => self::EXPR_NEQ,
-        ];
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -24,5 +16,13 @@ class BooleanFilterType extends ChoiceFilterType
 
         $resolver->setAllowedValues('widget', ['select']);
         $resolver->setAllowedTypes('choices', ['array']);
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ           => self::EXPR_EQ,
+            self::EXPR_NEQ          => self::EXPR_NEQ,
+        ];
     }
 }

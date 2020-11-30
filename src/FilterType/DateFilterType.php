@@ -8,9 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\DateFilterValueChoiceDoesNotExistException;
@@ -86,19 +84,6 @@ class DateFilterType extends AbstractFilterType
     public static function getValueChoices(): array
     {
         return ConstantHelper::getList('VALUE_CHOICE');
-    }
-
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_LT           => self::EXPR_LT,
-            self::EXPR_LTE          => self::EXPR_LTE,
-            self::EXPR_GT           => self::EXPR_GT,
-            self::EXPR_GTE          => self::EXPR_GTE,
-            self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
-            self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
-        ];
     }
 
     /**
@@ -284,10 +269,6 @@ class DateFilterType extends AbstractFilterType
         return $value;
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param array|FilterRow                    $data
-     */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $hideVariables = true;
@@ -338,10 +319,6 @@ class DateFilterType extends AbstractFilterType
         ];
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
@@ -359,10 +336,6 @@ class DateFilterType extends AbstractFilterType
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
@@ -377,5 +350,18 @@ class DateFilterType extends AbstractFilterType
                 'variable'   => $data->getValue(),
             ]);
         }
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ           => self::EXPR_EQ,
+            self::EXPR_LT           => self::EXPR_LT,
+            self::EXPR_LTE          => self::EXPR_LTE,
+            self::EXPR_GT           => self::EXPR_GT,
+            self::EXPR_GTE          => self::EXPR_GTE,
+            self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
+            self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
+        ];
     }
 }

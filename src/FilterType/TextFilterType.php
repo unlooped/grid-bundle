@@ -4,7 +4,7 @@ namespace Unlooped\GridBundle\FilterType;
 
 class TextFilterType extends AbstractFilterType
 {
-    public static function getAvailableOperators(): array
+    protected static function getAvailableOperators(): array
     {
         return [
             self::EXPR_CONTAINS     => self::EXPR_CONTAINS,

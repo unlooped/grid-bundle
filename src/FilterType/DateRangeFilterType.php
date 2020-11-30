@@ -7,22 +7,13 @@ use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormInterface;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class DateRangeFilterType extends DateFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/date_range.html.twig';
-
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
-        ];
-    }
 
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {
@@ -90,10 +81,6 @@ class DateRangeFilterType extends DateFilterType
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param array|FilterRow                    $data
-     */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $hideVariables = true;
@@ -165,10 +152,6 @@ class DateRangeFilterType extends DateFilterType
         ];
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
@@ -190,10 +173,6 @@ class DateRangeFilterType extends DateFilterType
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
@@ -213,5 +192,12 @@ class DateRangeFilterType extends DateFilterType
                 'variable_to'   => $builder->get('_variables_to')->getData(),
             ]);
         }
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
+        ];
     }
 }

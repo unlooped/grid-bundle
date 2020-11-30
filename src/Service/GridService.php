@@ -23,7 +23,8 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
-use Unlooped\GridBundle\Entity\Filter;
+use Unlooped\GridBundle\Entity\Filter as FilterEntity;
+use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
@@ -73,7 +74,7 @@ class GridService
         $this->flashBag                  = $flashBag;
         $this->templating                = $templating;
         $this->router                    = $router;
-        $this->filterRepo                = $em->getRepository(Filter::class);
+        $this->filterRepo                = $em->getRepository(FilterEntity::class);
         $this->columnRegistry            = $columnRegistry;
         $this->filterRegistry            = $filterRegistry;
     }
@@ -111,7 +112,9 @@ class GridService
 
         $form = $this->formFactory->create(FilterFormType::class, $filter, [
             'fields'  => $filter->getFields(),
-            'filters' => $gridHelper->getFilters(),
+            'filters' => array_map(static function (Filter $filter): FilterType {
+                return $filter->getType();
+            }, $gridHelper->getFilters()),
             'method'  => 'get',
         ]);
 
@@ -122,6 +125,7 @@ class GridService
         $filterDeleted = false;
 
         $qb = $gridHelper->getQueryBuilder();
+
         if ($filter->getHash() || $filter->hasDefaultShowFilter() || ($form->isSubmitted() && $form->isValid())) {
             $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
 
@@ -193,25 +197,28 @@ class GridService
         );
     }
 
-    public function handleFilter(QueryBuilder $qb, Filter $filter, GridHelper $gridHelper): void
+    public function handleFilter(QueryBuilder $qb, FilterEntity $filterEntity, GridHelper $gridHelper): void
     {
-        foreach ($filter->getRows() as $row) {
-            $filterType = $gridHelper->getFilterTypeForField($row->getField());
-            $filterType->handleFilter($qb, $row);
+        foreach ($filterEntity->getRows() as $row) {
+            $filter = $gridHelper->getFilterTypeForField($row->getField());
+            $filter->handleFilter($qb, $row);
         }
     }
 
-    public function getFilterData(GridHelper $gh)
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public function getFilterData(GridHelper $helper): array
     {
-        $filters    = $gh->getFilters();
+        $filters    = $helper->getFilters();
         $filterData = [];
-        foreach ($filters as $field => $filterType) {
+        foreach ($filters as $field => $filter) {
             $filterData[$field] = [
-                'operators'    => $filterType::getAvailableOperators(),
-                'type'         => \get_class($filterType),
-                'options'      => $filterType->getOptions(),
-                'template'     => $this->getFilterTemplateForFilter($filterType),
-                'templatePath' => $filterType->getTemplate(),
+                'operators'    => $filter->getOption('operators', []),
+                'type'         => \get_class($filter),
+                'options'      => $filter->getOptions(),
+                'template'     => $this->getFilterTemplateForFilter($filter),
+                'templatePath' => $filter->getOption('template'),
             ];
         }
 
@@ -223,7 +230,7 @@ class GridService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function saveFilter(Filter $filter): void
+    public function saveFilter(FilterEntity $filter): void
     {
         $existingFilter = $this->doesSameFilterExist($filter);
         if ($existingFilter && $existingFilter->getId() !== $filter->getId()) {
@@ -242,7 +249,7 @@ class GridService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function deleteFilter(Filter $filter): void
+    public function deleteFilter(FilterEntity $filter): void
     {
         $this->em->remove($filter);
         $this->em->flush();
@@ -252,7 +259,7 @@ class GridService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function makeFilterAsDefault(Filter $filter): void
+    public function makeFilterAsDefault(FilterEntity $filter): void
     {
         $defaultFilter = $this->filterRepo->findDefaultForRoute($filter->getRoute());
         if ($defaultFilter) {
@@ -270,7 +277,7 @@ class GridService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function removeFilterAsDefault(Filter $filter): void
+    public function removeFilterAsDefault(FilterEntity $filter): void
     {
         $filter->setIsDefault(false);
 
@@ -281,14 +288,14 @@ class GridService
     /**
      * @throws NonUniqueResultException
      */
-    public function doesSameFilterExist(Filter $filter): ?Filter
+    public function doesSameFilterExist(FilterEntity $filter): ?FilterEntity
     {
         $hash = $this->getHashForFilter($filter);
 
         return $this->filterRepo->findOneByHash($hash);
     }
 
-    public function getHashForFilter(Filter $filter)
+    public function getHashForFilter(FilterEntity $filter)
     {
         $arr = [];
         if ($route = $filter->getRoute()) {
@@ -309,13 +316,13 @@ class GridService
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function getFilterTemplateForFilter(FilterType $filterType): string
+    public function getFilterTemplateForFilter(Filter $filter): string
     {
-        $template = $filterType->getTemplate();
+        $template = $filter->getOption('template');
 
         $formBuilder = $this->formFactory->createNamedBuilder('__filterrow__', FormType::class, null, ['csrf_protection' => false]);
 
-        $filterType->preSubmitFormData($formBuilder);
+        $filter->preSubmitFormData($formBuilder);
 
         $form = $formBuilder->getForm();
 
@@ -366,7 +373,7 @@ class GridService
     /**
      * @throws NonUniqueResultException
      */
-    protected function getFilter(string $className, ?string $filterHash = null): Filter
+    protected function getFilter(string $className, ?string $filterHash = null): FilterEntity
     {
         if ($filterHash && $filter = $this->filterRepo->findOneByHash($filterHash)) {
             return $filter;
@@ -381,7 +388,7 @@ class GridService
             return $filter;
         }
 
-        $filter = new Filter();
+        $filter = new FilterEntity();
         $filter->setEntity($className);
 
         if ($request) {

@@ -14,14 +14,6 @@ final class EntityFilterType extends AbstractFilterType
         parent::__construct($field, $options);
     }
 
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ   => self::EXPR_EQ,
-            self::EXPR_NEQ  => self::EXPR_NEQ,
-        ];
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -51,5 +43,13 @@ final class EntityFilterType extends AbstractFilterType
                 'id_column'           => $this->options['id_column'],
             ])
         ;
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ   => self::EXPR_EQ,
+            self::EXPR_NEQ  => self::EXPR_NEQ,
+        ];
     }
 }

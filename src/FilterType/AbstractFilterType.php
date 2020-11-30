@@ -6,9 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\MappingException;
 use ReflectionException;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
@@ -39,13 +37,27 @@ abstract class AbstractFilterType implements FilterType
 
     public const IEXPR_IS_NULL     = 'is_null';
     public const IEXPR_IS_NOT_NULL = 'is_not_null';
-    protected $template            = '@UnloopedGrid/filter_types/text.html.twig';
 
+    protected $template  = '@UnloopedGrid/filter_types/text.html.twig';
+
+    /**
+     * @deprecated
+     */
     protected $field;
+
+    /**
+     * @deprecated
+     */
     protected $options;
 
+    /**
+     * @deprecated
+     */
     protected static $cnt = 0;
 
+    /**
+     * @var array<string, string>
+     */
     protected static $conditionMap = [
         self::EXPR_CONTAINS     => self::EXPR_LIKE,
         self::EXPR_NOT_CONTAINS => self::EXPR_NOT_LIKE,
@@ -55,6 +67,9 @@ abstract class AbstractFilterType implements FilterType
         self::EXPR_IS_NOT_EMPTY => self::IEXPR_IS_NOT_NULL,
     ];
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     protected static $valueMap = [
         self::EXPR_CONTAINS     => [
             'prefix' => '%',
@@ -87,7 +102,11 @@ abstract class AbstractFilterType implements FilterType
         ],
     ];
 
-    /** @var FieldMetaDataStruct[] */
+    /**
+     * @deprecated
+     *
+     * @var FieldMetaDataStruct[]
+     */
     protected static $fieldAliases = [];
 
     public function __construct(string $field, array $options = [])
@@ -109,11 +128,6 @@ abstract class AbstractFilterType implements FilterType
         return ConstantHelper::getList('EXPR');
     }
 
-    public static function getAvailableOperators(): array
-    {
-        return self::getExprList();
-    }
-
     /**
      * @param mixed|null $value
      *
@@ -125,22 +139,23 @@ abstract class AbstractFilterType implements FilterType
             throw new OperatorDoesNotExistException($operator, self::class);
         }
 
-        $dfds           = new DefaultFilterDataStruct();
-        $dfds->operator = $operator;
-        $dfds->value    = $value;
+        $dataStruct           = new DefaultFilterDataStruct();
+        $dataStruct->operator = $operator;
+        $dataStruct->value    = $value;
 
-        return $dfds;
+        return $dataStruct;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'show_filter'  => false,
-            'default_data' => null,
-            'template'     => $this->template,
-            'label'        => null,
-            'attr'         => [],
-            'widget'       => 'text',
+            'show_filter'   => false,
+            'default_data'  => null,
+            'template'      => $this->template,
+            'label'         => null,
+            'attr'          => [],
+            'widget'        => 'text',
+            'operators'     => static::getAvailableOperators(),
         ]);
 
         $resolver->setAllowedTypes('show_filter', ['boolean']);
@@ -148,6 +163,7 @@ abstract class AbstractFilterType implements FilterType
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('attr', 'array');
         $resolver->setAllowedTypes('widget', 'string');
+        $resolver->setAllowedTypes('operators', 'array');
         $resolver->setAllowedTypes('default_data', ['null', DefaultFilterDataStruct::class]);
 
         $resolver->setAllowedValues('widget', ['text']);
@@ -227,15 +243,6 @@ abstract class AbstractFilterType implements FilterType
         return $this->options;
     }
 
-    public function getTemplate(): string
-    {
-        return $this->options['template'];
-    }
-
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param null                               $data
-     */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
@@ -258,14 +265,17 @@ abstract class AbstractFilterType implements FilterType
         // nothing to do here
     }
 
-    public function getField(): string
-    {
-        return $this->field;
-    }
-
     public function getFormFieldNames(): array
     {
         return ['value'];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected static function getAvailableOperators(): array
+    {
+        return self::getExprList();
     }
 
     /**
