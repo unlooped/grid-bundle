@@ -24,6 +24,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\Entity\Filter;
+use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
@@ -48,6 +49,7 @@ class GridService
     private $router;
 
     private ColumnRegistry $columnRegistry;
+    private FilterRegistry $filterRegistry;
 
     public function __construct(
         RequestStack $requestStack,
@@ -58,6 +60,7 @@ class GridService
         Environment $templating,
         RouterInterface $router,
         ColumnRegistry $columnRegistry,
+        FilterRegistry $filterRegistry,
         bool $saveFilter,
         bool $useRouteInFilterReference
     ) {
@@ -72,6 +75,7 @@ class GridService
         $this->router                    = $router;
         $this->filterRepo                = $em->getRepository(Filter::class);
         $this->columnRegistry            = $columnRegistry;
+        $this->filterRegistry            = $filterRegistry;
     }
 
     /**
@@ -89,7 +93,7 @@ class GridService
 
         $filter = $this->getFilter($className, $filterHash);
 
-        return new GridHelper($qb, $this->columnRegistry, $options, $filter);
+        return new GridHelper($qb, $this->columnRegistry, $this->filterRegistry, $options, $filter);
     }
 
     /**

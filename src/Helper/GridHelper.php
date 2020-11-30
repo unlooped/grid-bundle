@@ -14,6 +14,7 @@ use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
 use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
+use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
@@ -24,6 +25,8 @@ class GridHelper
     private $queryBuilder;
 
     private ColumnRegistry $columnRegistry;
+
+    private FilterRegistry $filterRegistry;
 
     /** @var string */
     private $name;
@@ -61,11 +64,13 @@ class GridHelper
     public function __construct(
         QueryBuilder $queryBuilder,
         ColumnRegistry $columnRegistry,
+        FilterRegistry $filterRegistry,
         array $options = [],
         Filter $filter = null
     ) {
         $this->queryBuilder   = $queryBuilder;
         $this->columnRegistry = $columnRegistry;
+        $this->filterRegistry = $filterRegistry;
         $this->alias          = $this->queryBuilder->getRootAliases()[0];
         $this->filter         = $filter;
 

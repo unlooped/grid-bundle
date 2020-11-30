@@ -14,6 +14,7 @@ services:
           - '@twig'
           - '@router.default'
           - '@Unlooped\GridBundle\Column\Registry\ColumnRegistry'
+          - '@Unlooped\GridBundle\Filter\Registry\FilterRegistry'
           -
           -
 
