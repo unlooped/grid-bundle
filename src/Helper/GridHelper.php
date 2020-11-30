@@ -21,45 +21,49 @@ use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class GridHelper
 {
-    /** @var QueryBuilder */
-    private $queryBuilder;
+    private QueryBuilder $queryBuilder;
 
     private ColumnRegistry $columnRegistry;
 
     private FilterRegistry $filterRegistry;
 
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var int */
-    private $defaultPage = 1;
+    private int $defaultPage = 1;
 
-    /** @var Column[] */
+    /**
+     * @var Column[]
+     */
     private array $columns = [];
 
-    private $columnNames   = [];
+    /**
+     * @var string[]
+     */
+    private array $columnNames = [];
 
-    /** @var Filter|null */
-    private $filter;
+    private ?Filter $filter;
+
     /**
      * @var FilterType[]
      */
-    private $filters = [];
+    private array $filters = [];
 
-    /** @var FilterType[] */
-    private $defaultShowFilters = [];
+    /**
+     * @var FilterType[]
+     */
+    private array $defaultShowFilters = [];
 
     /**
      * @var array<string, string>
      */
-    private $filterNames        = [];
+    private array $filterNames = [];
 
     /**
      * @var array<string, mixed>
      */
-    private $options;
+    private array $options;
 
-    private $alias;
+    private string $alias;
 
     public function __construct(
         QueryBuilder $queryBuilder,
