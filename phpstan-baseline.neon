@@ -11,11 +11,6 @@ parameters:
 			path: src/FilterType/AbstractFilterType.php
 
 		-
-			message: "#^Class Tetranz\\\\Select2EntityBundle\\\\Form\\\\Type\\\\Select2EntityType not found\\.$#"
-			count: 1
-			path: src/FilterType/AutocompleteFilterType.php
-
-		-
 			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
 			count: 2
 			path: src/FilterType/DateFilterType.php
