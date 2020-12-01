@@ -41,21 +41,6 @@ abstract class AbstractFilterType implements FilterType
     protected $template  = '@UnloopedGrid/filter_types/text.html.twig';
 
     /**
-     * @deprecated
-     */
-    protected $field;
-
-    /**
-     * @deprecated
-     */
-    protected $options;
-
-    /**
-     * @deprecated
-     */
-    protected static $cnt = 0;
-
-    /**
      * @var array<string, string>
      */
     protected static $conditionMap = [
@@ -101,22 +86,6 @@ abstract class AbstractFilterType implements FilterType
             'split' => true,
         ],
     ];
-
-    /**
-     * @deprecated
-     *
-     * @var FieldMetaDataStruct[]
-     */
-    protected static $fieldAliases = [];
-
-    public function __construct(string $field, array $options = [])
-    {
-        $resolver = new OptionsResolver();
-        $this->configureOptions($resolver);
-        $this->options = $resolver->resolve($options);
-
-        $this->field = $field;
-    }
 
     public static function getVariables(): array
     {
@@ -169,10 +138,8 @@ abstract class AbstractFilterType implements FilterType
         $resolver->setAllowedValues('widget', ['text']);
     }
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
-
         $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
 
@@ -180,12 +147,14 @@ abstract class AbstractFilterType implements FilterType
         $alias     = $fieldInfo->alias;
 
         if (null !== $value) {
+            $suffix = uniqid('', false);
+
             if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
-                $qb->andWhere($qb->expr()->isMemberOf(':value_'.$i, $alias));
+                $qb->andWhere($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
             } else {
-                $qb->andWhere($qb->expr()->{$op}($alias, ':value_'.$i));
+                $qb->andWhere($qb->expr()->{$op}($alias, ':value_'.$suffix));
             }
-            $qb->setParameter('value_'.$i, $value);
+            $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($alias));
         }
@@ -238,11 +207,6 @@ abstract class AbstractFilterType implements FilterType
         return true;
     }
 
-    public function getOptions(): array
-    {
-        return $this->options;
-    }
-
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
@@ -284,6 +248,10 @@ abstract class AbstractFilterType implements FilterType
      */
     protected function getFieldInfo(QueryBuilder $qb, FilterRow $filterRow): FieldMetaDataStruct
     {
-        return RelationsHelper::joinRequiredPaths($qb, $filterRow->getFilter()->getEntity(), $filterRow->getField());
+        $filter = $filterRow->getFilter();
+
+        \assert(null !== $filter);
+
+        return RelationsHelper::joinRequiredPaths($qb, $filter->getEntity(), $filterRow->getField());
     }
 }

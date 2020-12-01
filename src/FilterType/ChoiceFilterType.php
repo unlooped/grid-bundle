@@ -28,7 +28,7 @@ class ChoiceFilterType extends AbstractFilterType
             ->add('value', ChoiceType::class, [
                 'required'           => false,
                 'translation_domain' => 'unlooped_grid',
-                'choices'            => $this->options['choices'],
+                'choices'            => $options['choices'],
                 'attr'               => [
                     'class' => 'custom-select',
                 ],

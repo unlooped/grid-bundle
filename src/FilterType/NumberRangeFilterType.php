@@ -11,20 +11,20 @@ class NumberRangeFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/number_range.html.twig';
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
+        $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
         if (\array_key_exists('from', $metaData) && $fromValue = $metaData['from']) {
-            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
-            $qb->setParameter('value_start_'.$i, $fromValue);
+            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
+            $qb->setParameter('value_start_'.$suffix, $fromValue);
         }
         if (\array_key_exists('to', $metaData) && $toValue = $metaData['to']) {
-            $qb->andWhere($qb->expr()->lte($field, ':value_end_'.$i));
-            $qb->setParameter('value_end_'.$i, $toValue);
+            $qb->andWhere($qb->expr()->lte($field, ':value_end_'.$suffix));
+            $qb->setParameter('value_end_'.$suffix, $toValue);
         }
     }
 

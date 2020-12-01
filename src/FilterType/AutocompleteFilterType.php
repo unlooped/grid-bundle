@@ -34,11 +34,11 @@ class AutocompleteFilterType extends AbstractFilterType
             ->remove('value')
             ->add('value', Select2EntityType::class, [
                 'multiple'             => false,
-                'remote_route'         => $this->getOptions()['route'],
-                'class'                => $this->getOptions()['entity'],
+                'remote_route'         => $options['route'],
+                'class'                => $options['entity'],
                 'primary_key'          => 'id',
                 'minimum_input_length' => 1,
-                'text_property'        => $this->getOptions()['text_property'],
+                'text_property'        => $options['text_property'],
                 'page_limit'           => 10,
                 'allow_clear'          => true,
                 'delay'                => 250,

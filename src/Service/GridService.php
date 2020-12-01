@@ -26,7 +26,6 @@ use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
-use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
@@ -112,9 +111,7 @@ class GridService
 
         $form = $this->formFactory->create(FilterFormType::class, $filter, [
             'fields'  => $filter->getFields(),
-            'filters' => array_map(static function (Filter $filter): FilterType {
-                return $filter->getType();
-            }, $gridHelper->getFilters()),
+            'filters' => $gridHelper->getFilters(),
             'method'  => 'get',
         ]);
 

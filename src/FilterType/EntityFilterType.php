@@ -9,11 +9,6 @@ final class EntityFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/entity.html.twig';
 
-    public function __construct(string $field, array $options = [])
-    {
-        parent::__construct($field, $options);
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -39,8 +34,8 @@ final class EntityFilterType extends AbstractFilterType
             ->add('value', EntityType::class, [
                 'required'            => false,
                 'translation_domain'  => 'unlooped_grid',
-                'class'               => $this->options['class'],
-                'id_column'           => $this->options['id_column'],
+                'class'               => $options['class'],
+                'id_column'           => $options['id_column'],
             ])
         ;
     }

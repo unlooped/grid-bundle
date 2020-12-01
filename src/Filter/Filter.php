@@ -5,7 +5,6 @@ namespace Unlooped\GridBundle\Filter;
 use ArrayAccess;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
@@ -42,16 +41,12 @@ final class Filter implements ArrayAccess
 
     public function getOptions(): array
     {
-        return $this->type->getOptions();
-        // TODO
-//        return $this->options;
+        return $this->options;
     }
 
     public function getOption(string $key, $default = null)
     {
-        return $this->type->getOptions()[$key] ?? $default;
-        // TODO
-//        return $this->options[$key] ?? $default;
+        return $this->options[$key] ?? $default;
     }
 
     public function getLabel(): string
@@ -66,61 +61,17 @@ final class Filter implements ArrayAccess
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
-     * @param mixed|null                         $data
      *
      * @internal
      */
-    public function buildForm($builder, array $options = [], $data = null): void
+    public function preSubmitFormData($builder): void
     {
-        $this->type->buildForm($builder, $options, $data);
-    }
-
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param mixed|null                         $data
-     *
-     * @internal
-     */
-    public function preSubmitFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
-    {
-        $this->type->preSubmitFormData($builder, $options, $data, $event);
-    }
-
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param mixed|null                         $data
-     *
-     * @internal
-     */
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
-    {
-        $this->type->postSetFormData($builder, $options, $data, $event);
-    }
-
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param mixed|null                         $data
-     *
-     * @internal
-     */
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
-    {
-        $this->type->postFormSubmit($builder, $options, $data, $event);
+        $this->type->preSubmitFormData($builder, $this->getOptions());
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
     {
-        $this->type->handleFilter($qb, $filterRow);
-    }
-
-    /**
-     * @internal
-     *
-     * @return string[]
-     */
-    public function getFormFieldNames(): array
-    {
-        return $this->type->getFormFieldNames();
+        $this->type->handleFilter($qb, $filterRow, $this->options);
     }
 
     public function offsetExists($offset): bool

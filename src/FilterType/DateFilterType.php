@@ -143,45 +143,45 @@ class DateFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('target_timezone', ['string']);
     }
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
-
         $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
         $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
+            $suffix = uniqid('', false);
+
             if (\is_string($value)) {
-                $value = $this->replaceVarsInValue($value);
+                $value = $this->replaceVarsInValue($value, $options);
             }
 
             try {
-                $date = Carbon::parse($value, $this->options['view_timezone'])->startOfDay();
+                $date = Carbon::parse($value, $options['view_timezone'])->startOfDay();
             } catch (Exception $e) {
-                $date = Carbon::now($this->options['view_timezone'])->startOfDay();
+                $date = Carbon::now($options['view_timezone'])->startOfDay();
             }
 
             if (self::EXPR_EQ === $op) {
                 $endDate = $date->clone()->addDay()->startOfDay();
 
-                $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
-                $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$i));
+                $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
+                $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
 
-                $qb->setParameter('value_start_'.$i, $date->timezone($this->options['target_timezone']));
-                $qb->setParameter('value_end_'.$i, $endDate->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_start_'.$suffix, $date->timezone($options['target_timezone']));
+                $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
             } else {
-                $qb->andWhere($qb->expr()->{$op}($field, ':value_'.$i));
-                $qb->setParameter('value_'.$i, $date->timezone($this->options['target_timezone']));
+                $qb->andWhere($qb->expr()->{$op}($field, ':value_'.$suffix));
+                $qb->setParameter('value_'.$suffix, $date->timezone($options['target_timezone']));
             }
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($field));
         }
     }
 
-    public function replaceVarsInValue(string $value): string
+    public function replaceVarsInValue(string $value, array $options = []): string
     {
-        $now = Carbon::now($this->options['view_timezone']);
+        $now = Carbon::now($options['view_timezone']);
         $now->settings([
             'monthOverflow' => false,
             'yearOverflow'  => false,
@@ -273,7 +273,8 @@ class DateFilterType extends AbstractFilterType
     {
         $hideVariables = true;
         $hideDate      = false;
-        if ($data
+
+        if (null !== $data
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())

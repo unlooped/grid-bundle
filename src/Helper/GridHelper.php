@@ -173,13 +173,9 @@ class GridHelper
             throw new TypeNotAFilterException($type);
         }
 
-        // TODO
-//        $filterType = $this->filterRegistry->getType($type);
-        $filterType                 = new $type($identifier, $options);
+        $filter  = new Filter($identifier, $this->filterRegistry->getType($type), $options);
+        $key     = $filter->getLabel();
 
-        $filter          = new Filter($identifier, $filterType, $options);
-
-        $key                        = $filter->getLabel();
         $this->filterNames[$key]    = $identifier;
         $this->filters[$identifier] = $filter;
 

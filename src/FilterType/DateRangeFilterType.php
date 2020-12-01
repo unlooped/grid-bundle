@@ -41,9 +41,9 @@ class DateRangeFilterType extends DateFilterType
         return $dfds;
     }
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
+        $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
@@ -61,23 +61,23 @@ class DateRangeFilterType extends DateFilterType
 
         if ($startValue) {
             if (\is_string($startValue)) {
-                $startValue = $this->replaceVarsInValue($startValue);
+                $startValue = $this->replaceVarsInValue($startValue, $options);
             }
 
-            $startDate = Carbon::parse($startValue, $this->options['view_timezone'])->startOfDay();
+            $startDate = Carbon::parse($startValue, $options['view_timezone'])->startOfDay();
 
-            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
-            $qb->setParameter('value_start_'.$i, $startDate->timezone($this->options['target_timezone']));
+            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
+            $qb->setParameter('value_start_'.$suffix, $startDate->timezone($options['target_timezone']));
         }
 
         if ($endValue) {
             if (\is_string($endValue)) {
-                $endValue = $this->replaceVarsInValue($endValue);
+                $endValue = $this->replaceVarsInValue($endValue, $options);
             }
 
-            $endDate = Carbon::parse($endValue, $this->options['view_timezone'])->addDay()->startOfDay();
-            $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$i));
-            $qb->setParameter('value_end_'.$i, $endDate->timezone($this->options['target_timezone']));
+            $endDate = Carbon::parse($endValue, $options['view_timezone'])->addDay()->startOfDay();
+            $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
+            $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
         }
     }
 
@@ -85,7 +85,8 @@ class DateRangeFilterType extends DateFilterType
     {
         $hideVariables = true;
         $hideDate      = false;
-        if ($data
+
+        if (null !== $data
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())

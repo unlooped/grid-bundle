@@ -48,7 +48,7 @@ interface FilterType
     /**
      * @internal
      */
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void;
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void;
 
     /**
      * @internal
