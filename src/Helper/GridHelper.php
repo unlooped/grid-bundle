@@ -4,6 +4,8 @@ namespace Unlooped\GridBundle\Helper;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Unlooped\GridBundle\Column\Column;
+use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\ColumnType\AbstractColumnType;
 use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter;
@@ -19,22 +21,27 @@ class GridHelper
 {
     /** @var QueryBuilder */
     private $queryBuilder;
+
+    private ColumnRegistry $columnRegistry;
+
     /** @var string */
     private $name;
+
     /** @var int */
     private $defaultPage = 1;
 
-    /** @var AbstractColumnType[] */
+    /** @var Column[] */
     private array $columns = [];
+
     private $columnNames   = [];
 
     /** @var Filter|null */
     private $filter;
-
     /**
      * @var FilterType[]
      */
     private $filters = [];
+
     /** @var FilterType[] */
     private $defaultShowFilters = [];
 
@@ -50,21 +57,21 @@ class GridHelper
 
     private $alias;
 
-    public function __construct(QueryBuilder $queryBuilder, array $options = [], Filter $filter = null)
-    {
-        $this->queryBuilder = $queryBuilder;
-        $this->alias        = $this->queryBuilder->getRootAliases()[0];
-        $this->filter       = $filter;
+    public function __construct(
+        QueryBuilder $queryBuilder,
+        ColumnRegistry $columnRegistry,
+        array $options = [],
+        Filter $filter = null
+    ) {
+        $this->queryBuilder   = $queryBuilder;
+        $this->columnRegistry = $columnRegistry;
+        $this->alias          = $this->queryBuilder->getRootAliases()[0];
+        $this->filter         = $filter;
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
 
         $this->options = $resolver->resolve($options);
-    }
-
-    public static function create(QueryBuilder $queryBuilder, array $options = [], Filter $filter = null): self
-    {
-        return new self($queryBuilder, $options, $filter);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -110,10 +117,12 @@ class GridHelper
      * @throws DuplicateColumnException
      * @throws TypeNotAColumnException
      *
-     * @phpstan-param class-string<\Unlooped\GridBundle\ColumnType\ColumnTypeInterface> $type
+     * @phpstan-param class-string<\Unlooped\GridBundle\ColumnType\ColumnTypeInterface>|null $type
      */
-    public function addColumn(string $identifier, string $type = TextColumn::class, array $options = []): self
+    public function addColumn(string $identifier, ?string $type = null, array $options = []): self
     {
+        $type = $type ?? TextColumn::class;
+
         if (false === $this->options['allow_duplicate_columns'] && \in_array($identifier, $this->columnNames, true)) {
             throw new DuplicateColumnException('Column '.$identifier.' already exists in '.$this->name.' Grid Helper');
         }
@@ -125,7 +134,8 @@ class GridHelper
         $alias = RelationsHelper::getAliasForEntityAndField($this->getQueryBuilder(), $this->filter->getEntity(), $identifier);
 
         $this->columnNames[] = $identifier;
-        $this->columns[]     = new $type($identifier, $options, $alias);
+
+        $this->columns[] = new Column($identifier, $this->columnRegistry->getType($type), $options, $alias);
 
         return $this;
     }
@@ -160,14 +170,14 @@ class GridHelper
     }
 
     /**
-     * @return AbstractColumnType[]
+     * @return Column[]
      */
     public function getColumns(): array
     {
         return $this->columns;
     }
 
-    public function getColumnForAlias(string $alias): ?AbstractColumnType
+    public function getColumnForAlias(string $alias): ?Column
     {
         foreach ($this->columns as $column) {
             if ($column->getAlias() === $alias) {

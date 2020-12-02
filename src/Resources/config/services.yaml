@@ -13,6 +13,7 @@ services:
           - '@session.flash_bag'
           - '@twig'
           - '@router.default'
+          - '@Unlooped\GridBundle\Column\Registry\ColumnRegistry'
           -
           -
 
