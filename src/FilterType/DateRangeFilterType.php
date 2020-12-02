@@ -7,22 +7,13 @@ use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormInterface;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class DateRangeFilterType extends DateFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/date_range.html.twig';
-
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
-        ];
-    }
 
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {
@@ -50,9 +41,9 @@ class DateRangeFilterType extends DateFilterType
         return $dfds;
     }
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
+        $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
@@ -70,35 +61,32 @@ class DateRangeFilterType extends DateFilterType
 
         if ($startValue) {
             if (\is_string($startValue)) {
-                $startValue = $this->replaceVarsInValue($startValue);
+                $startValue = $this->replaceVarsInValue($startValue, $options);
             }
 
-            $startDate = Carbon::parse($startValue, $this->options['view_timezone'])->startOfDay();
+            $startDate = Carbon::parse($startValue, $options['view_timezone'])->startOfDay();
 
-            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
-            $qb->setParameter('value_start_'.$i, $startDate->timezone($this->options['target_timezone']));
+            $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
+            $qb->setParameter('value_start_'.$suffix, $startDate->timezone($options['target_timezone']));
         }
 
         if ($endValue) {
             if (\is_string($endValue)) {
-                $endValue = $this->replaceVarsInValue($endValue);
+                $endValue = $this->replaceVarsInValue($endValue, $options);
             }
 
-            $endDate = Carbon::parse($endValue, $this->options['view_timezone'])->addDay()->startOfDay();
-            $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$i));
-            $qb->setParameter('value_end_'.$i, $endDate->timezone($this->options['target_timezone']));
+            $endDate = Carbon::parse($endValue, $options['view_timezone'])->addDay()->startOfDay();
+            $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
+            $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param array|FilterRow                    $data
-     */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $hideVariables = true;
         $hideDate      = false;
-        if ($data
+
+        if (null !== $data
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())
@@ -165,10 +153,6 @@ class DateRangeFilterType extends DateFilterType
         ];
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
@@ -190,10 +174,6 @@ class DateRangeFilterType extends DateFilterType
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
@@ -213,5 +193,12 @@ class DateRangeFilterType extends DateFilterType
                 'variable_to'   => $builder->get('_variables_to')->getData(),
             ]);
         }
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
+        ];
     }
 }

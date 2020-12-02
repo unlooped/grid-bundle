@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Filter\Filter;
+use Unlooped\GridBundle\FilterType\AbstractFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 
 class FilterRowType extends AbstractType
@@ -22,75 +24,94 @@ class FilterRowType extends AbstractType
             ])
             ->add('operator', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
-                'choices'            => FilterType::getExprList(),
+                'choices'            => AbstractFilterType::getExprList(),
             ])
             ->add('value', null, ['required' => false])
         ;
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, static function (FormEvent $event) use ($options) {
-            if (null !== $event->getData()) {
-                /** @var FilterRow $data */
-                $data = $event->getData();
-                $form = $event->getForm();
-                $filters = $options['filters'];
+            if (null === $event->getData()) {
+                return;
+            }
 
-                if ($data->getField()) {
-                    /** @var FilterType $filterType */
-                    $filterType = $filters[$data->getField()];
-                    $md = $data->getMetaData();
-                    $md['_original_field'] = $data->getField();
-                    $data->setMetaData($md);
-                    $filterType->postSetFormData($form, $options, $data, $event);
-                }
+            /** @var FilterRow $data */
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            /** @var array<string, Filter> $filters */
+            $filters = $options['filters'];
+            $filter  = $filters[$data->getField()];
+
+            if ($data->getField()) {
+                $filterType = $filter->getType();
+
+                $metaData                    = $data->getMetaData();
+                $metaData['_original_field'] = $data->getField();
+
+                $data->setMetaData($metaData);
+                $filterType->postSetFormData($form, $filter->getOptions(), $data, $event);
             }
         });
 
         $builder->addEventListener(FormEvents::SUBMIT, static function (FormEvent $event) use ($options) {
-            if (null !== $event->getData()) {
-                $data = $event->getData();
-                $form = $event->getForm();
-                $filters = $options['filters'];
+            if (null === $event->getData()) {
+                return;
+            }
 
-                if (\array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
-                    /** @var FilterType $originalFilterType */
-                    $originalFilterType = $filters[$data->getMetaData()['_original_field']];
-                    $origFields = $originalFilterType->getFormFieldNames();
+            /** @var FilterRow $data */
+            $data    = $event->getData();
+            $form    = $event->getForm();
 
-                    /** @var FilterType $filterType */
-                    $filterType = $filters[$data->getField()];
-                    $newFields = $filterType->getFormFieldNames();
+            /** @var array<string, Filter> $filters */
+            $filters = $options['filters'];
 
-                    $fieldsToRemove = array_diff($origFields, $newFields);
-                    foreach ($fieldsToRemove as $fieldToRemove) {
-                        $form->remove($fieldToRemove);
-                    }
+            if (\array_key_exists('_original_field', $data->getMetaData()) && $data->getMetaData()['_original_field'] !== $data->getField()) {
+                /** @var FilterType $originalFilterType */
+                $originalFilterType = $filters[$data->getMetaData()['_original_field']];
+                $origFields         = $originalFilterType->getFormFieldNames();
+
+                /** @var FilterType $filterType */
+                $filterType = $filters[$data->getField()]->getType();
+                $newFields  = $filterType->getFormFieldNames();
+
+                $fieldsToRemove = array_diff($origFields, $newFields);
+                foreach ($fieldsToRemove as $fieldToRemove) {
+                    $form->remove($fieldToRemove);
                 }
             }
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, static function (FormEvent $event) use ($options) {
-            if (null !== $event->getData()) {
-                $data = $event->getData();
-                $form = $event->getForm();
-                $filters = $options['filters'];
-
-                /** @var FilterType $filterType */
-                $filterType = $filters[$data['field']];
-                $filterType->preSubmitFormData($form, $options, $data, $event);
+            if (null === $event->getData()) {
+                return;
             }
+
+            $data    = $event->getData();
+            $form    = $event->getForm();
+
+            /** @var array<string, Filter> $filters */
+            $filters = $options['filters'];
+            $filter     = $filters[$data['field']];
+
+            $filterType = $filter->getType();
+            $filterType->preSubmitFormData($form, $filter->getOptions(), $data, $event);
         });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event) use ($options) {
-            if (null !== $event->getData()) {
-                /** @var FilterRow $data */
-                $data = $event->getData();
-                $form = $event->getForm();
-                $filters = $options['filters'];
-
-                /** @var FilterType $filterType */
-                $filterType = $filters[$data->getField()];
-                $filterType->postFormSubmit($form, $options, $data, $event);
+            if (null === $event->getData()) {
+                return;
             }
+
+            /** @var FilterRow $data */
+            $data    = $event->getData();
+            $form    = $event->getForm();
+
+            /** @var array<string, Filter> $filters */
+            $filters = $options['filters'];
+            $filter     = $filters[$data->getField()];
+
+            $filterType = $filter->getType();
+            $filterType->postFormSubmit($form, $filter->getOptions(), $data, $event);
         });
     }
 

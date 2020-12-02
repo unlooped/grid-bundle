@@ -5,22 +5,9 @@ namespace Unlooped\GridBundle\FilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Form\EntityType;
 
-final class EntityFilterType extends FilterType
+final class EntityFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/entity.html.twig';
-
-    public function __construct(string $field, array $options = [])
-    {
-        parent::__construct($field, $options);
-    }
-
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ   => self::EXPR_EQ,
-            self::EXPR_NEQ  => self::EXPR_NEQ,
-        ];
-    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
@@ -47,9 +34,17 @@ final class EntityFilterType extends FilterType
             ->add('value', EntityType::class, [
                 'required'            => false,
                 'translation_domain'  => 'unlooped_grid',
-                'class'               => $this->options['class'],
-                'id_column'           => $this->options['id_column'],
+                'class'               => $options['class'],
+                'id_column'           => $options['id_column'],
             ])
         ;
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ   => self::EXPR_EQ,
+            self::EXPR_NEQ  => self::EXPR_NEQ,
+        ];
     }
 }

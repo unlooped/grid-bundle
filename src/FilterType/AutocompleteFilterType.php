@@ -5,16 +5,8 @@ namespace Unlooped\GridBundle\FilterType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 
-class AutocompleteFilterType extends FilterType
+class AutocompleteFilterType extends AbstractFilterType
 {
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_NEQ          => self::EXPR_NEQ,
-        ];
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -42,11 +34,11 @@ class AutocompleteFilterType extends FilterType
             ->remove('value')
             ->add('value', Select2EntityType::class, [
                 'multiple'             => false,
-                'remote_route'         => $this->getOptions()['route'],
-                'class'                => $this->getOptions()['entity'],
+                'remote_route'         => $options['route'],
+                'class'                => $options['entity'],
                 'primary_key'          => 'id',
                 'minimum_input_length' => 1,
-                'text_property'        => $this->getOptions()['text_property'],
+                'text_property'        => $options['text_property'],
                 'page_limit'           => 10,
                 'allow_clear'          => true,
                 'delay'                => 250,
@@ -55,5 +47,13 @@ class AutocompleteFilterType extends FilterType
                 'language'             => 'en',
             ])
         ;
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ           => self::EXPR_EQ,
+            self::EXPR_NEQ          => self::EXPR_NEQ,
+        ];
     }
 }

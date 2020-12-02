@@ -24,9 +24,11 @@ class UnloopedGridExtension extends ConfigurableExtension
 
         $phpLoader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $phpLoader->load('columns.php');
+        $phpLoader->load('filter.php');
 
-        $gsDef = $container->getDefinition(GridService::class);
-        $gsDef->replaceArgument(8, $config['save_filter']);
-        $gsDef->replaceArgument(9, $config['use_route_in_filter_reference']);
+        $container->getDefinition(GridService::class)
+            ->replaceArgument(9, $config['save_filter'])
+            ->replaceArgument(10, $config['use_route_in_filter_reference'])
+        ;
     }
 }

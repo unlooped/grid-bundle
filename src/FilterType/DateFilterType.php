@@ -8,9 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\DateFilterValueChoiceDoesNotExistException;
@@ -18,7 +16,7 @@ use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\Helper\ConstantHelper;
 
-class DateFilterType extends FilterType
+class DateFilterType extends AbstractFilterType
 {
     public const VALUE_CHOICE_DATE      = 'date';
     public const VALUE_CHOICE_VARIABLES = 'variables';
@@ -88,19 +86,6 @@ class DateFilterType extends FilterType
         return ConstantHelper::getList('VALUE_CHOICE');
     }
 
-    public static function getAvailableOperators(): array
-    {
-        return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_LT           => self::EXPR_LT,
-            self::EXPR_LTE          => self::EXPR_LTE,
-            self::EXPR_GT           => self::EXPR_GT,
-            self::EXPR_GTE          => self::EXPR_GTE,
-            self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
-            self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
-        ];
-    }
-
     /**
      * @param mixed|null $value
      *
@@ -158,45 +143,45 @@ class DateFilterType extends FilterType
         $resolver->setAllowedTypes('target_timezone', ['string']);
     }
 
-    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow): void
+    public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $i = self::$cnt++;
-
         $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
         $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
+            $suffix = uniqid('', false);
+
             if (\is_string($value)) {
-                $value = $this->replaceVarsInValue($value);
+                $value = $this->replaceVarsInValue($value, $options);
             }
 
             try {
-                $date = Carbon::parse($value, $this->options['view_timezone'])->startOfDay();
+                $date = Carbon::parse($value, $options['view_timezone'])->startOfDay();
             } catch (Exception $e) {
-                $date = Carbon::now($this->options['view_timezone'])->startOfDay();
+                $date = Carbon::now($options['view_timezone'])->startOfDay();
             }
 
             if (self::EXPR_EQ === $op) {
                 $endDate = $date->clone()->addDay()->startOfDay();
 
-                $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$i));
-                $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$i));
+                $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
+                $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
 
-                $qb->setParameter('value_start_'.$i, $date->timezone($this->options['target_timezone']));
-                $qb->setParameter('value_end_'.$i, $endDate->timezone($this->options['target_timezone']));
+                $qb->setParameter('value_start_'.$suffix, $date->timezone($options['target_timezone']));
+                $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
             } else {
-                $qb->andWhere($qb->expr()->{$op}($field, ':value_'.$i));
-                $qb->setParameter('value_'.$i, $date->timezone($this->options['target_timezone']));
+                $qb->andWhere($qb->expr()->{$op}($field, ':value_'.$suffix));
+                $qb->setParameter('value_'.$suffix, $date->timezone($options['target_timezone']));
             }
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($field));
         }
     }
 
-    public function replaceVarsInValue(string $value): string
+    public function replaceVarsInValue(string $value, array $options = []): string
     {
-        $now = Carbon::now($this->options['view_timezone']);
+        $now = Carbon::now($options['view_timezone']);
         $now->settings([
             'monthOverflow' => false,
             'yearOverflow'  => false,
@@ -284,15 +269,12 @@ class DateFilterType extends FilterType
         return $value;
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param array|FilterRow                    $data
-     */
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $hideVariables = true;
         $hideDate      = false;
-        if ($data
+
+        if (null !== $data
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())
@@ -338,10 +320,6 @@ class DateFilterType extends FilterType
         ];
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $this->buildForm($builder, [], $data);
@@ -359,10 +337,6 @@ class DateFilterType extends FilterType
         }
     }
 
-    /**
-     * @param FormBuilderInterface|FormInterface $builder
-     * @param FilterRow                          $data
-     */
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
@@ -377,5 +351,18 @@ class DateFilterType extends FilterType
                 'variable'   => $data->getValue(),
             ]);
         }
+    }
+
+    protected static function getAvailableOperators(): array
+    {
+        return [
+            self::EXPR_EQ           => self::EXPR_EQ,
+            self::EXPR_LT           => self::EXPR_LT,
+            self::EXPR_LTE          => self::EXPR_LTE,
+            self::EXPR_GT           => self::EXPR_GT,
+            self::EXPR_GTE          => self::EXPR_GTE,
+            self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
+            self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
+        ];
     }
 }

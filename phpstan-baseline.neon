@@ -6,19 +6,24 @@ parameters:
 			path: src/ColumnType/LocalizedDateColumn.php
 
 		-
-			message: "#^Class Tetranz\\\\Select2EntityBundle\\\\Form\\\\Type\\\\Select2EntityType not found\\.$#"
+			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
+			count: 2
+			path: src/FilterType/AbstractFilterType.php
+
+		-
+			message: "#^Only booleans are allowed in &&, mixed given on the right side\\.$#"
 			count: 1
-			path: src/FilterType/AutocompleteFilterType.php
+			path: src/FilterType/AbstractFilterType.php
+
+		-
+			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
+			count: 1
+			path: src/FilterType/AbstractFilterType.php
 
 		-
 			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
 			count: 2
 			path: src/FilterType/DateFilterType.php
-
-		-
-			message: "#^Variable method call on Doctrine\\\\ORM\\\\Query\\\\Expr\\.$#"
-			count: 2
-			path: src/FilterType/FilterType.php
 
 		-
 			message: "#^Anonymous function should have native return typehint \"void\"\\.$#"

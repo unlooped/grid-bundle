@@ -3,7 +3,7 @@
 namespace Unlooped\GridBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Unlooped\GridBundle\FilterType\FilterType;
+use Unlooped\GridBundle\FilterType\AbstractFilterType;
 
 /**
  * @ORM\Entity(repositoryClass="Unlooped\GridBundle\Repository\FilterRowRepository")
@@ -31,7 +31,7 @@ class FilterRow
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $operator = FilterType::EXPR_CONTAINS;
+    private $operator = AbstractFilterType::EXPR_CONTAINS;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

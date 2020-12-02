@@ -8,63 +8,73 @@ use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\ColumnType\AbstractColumnType;
 use Unlooped\GridBundle\ColumnType\TextColumn;
-use Unlooped\GridBundle\Entity\Filter;
+use Unlooped\GridBundle\Entity\Filter as FilterEntity;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\DuplicateColumnException;
 use Unlooped\GridBundle\Exception\DuplicateFilterException;
 use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
+use Unlooped\GridBundle\Filter\Filter;
+use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
+use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class GridHelper
 {
-    /** @var QueryBuilder */
-    private $queryBuilder;
+    private QueryBuilder $queryBuilder;
 
     private ColumnRegistry $columnRegistry;
 
-    /** @var string */
-    private $name;
+    private FilterRegistry $filterRegistry;
 
-    /** @var int */
-    private $defaultPage = 1;
+    private string $name;
 
-    /** @var Column[] */
+    private int $defaultPage = 1;
+
+    /**
+     * @var Column[]
+     */
     private array $columns = [];
 
-    private $columnNames   = [];
-
-    /** @var Filter|null */
-    private $filter;
     /**
-     * @var FilterType[]
+     * @var string[]
      */
-    private $filters = [];
+    private array $columnNames = [];
 
-    /** @var FilterType[] */
-    private $defaultShowFilters = [];
+    private ?FilterEntity $filter;
+
+    /**
+     * @var Filter[]
+     */
+    private array $filters = [];
+
+    /** @var Filter[]
+     */
+    private array $defaultShowFilters = [];
 
     /**
      * @var array<string, string>
      */
-    private $filterNames        = [];
+    private array $filterNames = [];
 
     /**
      * @var array<string, mixed>
      */
-    private $options;
+    private array $options;
 
-    private $alias;
+    private string $alias;
 
     public function __construct(
         QueryBuilder $queryBuilder,
         ColumnRegistry $columnRegistry,
+        FilterRegistry $filterRegistry,
         array $options = [],
-        Filter $filter = null
+        FilterEntity $filter = null
     ) {
         $this->queryBuilder   = $queryBuilder;
         $this->columnRegistry = $columnRegistry;
+        $this->filterRegistry = $filterRegistry;
         $this->alias          = $this->queryBuilder->getRootAliases()[0];
         $this->filter         = $filter;
 
@@ -131,7 +141,11 @@ class GridHelper
             throw new TypeNotAColumnException($type);
         }
 
-        $alias = RelationsHelper::getAliasForEntityAndField($this->getQueryBuilder(), $this->filter->getEntity(), $identifier);
+        $alias = RelationsHelper::getAliasForEntityAndField(
+            $this->getQueryBuilder(),
+            $this->filter->getEntity(),
+            $identifier
+        );
 
         $this->columnNames[] = $identifier;
 
@@ -144,11 +158,13 @@ class GridHelper
      * @throws DuplicateFilterException
      * @throws TypeNotAFilterException
      *
-     * @phpstan-param class-string<FilterType> $type
+     * @phpstan-param class-string<FilterType>|null $type
      * @phpstan-param array<string, mixed> $options
      */
-    public function addFilter(string $identifier, ?string $type = FilterType::class, array $options = []): self
+    public function addFilter(string $identifier, ?string $type = null, array $options = []): self
     {
+        $type = $type ?? DefaultFilterType::class;
+
         if (\in_array($identifier, $this->filterNames, true)) {
             throw new DuplicateFilterException('Filter '.$identifier.' already exists in '.$this->name.' Grid Helper');
         }
@@ -157,12 +173,14 @@ class GridHelper
             throw new TypeNotAFilterException($type);
         }
 
-        $filterType                 = new $type($identifier, $options);
-        $key                        = $filterType->getOptions()['label'] ?? $identifier;
+        $filter  = new Filter($identifier, $this->filterRegistry->getType($type), $options);
+        $key     = $filter->getLabel();
+
         $this->filterNames[$key]    = $identifier;
-        $this->filters[$identifier] = $filterType;
-        if (true === $filterType->getOptions()['show_filter']) {
-            $this->defaultShowFilters[] = $filterType;
+        $this->filters[$identifier] = $filter;
+
+        if ($filter->isVisible()) {
+            $this->defaultShowFilters[] = $filter;
             $this->filter->setHasDefaultShowFilter(true);
         }
 
@@ -208,7 +226,7 @@ class GridHelper
         return $this->options['defaultPerPage'];
     }
 
-    public function getFilter(): Filter
+    public function getFilter(): FilterEntity
     {
         $this->filter->setFields($this->filterNames);
 
@@ -219,28 +237,29 @@ class GridHelper
         $fields = $this->filter->getFields();
         if (\count($this->defaultShowFilters) > 0) {
             foreach ($this->defaultShowFilters as $defaultShowFilter) {
-                $fRow = new FilterRow();
-                $fRow->setField($defaultShowFilter->getField());
+                $row = new FilterRow();
+                $row->setField($defaultShowFilter->getField());
                 /** @var DefaultFilterDataStruct $defaultData */
-                if ($defaultData = $defaultShowFilter->getOptions()['default_data']) {
-                    $fRow->setOperator($defaultData->operator);
-                    $fRow->setValue($defaultData->value);
-                    $fRow->setMetaData($defaultData->metaData);
+                if ($defaultData = $defaultShowFilter->getOption('default_data')) {
+                    $row->setOperator($defaultData->operator);
+                    $row->setValue($defaultData->value);
+                    $row->setMetaData($defaultData->metaData);
                 } else {
-                    $fRow->setOperator(array_key_first($defaultShowFilter::getAvailableOperators()));
+                    $row->setOperator(array_key_first($defaultShowFilter->getOption('operators', [])));
                 }
 
-                $this->filter->addRow($fRow);
+                $this->filter->addRow($row);
             }
         } else {
-            $fRow = new FilterRow();
+            $row = new FilterRow();
             if (\count($fields) > 0) {
-                $fRow->setField($fields[array_key_first($fields)]);
+                $row->setField($fields[array_key_first($fields)]);
             }
-            $this->filter->addRow($fRow);
+            $this->filter->addRow($row);
         }
 
-        if (\count($fields) > 0 && 1 === $this->filter->getRows()->count() && !$this->filter->getRows()->first()->getField()) {
+        if (\count($fields) > 0 && 1 === $this->filter->getRows()->count() && !$this->filter->getRows()->first(
+            )->getField()) {
             $this->filter->getRows()->first()->setField($fields[array_key_first($fields)]);
         }
 
@@ -248,7 +267,7 @@ class GridHelper
     }
 
     /**
-     * @return FilterType[]
+     * @return array<string, Filter>
      */
     public function getFilters(): array
     {
@@ -315,7 +334,7 @@ class GridHelper
         return $this->alias;
     }
 
-    public function getFilterTypeForField(string $field): FilterType
+    public function getFilterTypeForField(string $field): Filter
     {
         return $this->filters[$field];
     }
