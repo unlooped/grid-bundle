@@ -26,16 +26,6 @@ parameters:
 			path: src/FilterType/DateFilterType.php
 
 		-
-			message: "#^Anonymous function should have native return typehint \"void\"\\.$#"
-			count: 1
-			path: src/Form/FilterFormType.php
-
-		-
-			message: "#^Anonymous function should have native return typehint \"void\"\\.$#"
-			count: 4
-			path: src/Form/FilterRowType.php
-
-		-
 			message: "#^Only booleans are allowed in &&, mixed given on the left side\\.$#"
 			count: 1
 			path: src/Service/GridService.php

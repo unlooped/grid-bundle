@@ -29,7 +29,7 @@ class FilterRowType extends AbstractType
             ->add('value', null, ['required' => false])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options): void {
             if (null === $event->getData()) {
                 return;
             }
@@ -46,7 +46,7 @@ class FilterRowType extends AbstractType
             }
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options): void {
             if (null === $event->getData()) {
                 return;
             }
@@ -60,7 +60,7 @@ class FilterRowType extends AbstractType
             $filterType->preSubmitFormData($form, $filter->getOptions(), $data, $event);
         });
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options): void {
             if (null === $event->getData()) {
                 return;
             }

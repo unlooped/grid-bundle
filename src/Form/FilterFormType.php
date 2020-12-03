@@ -26,7 +26,7 @@ class FilterFormType extends AbstractType
             ->add('filter', SubmitType::class)
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
             if (null !== $event->getData()) {
                 /** @var Filter $data */
                 $data = $event->getData();
