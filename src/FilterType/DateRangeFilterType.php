@@ -138,7 +138,6 @@ class DateRangeFilterType extends DateFilterType
                     'class' => $hideDate ? ' d-none' : '',
                 ],
             ])
-            ->remove('value')
         ;
     }
 

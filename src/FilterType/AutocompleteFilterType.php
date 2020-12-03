@@ -31,7 +31,6 @@ class AutocompleteFilterType extends AbstractFilterType
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
-            ->remove('value')
             ->add('value', Select2EntityType::class, [
                 'multiple'             => false,
                 'remote_route'         => $options['route'],

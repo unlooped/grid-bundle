@@ -39,7 +39,6 @@ class NumberRangeFilterType extends AbstractFilterType
                 'mapped'   => false,
                 'required' => false,
             ])
-            ->remove('value')
         ;
     }
 

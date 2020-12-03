@@ -30,7 +30,6 @@ final class EntityFilterType extends AbstractFilterType
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
-            ->remove('value')
             ->add('value', EntityType::class, [
                 'required'            => false,
                 'translation_domain'  => 'unlooped_grid',

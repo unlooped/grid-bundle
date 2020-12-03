@@ -307,7 +307,6 @@ class DateFilterType extends AbstractFilterType
                     'class' => $hideDate ? ' d-none' : '',
                 ],
             ])
-            ->remove('value')
         ;
     }
 
