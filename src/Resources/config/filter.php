@@ -25,6 +25,10 @@ return static function (ContainerConfigurator $container): void {
         ->set(FilterRegistry::class)
 
         ->set(AutocompleteFilterType::class)
+            ->args([
+                ref('doctrine'),
+                ref('property_accessor'),
+            ])
         ->set(BooleanFilterType::class)
         ->set(ChoiceFilterType::class)
         ->set(DateFilterType::class)

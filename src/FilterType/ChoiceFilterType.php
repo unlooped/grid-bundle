@@ -24,7 +24,6 @@ class ChoiceFilterType extends AbstractFilterType
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
-            ->remove('value')
             ->add('value', ChoiceType::class, [
                 'required'           => false,
                 'translation_domain' => 'unlooped_grid',

@@ -105,7 +105,7 @@ class FilterRow
 
     public function setMetaData(array $metaData): self
     {
-        $this->metaData = array_merge($this->metaData, $metaData);
+        $this->metaData = $metaData;
 
         return $this;
     }
