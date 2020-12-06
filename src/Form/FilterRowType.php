@@ -26,7 +26,10 @@ class FilterRowType extends AbstractType
                 'translation_domain' => 'unlooped_grid',
                 'choices'            => AbstractFilterType::getExprList(),
             ])
-            ->add('value', null, ['required' => false])
+            ->add('value', null, [
+                'required' => false,
+                'label'    => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use ($options): void {
