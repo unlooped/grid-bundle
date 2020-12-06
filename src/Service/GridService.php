@@ -212,7 +212,7 @@ class GridService
         foreach ($filters as $field => $filter) {
             $filterData[$field] = [
                 'operators'    => $filter->getOption('operators', []),
-                'type'         => \get_class($filter),
+                'type'         => \get_class($filter->getType()),
                 'options'      => $filter->getOptions(),
                 'template'     => $this->getFilterTemplateForFilter($filter),
                 'templatePath' => $filter->getOption('template'),
