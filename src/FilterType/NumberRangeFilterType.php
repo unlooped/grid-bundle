@@ -31,6 +31,7 @@ class NumberRangeFilterType extends AbstractFilterType
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
+            ->remove('value')
             ->add('_number_from', NumberType::class, [
                 'mapped'   => false,
                 'required' => false,
