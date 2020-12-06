@@ -51,7 +51,7 @@ class AutocompleteFilterType extends AbstractFilterType
                 'remote_route'         => $options['route'],
                 'class'                => $options['entity'],
                 'primary_key'          => $options['entity_primary_key'],
-                'minimum_input_length' => 1,
+                'minimum_input_length' => $options['minimum_input_length'],
                 'text_property'        => $options['text_property'],
                 'page_limit'           => 10,
                 'allow_clear'          => true,

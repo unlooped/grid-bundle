@@ -96,6 +96,7 @@ class DateRangeFilterType extends DateFilterType
         }
 
         $builder
+            ->remove('value')
             ->add('_valueChoices', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
