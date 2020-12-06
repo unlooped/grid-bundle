@@ -22,6 +22,7 @@ class FilterFormType extends AbstractType
                 'allow_delete'  => true,
                 'entry_options' => ['fields' => $options['fields'], 'filters' => $options['filters']],
                 'by_reference'  => false,
+                'label'         => false,
             ])
             ->add('filter', SubmitType::class)
         ;
