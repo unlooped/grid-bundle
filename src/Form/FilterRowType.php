@@ -41,9 +41,8 @@ class FilterRowType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
-            $filter = $this->getFilterFromOptions($options, $data->getField());
-
             if ($data->getField()) {
+                $filter = $this->getFilterFromOptions($options, $data->getField());
                 $filterType = $filter->getType();
                 $filterType->postSetFormData($form, $filter->getOptions(), $data, $event);
             }
