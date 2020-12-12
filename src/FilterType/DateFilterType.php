@@ -190,78 +190,115 @@ class DateFilterType extends AbstractFilterType
         switch (strtoupper($value)) {
             case 'TODAY':
                 return $now->startOfDay()->toFormattedDateString();
+
             case 'YESTERDAY':
                 return $now->subDay()->startOfDay()->toFormattedDateString();
+
             case 'TOMORROW':
                 return $now->addDay()->startOfDay()->toFormattedDateString();
+
             case 'DAY_AFTER_TOMORROW':
                 return $now->addDays(2)->startOfDay()->toFormattedDateString();
+
             case 'ONE_WEEK_AGO':
                 return $now->subWeek()->startOfDay()->toFormattedDateString();
+
             case 'TWO_WEEKS_AGO':
                 return $now->subWeeks(2)->startOfDay()->toFormattedDateString();
+
             case 'THREE_WEEKS_AGO':
                 return $now->subWeeks(3)->startOfDay()->toFormattedDateString();
+
             case 'FOUR_WEEKS_AGO':
                 return $now->subWeeks(4)->startOfDay()->toFormattedDateString();
+
             case 'START_OF_WEEK_MONDAY':
                 return $now->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+
             case 'START_OF_WEEK_SUNDAY':
                 return $now->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'START_OF_LAST_WEEK_MONDAY':
                 return $now->subWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+
             case 'START_OF_LAST_WEEK_SUNDAY':
                 return $now->subWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'START_OF_NEXT_WEEK_MONDAY':
                 return $now->addWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+
             case 'START_OF_NEXT_WEEK_SUNDAY':
                 return $now->addWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'END_OF_WEEK_SUNDAY':
                 return $now->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'END_OF_WEEK_SATURDAY':
                 return $now->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+
             case 'END_OF_LAST_WEEK_SUNDAY':
                 return $now->subWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'END_OF_LAST_WEEK_SATURDAY':
                 return $now->subWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+
             case 'END_OF_NEXT_WEEK_SUNDAY':
                 return $now->addWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+
             case 'END_OF_NEXT_WEEK_SATURDAY':
                 return $now->addWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+
             case 'START_OF_MONTH':
                 return $now->startOfMonth()->toFormattedDateString();
+
             case 'END_OF_MONTH':
                 return $now->endOfMonth()->toFormattedDateString();
+
             case 'START_OF_LAST_MONTH':
                 return $now->subMonth()->startOfMonth()->toFormattedDateString();
+
             case 'END_OF_LAST_MONTH':
                 return $now->subMonth()->endOfMonth()->toFormattedDateString();
+
             case 'START_OF_NEXT_MONTH':
                 return $now->addMonth()->startOfMonth()->toFormattedDateString();
+
             case 'END_OF_NEXT_MONTH':
                 return $now->addMonth()->endOfMonth()->toFormattedDateString();
+
             case 'START_OF_QUARTER':
                 return $now->startOfQuarter()->toFormattedDateString();
+
             case 'END_OF_QUARTER':
                 return $now->endOfQuarter()->toFormattedDateString();
+
             case 'START_OF_LAST_QUARTER':
                 return $now->subQuarter()->startOfQuarter()->toFormattedDateString();
+
             case 'END_OF_LAST_QUARTER':
                 return $now->subQuarter()->endOfQuarter()->toFormattedDateString();
+
             case 'START_OF_NEXT_QUARTER':
                 return $now->addQuarter()->startOfQuarter()->toFormattedDateString();
+
             case 'END_OF_NEXT_QUARTER':
                 return $now->addQuarter()->endOfQuarter()->toFormattedDateString();
+
             case 'START_OF_YEAR':
                 return $now->startOfYear()->toFormattedDateString();
+
             case 'END_OF_YEAR':
                 return $now->endOfYear()->toFormattedDateString();
+
             case 'START_OF_LAST_YEAR':
                 return $now->subYear()->startOfYear()->toFormattedDateString();
+
             case 'END_OF_LAST_YEAR':
                 return $now->subYear()->endOfYear()->toFormattedDateString();
+
             case 'START_OF_NEXT_YEAR':
                 return $now->addYear()->startOfYear()->toFormattedDateString();
+
             case 'END_OF_NEXT_YEAR':
                 return $now->addYear()->endOfYear()->toFormattedDateString();
         }

@@ -27,7 +27,7 @@ class RelationsHelper
 
         array_unshift($pieces, $rootAlias);
 
-        return  implode('_', $pieces).'.'.$le;
+        return implode('_', $pieces).'.'.$le;
     }
 
     /**
