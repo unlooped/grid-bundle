@@ -114,6 +114,9 @@ class Grid
         return $this->gridHelper->getTitle();
     }
 
+    /**
+     * @deprecated
+     */
     public function getListRow(): ?string
     {
         return $this->gridHelper->getListRow();
@@ -124,9 +127,22 @@ class Grid
         return $this->gridHelper->getPaginationTemplate();
     }
 
+    /**
+     * @deprecated
+     */
     public function getListHeaderTemplate(): string
     {
         return $this->gridHelper->getListHeaderTemplate();
+    }
+
+    public function getFilterView(): string
+    {
+        return $this->gridHelper->getFilterView();
+    }
+
+    public function getListView(): string
+    {
+        return $this->gridHelper->getListView();
     }
 
     public function getCreateRoute(): ?string

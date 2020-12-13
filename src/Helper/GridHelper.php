@@ -92,6 +92,8 @@ class GridHelper
             'listRow'                 => '@UnloopedGrid/list_row.html.twig',
             'paginationTemplate'      => '@UnloopedGrid/_pagination.html.twig',
             'listHeaderTemplate'      => '@UnloopedGrid/column_headers.html.twig',
+            'filter_view'             => '@UnloopedGrid/_filter.html.twig',
+            'list_view'               => '@UnloopedGrid/_list.html.twig',
             'title'                   => '',
             'createRoute'             => null,
             'createLabel'             => null,
@@ -109,6 +111,10 @@ class GridHelper
         $resolver->setAllowedTypes('listRow', 'string');
         $resolver->setAllowedTypes('paginationTemplate', 'string');
         $resolver->setAllowedTypes('listHeaderTemplate', 'string');
+        $resolver->setDeprecated('listRow');
+        $resolver->setDeprecated('listHeaderTemplate');
+        $resolver->setAllowedTypes('filter_view', 'string');
+        $resolver->setAllowedTypes('list_view', 'string');
         $resolver->setAllowedTypes('title', 'string');
         $resolver->setAllowedTypes('createRoute', ['null', 'string']);
         $resolver->setAllowedTypes('createLabel', ['null', 'string']);
@@ -279,6 +285,9 @@ class GridHelper
         return $this->options['title'];
     }
 
+    /**
+     * @deprecated
+     */
     public function getListRow(): string
     {
         return $this->options['listRow'];
@@ -289,9 +298,22 @@ class GridHelper
         return $this->options['paginationTemplate'];
     }
 
+    /**
+     * @deprecated
+     */
     public function getListHeaderTemplate(): string
     {
         return $this->options['listHeaderTemplate'];
+    }
+
+    public function getFilterView(): string
+    {
+        return $this->options['filter_view'];
+    }
+
+    public function getListView(): string
+    {
+        return $this->options['list_view'];
     }
 
     public function getCreateRoute(): ?string
