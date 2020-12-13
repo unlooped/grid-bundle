@@ -15,11 +15,6 @@
       <code>Collection|FilterRow[]</code>
     </MismatchingDocblockReturnType>
   </file>
-  <file src="src/FilterType/AutocompleteFilterType.php">
-    <UndefinedClass occurrences="1">
-      <code>Select2EntityType</code>
-    </UndefinedClass>
-  </file>
   <file src="src/Form/EntityType.php">
     <InvalidCast occurrences="1">
       <code>$entity</code>
@@ -38,5 +33,10 @@
       <code>isClicked</code>
       <code>isClicked</code>
     </UndefinedInterfaceMethod>
+  </file>
+  <file src="vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php">
+    <InvalidDocblock occurrences="1">
+      <code>public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $class)</code>
+    </InvalidDocblock>
   </file>
 </files>

@@ -8,9 +8,11 @@
     errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
-        <directory name="src" />
-        <ignoreFiles>
-            <directory name="vendor" />
-        </ignoreFiles>
+      <directory name="src/"/>
+      <directory name="tests/"/>
+      <ignoreFiles>
+        <directory name="vendor/"/>
+        <directory name="vendor-bin/"/>
+      </ignoreFiles>
     </projectFiles>
 </psalm>
