@@ -377,7 +377,7 @@ class GridService
      */
     public function renderGrid(string $template, GridHelper $gridHelper, array $parameters = []): Response
     {
-        $grid = $this->getGrid($gridHelper);
+        $grid           = $this->getGrid($gridHelper);
         $gridParameters = [
             'grid' => $grid,
         ];
