@@ -330,17 +330,7 @@ class GridService
         return str_replace(['__filterrow__', 'filterrow___value'], ['filter_form[rows][__name__]', 'filterrow____name____value'], $tpl);
     }
 
-    /**
-     * @param string $template #Template
-     *
-     * @throws NonUniqueResultException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
+    public function getFilterResponse(GridHelper $gridHelper): ?Response
     {
         $grid      = $this->getGrid($gridHelper);
         $baseRoute = str_replace('.filter', '', $grid->getRoute());
@@ -355,6 +345,39 @@ class GridService
             return $this->redirectToRoute($baseRoute);
         }
 
+        return null;
+    }
+
+    /**
+     * @param string $template #Template
+     *
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
+    {
+        $filterResponse = $this->getFilterResponse($gridHelper);
+
+        return $filterResponse ?? $this->renderGrid($template, $gridHelper, $parameters);
+    }
+
+    /**
+     * @param string $template #Template
+     *
+     * @throws LoaderError
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderGrid(string $template, GridHelper $gridHelper, array $parameters = []): Response
+    {
+        $grid           = $this->getGrid($gridHelper);
         $gridParameters = [
             'grid' => $grid,
         ];
