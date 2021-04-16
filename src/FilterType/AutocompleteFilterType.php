@@ -71,17 +71,17 @@ class AutocompleteFilterType extends AbstractFilterType
 
         $filterRow = $event->getData();
 
-        if (null === $filterRow) {
+        if (!$filterRow instanceof FilterRow) {
             return;
         }
 
-        \assert($filterRow instanceof FilterRow);
+        $value = $filterRow->getValue();
 
-        if (\is_object($filterRow->getValue())) {
+        if (\is_object($value)) {
             return;
         }
 
-        $filterRow->setValue($this->getEntityById($options, $filterRow->getValue()));
+        $filterRow->setValue($this->getEntityById($options, $value));
 
         parent::postSetFormData($builder, $options, $data, $event);
     }
@@ -104,11 +104,13 @@ class AutocompleteFilterType extends AbstractFilterType
 
         $idColumn = $options['entity_primary_key'];
 
-        if (!\is_object($filterRow->getValue())) {
+        $value = $filterRow->getValue();
+
+        if (!\is_object($value)) {
             return;
         }
 
-        $id = $this->propertyAccessor->getValue($filterRow->getValue(), $idColumn);
+        $id = $this->propertyAccessor->getValue($value, $idColumn);
 
         $filterRow->setValue($id);
     }

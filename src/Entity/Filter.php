@@ -66,7 +66,7 @@ class Filter
     }
 
     /**
-     * @return Collection|FilterRow[]
+     * @return Collection<FilterRow>
      */
     public function getRows(): Collection
     {

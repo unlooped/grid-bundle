@@ -11,9 +11,12 @@
     </ParamNameMismatch>
   </file>
   <file src="src/Entity/Filter.php">
-    <MismatchingDocblockReturnType occurrences="1">
-      <code>Collection|FilterRow[]</code>
-    </MismatchingDocblockReturnType>
+    <InvalidTemplateParam occurrences="1">
+      <code>Collection&lt;FilterRow&gt;</code>
+    </InvalidTemplateParam>
+    <MissingTemplateParam occurrences="1">
+      <code>Collection&lt;FilterRow&gt;</code>
+    </MissingTemplateParam>
   </file>
   <file src="src/Form/EntityType.php">
     <InvalidCast occurrences="1">
@@ -33,10 +36,5 @@
       <code>isClicked</code>
       <code>isClicked</code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php">
-    <InvalidDocblock occurrences="1">
-      <code>public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $class)</code>
-    </InvalidDocblock>
   </file>
 </files>

@@ -3,7 +3,6 @@
 namespace Unlooped\GridBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Unlooped\GridBundle\FilterType\AbstractFilterType;
 
 /**
  * @ORM\Entity(repositoryClass="Unlooped\GridBundle\Repository\FilterRowRepository")
@@ -27,16 +26,6 @@ class FilterRow
      * @ORM\Column(type="string", length=255)
      */
     private $field;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $operator = AbstractFilterType::EXPR_CONTAINS;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $value;
 
     /**
      * @var array
@@ -74,30 +63,6 @@ class FilterRow
         return $this;
     }
 
-    public function getOperator(): ?string
-    {
-        return $this->operator;
-    }
-
-    public function setOperator(string $operator): self
-    {
-        $this->operator = $operator;
-
-        return $this;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    public function setValue($value): self
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
     public function getMetaData(): ?array
     {
         return $this->metaData;
@@ -106,6 +71,43 @@ class FilterRow
     public function setMetaData(array $metaData): self
     {
         $this->metaData = $metaData;
+
+        return $this;
+    }
+
+    public function addMetaData(string $key, $value): self
+    {
+        $this->metaData[$key] = $value;
+
+        return $this;
+    }
+
+    public function getOperator(): ?string
+    {
+        return $this->metaData['operator'] ?? null;
+    }
+
+    public function setOperator(string $operator): self
+    {
+        $this->addMetaData('operator', $operator);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed|mixed[]
+     */
+    public function getValue()
+    {
+        return $this->metaData['value'] ?? null;
+    }
+
+    /**
+     * @param mixed|mixed[] $value
+     */
+    public function setValue($value): self
+    {
+        $this->addMetaData('value', $value);
 
         return $this;
     }

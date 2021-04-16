@@ -97,7 +97,7 @@ class DateFilterType extends AbstractFilterType
         $value = null,
         string $valueChoice = self::VALUE_CHOICE_DATE
     ): DefaultFilterDataStruct {
-        $dfds = parent::createDefaultData($operator, $value);
+        $dto = parent::createDefaultData($operator, $value);
 
         if (!\in_array($valueChoice, self::getValueChoices(), true)) {
             throw new DateFilterValueChoiceDoesNotExistException($valueChoice, self::class);
@@ -111,9 +111,9 @@ class DateFilterType extends AbstractFilterType
             $metaData['variable'] = $value;
         }
 
-        $dfds->metaData = $metaData;
+        $dto->metaData = $metaData;
 
-        return $dfds;
+        return $dto;
     }
 
     /**

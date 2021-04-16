@@ -108,11 +108,11 @@ abstract class AbstractFilterType implements FilterType
             throw new OperatorDoesNotExistException($operator, self::class);
         }
 
-        $dataStruct           = new DefaultFilterDataStruct();
-        $dataStruct->operator = $operator;
-        $dataStruct->value    = $value;
+        $dto           = new DefaultFilterDataStruct();
+        $dto->operator = $operator;
+        $dto->value    = $value;
 
-        return $dataStruct;
+        return $dto;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -163,8 +163,9 @@ abstract class AbstractFilterType implements FilterType
     public function getExpressionOperator(FilterRow $filterRow): string
     {
         $condition = $filterRow->getOperator();
+
         if (\array_key_exists($condition, self::$conditionMap)) {
-            $condition = self::$conditionMap[$filterRow->getOperator()];
+            $condition = self::$conditionMap[$condition];
         }
 
         return StringHelper::camelize($condition)->toString();
@@ -175,9 +176,11 @@ abstract class AbstractFilterType implements FilterType
      */
     public function getExpressionValue(FilterRow $filterRow)
     {
-        $value = $filterRow->getValue();
-        if (\array_key_exists($filterRow->getOperator(), self::$valueMap)) {
-            $mapVal = self::$valueMap[$filterRow->getOperator()];
+        $value    = $filterRow->getValue();
+        $operator = $filterRow->getOperator();
+
+        if (\array_key_exists($operator, self::$valueMap)) {
+            $mapVal = self::$valueMap[$operator];
             if (\array_key_exists('split', $mapVal) && $mapVal['split']) {
                 return array_map('trim', explode(',', $value));
             }
@@ -198,8 +201,10 @@ abstract class AbstractFilterType implements FilterType
 
     public function hasExpressionValue(FilterRow $filterRow): bool
     {
-        if (\array_key_exists($filterRow->getOperator(), self::$valueMap)) {
-            $mapVal = self::$valueMap[$filterRow->getOperator()];
+        $operator = $filterRow->getOperator();
+
+        if (\array_key_exists($operator, self::$valueMap)) {
+            $mapVal = self::$valueMap[$operator];
 
             return $mapVal['value'];
         }

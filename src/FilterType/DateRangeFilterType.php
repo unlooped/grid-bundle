@@ -17,28 +17,28 @@ class DateRangeFilterType extends DateFilterType
 
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {
-        $dfds           = new DefaultFilterDataStruct();
-        $dfds->operator = self::EXPR_IN_RANGE;
-        $dfds->metaData = [
+        $dto           = new DefaultFilterDataStruct();
+        $dto->operator = self::EXPR_IN_RANGE;
+        $dto->metaData = [
             'value_type'    => self::VALUE_CHOICE_VARIABLES,
             'variable_from' => $fromDate,
             'variable_to'   => $toDate,
         ];
 
-        return $dfds;
+        return $dto;
     }
 
     public static function createDefaultDataForDateRange(DateTimeInterface $fromDate, DateTimeInterface $toDate): DefaultFilterDataStruct
     {
-        $dfds           = new DefaultFilterDataStruct();
-        $dfds->operator = self::EXPR_IN_RANGE;
-        $dfds->metaData = [
+        $dto           = new DefaultFilterDataStruct();
+        $dto->operator = self::EXPR_IN_RANGE;
+        $dto->metaData = [
             'value_type'     => self::VALUE_CHOICE_DATE,
             'dateValue_from' => Carbon::instance($fromDate)->toFormattedDateString(),
             'dateValue_to'   => Carbon::instance($toDate)->toFormattedDateString(),
         ];
 
-        return $dfds;
+        return $dto;
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
