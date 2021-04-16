@@ -146,7 +146,25 @@ abstract class AbstractFilterType implements FilterType
         $fieldInfo = $this->getFieldInfo($qb, $filterRow);
         $alias     = $fieldInfo->alias;
 
-        if (null !== $value) {
+        $multiple = ($options['multiple'] ?? false) === true;
+
+        if ($multiple && \is_array($value)) {
+            $orX = $qb->expr()->orX();
+
+            foreach ($value as $val) {
+                $suffix = uniqid('', false);
+
+                if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
+                    $orX->add($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
+                } else {
+                    $orX->add($qb->expr()->{$op}($alias, ':value_'.$suffix));
+                }
+
+                $qb->setParameter('value_'.$suffix, $val);
+            }
+
+            $qb->andWhere($orX);
+        } elseif (null !== $value) {
             $suffix = uniqid('', false);
 
             if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
@@ -154,6 +172,7 @@ abstract class AbstractFilterType implements FilterType
             } else {
                 $qb->andWhere($qb->expr()->{$op}($alias, ':value_'.$suffix));
             }
+
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($alias));
