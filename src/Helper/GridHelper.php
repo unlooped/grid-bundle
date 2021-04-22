@@ -245,11 +245,12 @@ class GridHelper
             foreach ($this->defaultShowFilters as $defaultShowFilter) {
                 $row = new FilterRow();
                 $row->setField($defaultShowFilter->getField());
+
                 /** @var DefaultFilterDataStruct $defaultData */
-                if ($defaultData = $defaultShowFilter->getOption('default_data')) {
-                    $row->setOperator($defaultData->operator);
-                    $row->setValue($defaultData->value);
-                    $row->setMetaData($defaultData->metaData);
+                $defaultData = $defaultShowFilter->getOption('default_data');
+
+                if (null !== $defaultData) {
+                    $row->setMetaData($defaultData->serialize());
                 } else {
                     $row->setOperator(array_key_first($defaultShowFilter->getOption('operators', [])));
                 }

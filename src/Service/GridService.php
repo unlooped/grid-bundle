@@ -300,7 +300,7 @@ class GridService
         }
 
         foreach ($filter->getRows() as $row) {
-            $arr[]= $row->getField().$row->getOperator().$row->getValue();
+            $arr[]= $row->getField().$row->getOperator().serialize($row->getValue());
         }
 
         sort($arr);

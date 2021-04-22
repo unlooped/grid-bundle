@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.18.2@19aa905f7c3c7350569999a93c40ae91ae4e1626">
+<files psalm-version="4.7.0@d4377c0baf3ffbf0b1ec6998e8d1be2a40971005">
   <file src="src/ColumnType/LocalizedDateColumn.php">
     <UndefinedMethod occurrences="1">
       <code>Intl::getLocaleBundle()</code>
@@ -11,9 +11,12 @@
     </ParamNameMismatch>
   </file>
   <file src="src/Entity/Filter.php">
-    <MismatchingDocblockReturnType occurrences="1">
-      <code>Collection|FilterRow[]</code>
-    </MismatchingDocblockReturnType>
+    <InvalidTemplateParam occurrences="1">
+      <code>Collection&lt;FilterRow&gt;</code>
+    </InvalidTemplateParam>
+    <MissingTemplateParam occurrences="1">
+      <code>Collection&lt;FilterRow&gt;</code>
+    </MissingTemplateParam>
   </file>
   <file src="src/Form/EntityType.php">
     <InvalidCast occurrences="1">
@@ -33,10 +36,5 @@
       <code>isClicked</code>
       <code>isClicked</code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php">
-    <InvalidDocblock occurrences="1">
-      <code>public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $class)</code>
-    </InvalidDocblock>
   </file>
 </files>

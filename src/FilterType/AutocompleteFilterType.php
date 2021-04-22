@@ -27,6 +27,7 @@ class AutocompleteFilterType extends AbstractFilterType
 
         $resolver->setDefaults([
             'route'                => '',
+            'multiple'             => false,
             'entity'               => '',
             'entity_primary_key'   => 'id',
             'text_property'        => null,
@@ -47,7 +48,7 @@ class AutocompleteFilterType extends AbstractFilterType
     {
         $builder
             ->add('value', Select2EntityType::class, [
-                'multiple'             => false,
+                'multiple'             => $options['multiple'],
                 'remote_route'         => $options['route'],
                 'class'                => $options['entity'],
                 'primary_key'          => $options['entity_primary_key'],
@@ -71,17 +72,31 @@ class AutocompleteFilterType extends AbstractFilterType
 
         $filterRow = $event->getData();
 
-        if (null === $filterRow) {
+        if (!$filterRow instanceof FilterRow) {
             return;
         }
 
-        \assert($filterRow instanceof FilterRow);
+        $value = $filterRow->getValue();
+        if (true === $options['multiple']) {
+            if (!\is_array($value)) {
+                return;
+            }
 
-        if (\is_object($filterRow->getValue())) {
-            return;
+            $entity = [];
+            foreach ($value as $val) {
+                $entity[] = $this->getEntityById($options, $val);
+            }
+
+            $entity = array_filter($entity);
+        } else {
+            if (\is_object($value)) {
+                return;
+            }
+
+            $entity = $this->getEntityById($options, $value);
         }
 
-        $filterRow->setValue($this->getEntityById($options, $filterRow->getValue()));
+        $filterRow->setValue($entity);
 
         parent::postSetFormData($builder, $options, $data, $event);
     }
@@ -100,15 +115,27 @@ class AutocompleteFilterType extends AbstractFilterType
             return;
         }
 
-        \assert($filterRow instanceof FilterRow);
-
         $idColumn = $options['entity_primary_key'];
 
-        if (!\is_object($filterRow->getValue())) {
-            return;
-        }
+        $value = $filterRow->getValue();
 
-        $id = $this->propertyAccessor->getValue($filterRow->getValue(), $idColumn);
+        if (true === $options['multiple']) {
+            if (!\is_array($value)) {
+                return;
+            }
+
+            $id = [];
+            foreach ($value as $val) {
+                $id[] = $this->propertyAccessor->getValue($val, $idColumn);
+            }
+            $id = array_filter($id);
+        } else {
+            if (!\is_object($value)) {
+                return;
+            }
+
+            $id = $this->propertyAccessor->getValue($value, $idColumn);
+        }
 
         $filterRow->setValue($id);
     }

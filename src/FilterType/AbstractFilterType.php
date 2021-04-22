@@ -108,11 +108,11 @@ abstract class AbstractFilterType implements FilterType
             throw new OperatorDoesNotExistException($operator, self::class);
         }
 
-        $dataStruct           = new DefaultFilterDataStruct();
-        $dataStruct->operator = $operator;
-        $dataStruct->value    = $value;
+        $dto           = new DefaultFilterDataStruct();
+        $dto->operator = $operator;
+        $dto->value    = $value;
 
-        return $dataStruct;
+        return $dto;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -146,7 +146,25 @@ abstract class AbstractFilterType implements FilterType
         $fieldInfo = $this->getFieldInfo($qb, $filterRow);
         $alias     = $fieldInfo->alias;
 
-        if (null !== $value) {
+        $multiple = ($options['multiple'] ?? false) === true;
+
+        if ($multiple && \is_array($value)) {
+            $orX = $qb->expr()->orX();
+
+            foreach ($value as $val) {
+                $suffix = uniqid('', false);
+
+                if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
+                    $orX->add($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
+                } else {
+                    $orX->add($qb->expr()->{$op}($alias, ':value_'.$suffix));
+                }
+
+                $qb->setParameter('value_'.$suffix, $val);
+            }
+
+            $qb->andWhere($orX);
+        } elseif (null !== $value) {
             $suffix = uniqid('', false);
 
             if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
@@ -154,6 +172,7 @@ abstract class AbstractFilterType implements FilterType
             } else {
                 $qb->andWhere($qb->expr()->{$op}($alias, ':value_'.$suffix));
             }
+
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($alias));
@@ -163,8 +182,9 @@ abstract class AbstractFilterType implements FilterType
     public function getExpressionOperator(FilterRow $filterRow): string
     {
         $condition = $filterRow->getOperator();
+
         if (\array_key_exists($condition, self::$conditionMap)) {
-            $condition = self::$conditionMap[$filterRow->getOperator()];
+            $condition = self::$conditionMap[$condition];
         }
 
         return StringHelper::camelize($condition)->toString();
@@ -175,9 +195,11 @@ abstract class AbstractFilterType implements FilterType
      */
     public function getExpressionValue(FilterRow $filterRow)
     {
-        $value = $filterRow->getValue();
-        if (\array_key_exists($filterRow->getOperator(), self::$valueMap)) {
-            $mapVal = self::$valueMap[$filterRow->getOperator()];
+        $value    = $filterRow->getValue();
+        $operator = $filterRow->getOperator();
+
+        if (\array_key_exists($operator, self::$valueMap)) {
+            $mapVal = self::$valueMap[$operator];
             if (\array_key_exists('split', $mapVal) && $mapVal['split']) {
                 return array_map('trim', explode(',', $value));
             }
@@ -198,8 +220,10 @@ abstract class AbstractFilterType implements FilterType
 
     public function hasExpressionValue(FilterRow $filterRow): bool
     {
-        if (\array_key_exists($filterRow->getOperator(), self::$valueMap)) {
-            $mapVal = self::$valueMap[$filterRow->getOperator()];
+        $operator = $filterRow->getOperator();
+
+        if (\array_key_exists($operator, self::$valueMap)) {
+            $mapVal = self::$valueMap[$operator];
 
             return $mapVal['value'];
         }
