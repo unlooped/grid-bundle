@@ -51,7 +51,7 @@ class RelationsHelper
         if (1 === \count($fields)) {
             $fieldData = null;
             if ($md->hasAssociation($fields[0])) {
-                $fieldData = $md = $md->getAssociationMapping($fields[0]);
+                $fieldData = $md->getAssociationMapping($fields[0]);
             }
 
             return FieldMetaDataStruct::create($alias.'.'.$fields[0], $fieldData);
