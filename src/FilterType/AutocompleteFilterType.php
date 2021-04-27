@@ -26,22 +26,31 @@ class AutocompleteFilterType extends AbstractFilterType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'route'                => '',
+            'route'                => 'unlooped_grid_autocomplete',
             'multiple'             => false,
             'entity'               => '',
             'entity_primary_key'   => 'id',
+            'query_builder'        => null,
+            'grid'                 => null,
+            'grid_field'           => null,
             'text_property'        => null,
             'minimum_input_length' => 2,
         ]);
 
-        $resolver->setRequired('route');
         $resolver->setRequired('entity');
+        $resolver->setRequired('grid');
+        $resolver->setRequired('grid_field');
         $resolver->setRequired('minimum_input_length');
 
         $resolver->setAllowedTypes('route', 'string');
         $resolver->setAllowedTypes('entity', 'string');
+        $resolver->setAllowedTypes('grid', 'string');
+        $resolver->setAllowedTypes('grid_field', 'string');
         $resolver->setAllowedTypes('minimum_input_length', 'int');
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
+        $resolver->setAllowedTypes('multiple', 'boolean');
+
+        $resolver->setAllowedTypes('query_builder', ['null', 'callable']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -50,6 +59,10 @@ class AutocompleteFilterType extends AbstractFilterType
             ->add('value', Select2EntityType::class, [
                 'multiple'             => $options['multiple'],
                 'remote_route'         => $options['route'],
+                'remote_params'        => [
+                    'grid'  => $options['grid'],
+                    'field' => $options['grid_field'],
+                ],
                 'class'                => $options['entity'],
                 'primary_key'          => $options['entity_primary_key'],
                 'minimum_input_length' => $options['minimum_input_length'],

@@ -146,6 +146,13 @@ abstract class AbstractFilterType implements FilterType
         $fieldInfo = $this->getFieldInfo($qb, $filterRow);
         $alias     = $fieldInfo->alias;
 
+        if ($fieldInfo->fieldData && ClassMetadata::MANY_TO_MANY === $fieldInfo->fieldData['type']) {
+            $newAlias = uniqid('jn', false);
+
+            $qb->leftJoin($alias, $newAlias);
+            $alias = $newAlias.'.id';
+        }
+
         $multiple = ($options['multiple'] ?? false) === true;
 
         if ($multiple && \is_array($value)) {

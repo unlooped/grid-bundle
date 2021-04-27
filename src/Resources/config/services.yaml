@@ -1,4 +1,11 @@
 services:
+    Unlooped\GridBundle\Action\AutocompleteAction:
+        public: true
+        arguments:
+            - '@doctrine'
+            - '@Unlooped\GridBundle\Service\GridService'
+            - '@service_container'
+
     Unlooped\GridBundle\Repository\FilterRepository:
         public: true
         autoconfigure: true

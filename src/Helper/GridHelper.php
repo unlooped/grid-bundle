@@ -16,6 +16,7 @@ use Unlooped\GridBundle\Exception\TypeNotAColumnException;
 use Unlooped\GridBundle\Exception\TypeNotAFilterException;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
+use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
 use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
@@ -177,6 +178,10 @@ class GridHelper
 
         if (!is_a($type, FilterType::class, true)) {
             throw new TypeNotAFilterException($type);
+        }
+
+        if (AutocompleteFilterType::class === $type) {
+            $options['grid_field'] = $identifier;
         }
 
         $filter  = new Filter($identifier, $this->filterRegistry->getType($type), $options);
