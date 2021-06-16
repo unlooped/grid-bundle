@@ -44,8 +44,8 @@ class AutocompleteFilterType extends AbstractFilterType
 
         $resolver->setAllowedTypes('route', 'string');
         $resolver->setAllowedTypes('entity', 'string');
-        $resolver->setAllowedTypes('grid', 'string');
-        $resolver->setAllowedTypes('grid_field', 'string');
+        $resolver->setAllowedTypes('grid', ['string', 'null']);
+        $resolver->setAllowedTypes('grid_field', ['string', 'null']);
         $resolver->setAllowedTypes('minimum_input_length', 'int');
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
         $resolver->setAllowedTypes('multiple', 'boolean');
