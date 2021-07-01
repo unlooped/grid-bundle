@@ -3,7 +3,7 @@
 namespace Unlooped\GridBundle\ColumnType;
 
 use DateTimeZone;
-use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LocalizedDateColumn extends AbstractColumnType
@@ -28,7 +28,7 @@ class LocalizedDateColumn extends AbstractColumnType
         $resolver->setAllowedTypes('time_format', 'string');
         $resolver->setAllowedValues('time_format', ['none', 'short', 'medium', 'long', 'full']);
 
-        $locales   = Intl::getLocaleBundle()->getLocales();
+        $locales   = Locales::getLocales();
         $locales[] = null;
         $resolver->setAllowedTypes('locale', ['null', 'string']);
         $resolver->setAllowedValues('locale', $locales);

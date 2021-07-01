@@ -4,6 +4,6 @@
 
 {% block column_content %}
     {% if type.value(data) %}
-        {{ type.value(data)|localizeddate(type.options.date_format, type.options.time_format, type.options.locale, type.options.timezone, type.options.format, type.options.calendar) }}
+        {{ type.value(data)|format_datetime(type.options.date_format, type.options.time_format, locale=type.options.locale, timezone=type.options.timezone, pattern=type.options.format, calendar=type.options.calendar) }}
     {% endif %}
 {% endblock %}
