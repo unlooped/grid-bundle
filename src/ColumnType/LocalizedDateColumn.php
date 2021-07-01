@@ -19,7 +19,7 @@ class LocalizedDateColumn extends AbstractColumnType
             'time_format' => 'medium',
             'locale'      => null,
             'timezone'    => null,
-            'format'      => null,
+            'format'      => '',
             'calendar'    => 'gregorian',
         ]);
 
