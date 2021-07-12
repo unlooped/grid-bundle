@@ -12,9 +12,9 @@ abstract class AbstractColumnType implements ColumnTypeInterface
 {
     protected $template = '@UnloopedGrid/column_types/text.html.twig';
 
-    private TokenStorageInterface $tokenStorage;
+    protected TokenStorageInterface $tokenStorage;
 
-    private PropertyAccessorInterface $propertyAccessor;
+    protected PropertyAccessorInterface $propertyAccessor;
 
     public function __construct(TokenStorageInterface $tokenStorage, PropertyAccessorInterface $propertyAccessor)
     {

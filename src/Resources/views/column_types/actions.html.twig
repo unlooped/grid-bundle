@@ -1,14 +1,14 @@
-{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
 
 {% extends '@UnloopedGrid/column_types/_column.html.twig' %}
 
 {% block column_content %}
-    <div class="btn-group mr-2" role="group">
-        {% for action in type.options.actions %}
+    <div class="btn-group" role="group">
+        {% for action in column.options.actions %}
             {% if action.template is defined and action.template %}
                 {% include action.template with {'action': action, 'data': data} only %}
             {% else %}
-                <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': data.id}) }}"{% endif %}>
+                <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': column.type.value(action.path|default('id'), data)}) }}"{% endif %}>
                     <span class="{{ action.icon }}"></span>
                     {{ action.label|trans }}
                 </a>
