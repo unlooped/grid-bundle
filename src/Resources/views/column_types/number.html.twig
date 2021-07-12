@@ -1,0 +1,10 @@
+{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+
+{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+
+{% block column_content %}
+    {% set amount = type.value(data) %}
+    {% if amount %}
+        {{ amount|format_number() }}
+    {% endif %}
+{% endblock %}

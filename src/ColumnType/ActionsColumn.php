@@ -2,6 +2,7 @@
 
 namespace Unlooped\GridBundle\ColumnType;
 
+use Exception;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ActionsColumn extends AbstractColumnType
@@ -20,4 +21,14 @@ class ActionsColumn extends AbstractColumnType
 
         $resolver->setAllowedTypes('actions', ['array']);
     }
+
+    public function getValue(string $field, object $object, array $options = [])
+    {
+        try {
+            return $this->propertyAccessor->getValue($object, $field);
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
 }
