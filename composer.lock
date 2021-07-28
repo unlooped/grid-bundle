@@ -6073,16 +6073,16 @@
         },
         {
             "name": "unlooped/ts-resources",
-            "version": "0.1.3",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unlooped/ts-resources.git",
-                "reference": "5f90458afbc7cac9cc3f67e1ee314a89633e16b6"
+                "reference": "a68d65dcf76aa7ef5204b71ebfd1de6069ee3d17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unlooped/ts-resources/zipball/5f90458afbc7cac9cc3f67e1ee314a89633e16b6",
-                "reference": "5f90458afbc7cac9cc3f67e1ee314a89633e16b6",
+                "url": "https://api.github.com/repos/unlooped/ts-resources/zipball/a68d65dcf76aa7ef5204b71ebfd1de6069ee3d17",
+                "reference": "a68d65dcf76aa7ef5204b71ebfd1de6069ee3d17",
                 "shasum": ""
             },
             "type": "library",
@@ -6099,9 +6099,9 @@
             "description": "often used typescript code",
             "support": {
                 "issues": "https://github.com/unlooped/ts-resources/issues",
-                "source": "https://github.com/unlooped/ts-resources/tree/0.1.3"
+                "source": "https://github.com/unlooped/ts-resources/tree/0.1.5"
             },
-            "time": "2019-09-10T17:20:56+00:00"
+            "time": "2021-07-27T14:17:31+00:00"
         },
         {
             "name": "voku/anti-xss",
@@ -7153,5 +7153,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
