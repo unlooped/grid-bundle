@@ -7,7 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CurrencyColumn extends AbstractColumnType {
 
-    protected $template = 'column_type/currency.html.twig';
+    protected $template = '@UnloopedGrid/column_types/currency.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {
