@@ -2,6 +2,7 @@ import {FilterType} from "../FilterType/FilterType";
 import {DateFilterType} from "../FilterType/DateFilterType";
 import {DateRangeFilterType} from "../FilterType/DateRangeFilterType";
 import {AutocompleteFilterType} from "../FilterType/AutocompleteFilterType";
+import {AutocompleteTextFilterType} from "../FilterType/AutocompleteTextFilterType";
 
 export class FilterManager {
 
@@ -14,6 +15,7 @@ export class FilterManager {
         'Unlooped\\GridBundle\\FilterType\\DateFilterType': new DateFilterType(),
         'Unlooped\\GridBundle\\FilterType\\DateRangeFilterType': new DateRangeFilterType(),
         'Unlooped\\GridBundle\\FilterType\\AutocompleteFilterType': new AutocompleteFilterType(),
+        'Unlooped\\GridBundle\\FilterType\\AutocompleteTextFilterType': new AutocompleteTextFilterType(),
     };
 
     constructor(filterForm: Element, options = []) {

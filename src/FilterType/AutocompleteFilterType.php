@@ -5,6 +5,7 @@ namespace Unlooped\GridBundle\FilterType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -28,21 +29,21 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setDefaults([
             'route'                => 'unlooped_grid_autocomplete',
             'multiple'             => false,
-            'entity'               => '',
             'entity_primary_key'   => 'id',
-            'grid'                 => null,
-            'grid_field'           => null,
-            'text_property'        => null,
             'minimum_input_length' => 2,
         ]);
+
+        $resolver->setDefault('text_property', static function (Options $options, $previousValue) {
+            return $options['grid_field'] ?? $previousValue;
+        });
 
         $resolver->setRequired('entity');
         $resolver->setRequired('grid');
         $resolver->setRequired('grid_field');
-        $resolver->setRequired('minimum_input_length');
 
         $resolver->setAllowedTypes('route', 'string');
         $resolver->setAllowedTypes('entity', 'string');
+        $resolver->setAllowedTypes('entity_primary_key', 'string');
         $resolver->setAllowedTypes('grid', ['string', 'null']);
         $resolver->setAllowedTypes('grid_field', ['string', 'null']);
         $resolver->setAllowedTypes('minimum_input_length', 'int');

@@ -19,6 +19,7 @@ use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
 use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
+use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class GridHelper
@@ -180,7 +181,7 @@ class GridHelper
             throw new TypeNotAFilterException($type);
         }
 
-        if (AutocompleteFilterType::class === $type) {
+        if (AutocompleteFilterType::class === $type || AutocompleteTextFilterType::class === $type) {
             $options['grid_field'] = $identifier;
         }
 

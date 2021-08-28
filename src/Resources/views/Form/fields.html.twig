@@ -1,0 +1,9 @@
+{% block gridbundle_autocomplete_widget %}
+    {% apply spaceless %}
+        <select {{ block('widget_attributes') }}>
+            {% if value  %}
+                <option value="{{ value }}" selected="selected">{{ value }}</option>
+            {% endif %}
+        </select>
+    {% endapply %}
+{% endblock %}

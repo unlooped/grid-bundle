@@ -12,6 +12,7 @@ use Unlooped\GridBundle\FilterType\DateRangeFilterType;
 use Unlooped\GridBundle\FilterType\EntityFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
 use Unlooped\GridBundle\FilterType\NumberRangeFilterType;
+use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\FilterType\TextFilterType;
 
 return static function (ContainerConfigurator $container): void {
@@ -36,5 +37,9 @@ return static function (ContainerConfigurator $container): void {
         ->set(EntityFilterType::class)
         ->set(NumberRangeFilterType::class)
         ->set(TextFilterType::class)
+        ->set(AutocompleteTextFilterType::class)
+            ->args([
+                ref('router'),
+            ])
     ;
 };
