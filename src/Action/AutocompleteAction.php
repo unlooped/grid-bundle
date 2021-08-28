@@ -165,4 +165,11 @@ class AutocompleteAction
 
         return $filterType instanceof AutocompleteFilterType || $filterType instanceof AutocompleteTextFilterType;
     }
+
+    private function isSupportedFilter(Filter $filter): bool
+    {
+        $filterType = $filter->getType();
+
+        return $filterType instanceof AutocompleteFilterType || $filterType instanceof AutocompleteTextFilterType;
+    }
 }
