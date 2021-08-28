@@ -5,8 +5,8 @@ namespace Unlooped\GridBundle\ColumnType;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CurrencyColumn extends AbstractColumnType {
-
+class CurrencyColumn extends AbstractColumnType
+{
     protected $template = '@UnloopedGrid/column_types/currency.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -14,12 +14,10 @@ class CurrencyColumn extends AbstractColumnType {
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'currency' => 'EUR'
+            'currency' => 'EUR',
         ]);
 
         $resolver->setAllowedTypes('currency', ['string']);
         $resolver->setAllowedValues('currency', Currencies::getCurrencyCodes());
     }
-
-
 }
