@@ -30,7 +30,6 @@ class AutocompleteFilterType extends AbstractFilterType
             'multiple'             => false,
             'entity'               => '',
             'entity_primary_key'   => 'id',
-            'query_builder'        => null,
             'grid'                 => null,
             'grid_field'           => null,
             'text_property'        => null,
@@ -49,8 +48,6 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('minimum_input_length', 'int');
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
         $resolver->setAllowedTypes('multiple', 'boolean');
-
-        $resolver->setAllowedTypes('query_builder', ['null', 'callable']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void

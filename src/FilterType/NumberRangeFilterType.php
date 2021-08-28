@@ -26,6 +26,11 @@ class NumberRangeFilterType extends AbstractFilterType
             $qb->andWhere($qb->expr()->lte($field, ':value_end_'.$suffix));
             $qb->setParameter('value_end_'.$suffix, $toValue);
         }
+
+        $queryBuilder = $options['query_builder'];
+        if (null !== $queryBuilder) {
+            $queryBuilder($qb, $filterRow);
+        }
     }
 
     public function buildForm($builder, array $options = [], $data = null): void

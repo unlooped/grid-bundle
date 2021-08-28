@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
 use Unlooped\GridBundle\Grid\Grid;
@@ -140,14 +141,19 @@ class AutocompleteAction
 
     private function createQueryBuilder(EntityRepository $repository, string $field, string $term, ?callable $queryBuiler): QueryBuilder
     {
-        if (null !== $queryBuiler) {
-            return $queryBuiler($repository, $term);
-        }
-
-        return $repository
-            ->createQueryBuilder('e')
+        $qb = $repository->createQueryBuilder('e')
             ->where(sprintf('e.%s LIKE :term', $field))
             ->setParameter('term', '%'.$term.'%')
         ;
+
+        if (null !== $queryBuiler) {
+            $filterRow = new FilterRow();
+            $filterRow->setField($field);
+            $filterRow->setValue($term);
+
+            return $queryBuiler($qb, $filterRow);
+        }
+
+        return $qb;
     }
 }
