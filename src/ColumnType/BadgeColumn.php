@@ -4,8 +4,8 @@ namespace Unlooped\GridBundle\ColumnType;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BadgeColumn extends AbstractColumnType {
-
+class BadgeColumn extends AbstractColumnType
+{
     protected $template = '@UnloopedGrid/column_types/badge.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -15,6 +15,4 @@ class BadgeColumn extends AbstractColumnType {
         $resolver->setDefaults(['classPrefix' => null]);
         $resolver->setAllowedTypes('classPrefix', ['null', 'string']);
     }
-
-
 }

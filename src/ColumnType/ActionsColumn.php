@@ -30,5 +30,4 @@ class ActionsColumn extends AbstractColumnType
             return null;
         }
     }
-
 }
