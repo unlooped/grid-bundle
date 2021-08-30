@@ -125,6 +125,7 @@ abstract class AbstractFilterType implements FilterType
             'attr'          => [],
             'widget'        => 'text',
             'operators'     => static::getAvailableOperators(),
+            'query_builder' => null,
         ]);
 
         $resolver->setAllowedTypes('show_filter', ['boolean']);
@@ -134,6 +135,7 @@ abstract class AbstractFilterType implements FilterType
         $resolver->setAllowedTypes('widget', 'string');
         $resolver->setAllowedTypes('operators', 'array');
         $resolver->setAllowedTypes('default_data', ['null', DefaultFilterDataStruct::class]);
+        $resolver->setAllowedTypes('query_builder', ['null', 'callable']);
 
         $resolver->setAllowedValues('widget', ['text']);
     }
@@ -183,6 +185,11 @@ abstract class AbstractFilterType implements FilterType
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($alias));
+        }
+
+        $queryBuilder = $options['query_builder'];
+        if (null !== $queryBuilder) {
+            $queryBuilder($qb, $filterRow);
         }
     }
 
