@@ -13,6 +13,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
+use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\Grid\Grid;
 use Unlooped\GridBundle\Service\GridService;
 
@@ -51,7 +52,7 @@ class AutocompleteAction
 
         $filter = $gh->getFilterTypeForField($field);
 
-        if (!$filter->getType() instanceof AutocompleteFilterType) {
+        if (!$this->isSupportedFilter($filter)) {
             return new JsonResponse([]);
         }
 
@@ -78,8 +79,8 @@ class AutocompleteAction
     private function getResult(Filter $filter, string $term, int $page): array
     {
         $entity           = $filter->getOption('entity');
-        $entityPrimaryKey = $filter->getOption('entity_primary_key');
         $textProperty     = $filter->getOption('text_property');
+        $entityPrimaryKey = $filter->getOption('entity_primary_key', $textProperty);
         $queryBuilder     = $filter->getOption('query_builder');
         $minLength        = (int) $filter->getOption('minimum_input_length');
 
@@ -103,6 +104,7 @@ class AutocompleteAction
             ->createQueryBuilder($repository, $textProperty, $term, $queryBuilder)
             ->setMaxResults($maxResults)
             ->setFirstResult($offset)
+            ->addGroupBy(sprintf('e.%s', $textProperty))
             ->getQuery()
             ->getResult()
         ;
@@ -155,5 +157,12 @@ class AutocompleteAction
         }
 
         return $qb;
+    }
+
+    private function isSupportedFilter(Filter $filter): bool
+    {
+        $filterType = $filter->getType();
+
+        return $filterType instanceof AutocompleteFilterType || $filterType instanceof AutocompleteTextFilterType;
     }
 }
