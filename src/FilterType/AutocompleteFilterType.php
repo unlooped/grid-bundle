@@ -5,7 +5,6 @@ namespace Unlooped\GridBundle\FilterType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -33,11 +32,8 @@ class AutocompleteFilterType extends AbstractFilterType
             'minimum_input_length' => 2,
             'grid'                 => null,
             'grid_field'           => null,
+            'text_property'        => null,
         ]);
-
-        $resolver->setDefault('text_property', static function (Options $options, $previousValue) {
-            return $options['grid_field'] ?? $previousValue;
-        });
 
         $resolver->setRequired('entity');
         $resolver->setRequired('grid');

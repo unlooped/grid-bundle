@@ -9,6 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Filter\Filter;
@@ -84,6 +85,10 @@ class AutocompleteAction
         $queryBuilder     = $filter->getOption('query_builder');
         $minLength        = (int) $filter->getOption('minimum_input_length');
 
+        if (null === $textProperty) {
+            throw new BadRequestHttpException('Argument "text_property" not defined');
+        }
+
         if (\strlen($term) < $minLength) {
             return [];
         }
@@ -157,13 +162,6 @@ class AutocompleteAction
         }
 
         return $qb;
-    }
-
-    private function isSupportedFilter(Filter $filter): bool
-    {
-        $filterType = $filter->getType();
-
-        return $filterType instanceof AutocompleteFilterType || $filterType instanceof AutocompleteTextFilterType;
     }
 
     private function isSupportedFilter(Filter $filter): bool

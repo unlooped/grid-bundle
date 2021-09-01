@@ -17,9 +17,9 @@ use Unlooped\GridBundle\Exception\TypeNotAFilterException;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
+use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\FilterType\DefaultFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
-use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class GridHelper
