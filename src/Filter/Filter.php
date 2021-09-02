@@ -26,7 +26,7 @@ final class Filter implements ArrayAccess
         $resolver = new OptionsResolver();
         $this->type->configureOptions($resolver);
 
-        $this->options =  $resolver->resolve($options);
+        $this->options = $resolver->resolve($options);
     }
 
     public function getField(): string
