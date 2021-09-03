@@ -103,8 +103,8 @@ class GridHelper
             'perPageOptions'          => [24, 48, 72, 96, 120, 144, 168, 192],
             'pageParameterName'       => 'page',
             'perPageParameterName'    => 'perPage',
-            'wrapQueries'             => false,
-            'distinctQuery'           => false,
+            'wrapQueries'             => true,
+            'distinctQuery'           => true,
             'allow_save_filter'       => true,
         ]);
 
