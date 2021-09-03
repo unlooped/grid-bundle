@@ -21,7 +21,6 @@ class AutocompleteTextFilterType extends TextFilterType
 
         $resolver->setDefaults([
             'route'                => 'unlooped_grid_autocomplete',
-            'query_builder'        => null,
             'minimum_input_length' => 2,
             'grid'                 => null,
             'grid_field'           => null,
