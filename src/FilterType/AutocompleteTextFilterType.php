@@ -27,7 +27,6 @@ class AutocompleteTextFilterType extends TextFilterType
             'text_property'        => null,
             'property'             => null,
             'filter_callback'      => null,
-            'theme'                => 'default',
         ]);
 
         $resolver->setRequired('entity');
@@ -59,7 +58,6 @@ class AutocompleteTextFilterType extends TextFilterType
                     'data-ajax--delay'          => 250,
                     'data-ajax--data-type'      => 'json',
                     'data-language'             => 'de',
-                    'data-theme'                => $options['theme'],
                     'data-minimum-input-length' => $options['minimum_input_length'],
                     'data-placeholder'          => '',
                     'data-page-limit'           => 10,
