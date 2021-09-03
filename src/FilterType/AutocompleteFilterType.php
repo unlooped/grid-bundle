@@ -5,7 +5,6 @@ namespace Unlooped\GridBundle\FilterType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
@@ -33,11 +32,11 @@ class AutocompleteFilterType extends AbstractFilterType
             'minimum_input_length' => 2,
             'grid'                 => null,
             'grid_field'           => null,
+            'text_property'        => null,
+            'property'             => null,
+            'filter_callback'      => null,
+            'theme'                => 'default',
         ]);
-
-        $resolver->setDefault('text_property', static function (Options $options, $previousValue) {
-            return $options['grid_field'] ?? $previousValue;
-        });
 
         $resolver->setRequired('entity');
         $resolver->setRequired('grid');
@@ -50,7 +49,9 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('grid_field', ['string', 'null']);
         $resolver->setAllowedTypes('minimum_input_length', 'int');
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
+        $resolver->setAllowedTypes('property', ['string', 'array', 'null']);
         $resolver->setAllowedTypes('multiple', 'boolean');
+        $resolver->setAllowedTypes('filter_callback', ['null', 'callable']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -73,6 +74,8 @@ class AutocompleteFilterType extends AbstractFilterType
                 'cache'                => true,
                 'cache_timeout'        => 60000, // if 'cache' is true
                 'language'             => 'en',
+                'property'             => $options['property'],
+                'theme'                => $options['theme'],
             ])
         ;
     }

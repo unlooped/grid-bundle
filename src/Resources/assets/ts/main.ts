@@ -11,4 +11,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         let filterForm = filterForms[key];
         new FilterManager(filterForm);
     }
+
+    // @ts-ignore
+    jQuery('.select2text[data-autostart="true"]').select2entity();
 });

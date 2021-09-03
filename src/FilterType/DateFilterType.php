@@ -178,10 +178,6 @@ class DateFilterType extends AbstractFilterType
             $qb->andWhere($qb->expr()->{$op}($field));
         }
 
-        $queryBuilder = $options['query_builder'];
-        if (null !== $queryBuilder) {
-            $queryBuilder($qb, $filterRow);
-        }
     }
 
     public function replaceVarsInValue(string $value, array $options = []): string

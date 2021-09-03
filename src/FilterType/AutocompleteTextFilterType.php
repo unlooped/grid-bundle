@@ -3,7 +3,6 @@
 namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -22,13 +21,14 @@ class AutocompleteTextFilterType extends TextFilterType
 
         $resolver->setDefaults([
             'route'                => 'unlooped_grid_autocomplete',
-            'query_builder'        => null,
             'minimum_input_length' => 2,
+            'grid'                 => null,
+            'grid_field'           => null,
+            'text_property'        => null,
+            'property'             => null,
+            'filter_callback'      => null,
+            'theme'                => 'default',
         ]);
-
-        $resolver->setDefault('text_property', static function (Options $options, $previousValue) {
-            return $options['grid_field'] ?? $previousValue;
-        });
 
         $resolver->setRequired('entity');
         $resolver->setRequired('grid');
@@ -40,6 +40,8 @@ class AutocompleteTextFilterType extends TextFilterType
         $resolver->setAllowedTypes('grid_field', ['string', 'null']);
         $resolver->setAllowedTypes('minimum_input_length', 'int');
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
+        $resolver->setAllowedTypes('property', ['string', 'array', 'null']);
+        $resolver->setAllowedTypes('filter_callback', ['null', 'callable']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -57,13 +59,14 @@ class AutocompleteTextFilterType extends TextFilterType
                     'data-ajax--delay'          => 250,
                     'data-ajax--data-type'      => 'json',
                     'data-language'             => 'de',
-                    'data-theme'                => 'default',
+                    'data-theme'                => $options['theme'],
                     'data-minimum-input-length' => $options['minimum_input_length'],
                     'data-placeholder'          => '',
                     'data-page-limit'           => 10,
                     'data-scroll'               => 'false',
                     'data-autostart'            => 'true',
                     'data-allow-clear'          => 'true',
+                    'data-property'             => $options['property'],
                     'class'                     => 'select2text form-control',
                 ],
                 'block_prefix' => 'gridbundle_autocomplete',

@@ -80,10 +80,6 @@ class DateRangeFilterType extends DateFilterType
             $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
         }
 
-        $queryBuilder = $options['query_builder'];
-        if (null !== $queryBuilder) {
-            $queryBuilder($qb, $filterRow);
-        }
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
