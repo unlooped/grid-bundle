@@ -35,6 +35,7 @@ class AutocompleteFilterType extends AbstractFilterType
             'text_property'        => null,
             'property'             => null,
             'filter_callback'      => null,
+            'theme'                => 'default',
         ]);
 
         $resolver->setRequired('entity');
@@ -74,6 +75,7 @@ class AutocompleteFilterType extends AbstractFilterType
                 'cache_timeout'        => 60000, // if 'cache' is true
                 'language'             => 'en',
                 'property'             => $options['property'],
+                'theme'                => $options['theme'],
             ])
         ;
     }
