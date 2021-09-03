@@ -4,6 +4,7 @@ namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 class ChoiceFilterType extends AbstractFilterType
 {
@@ -13,12 +14,14 @@ class ChoiceFilterType extends AbstractFilterType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'widget'        => 'select',
-            'choices'       => [],
+            'widget'            => 'select',
+            'choices'           => [],
+            'preferred_choices' => [],
         ]);
 
         $resolver->setAllowedValues('widget', ['select']);
         $resolver->setAllowedTypes('choices', ['array']);
+        $resolver->setAllowedTypes('preferred_choices', ['array', \Traversable::class, 'callable', 'string', PropertyPath::class]);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
