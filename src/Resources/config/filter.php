@@ -8,6 +8,7 @@ use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
 use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\FilterType\BooleanFilterType;
 use Unlooped\GridBundle\FilterType\ChoiceFilterType;
+use Unlooped\GridBundle\FilterType\CountryFilterType;
 use Unlooped\GridBundle\FilterType\DateFilterType;
 use Unlooped\GridBundle\FilterType\DateRangeFilterType;
 use Unlooped\GridBundle\FilterType\EntityFilterType;
@@ -32,6 +33,7 @@ return static function (ContainerConfigurator $container): void {
             ])
         ->set(BooleanFilterType::class)
         ->set(ChoiceFilterType::class)
+        ->set(CountryFilterType::class)
         ->set(DateFilterType::class)
         ->set(DateRangeFilterType::class)
         ->set(EntityFilterType::class)
