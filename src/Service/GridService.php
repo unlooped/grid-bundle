@@ -330,9 +330,8 @@ class GridService
         return str_replace(['__filterrow__', 'filterrow___value'], ['filter_form[rows][__name__]', 'filterrow____name____value'], $tpl);
     }
 
-    public function getFilterResponse(GridHelper $gridHelper): ?Response
+    public function getFilterResponse(Grid $grid): ?Response
     {
-        $grid      = $this->getGrid($gridHelper);
         $baseRoute = str_replace('.filter', '', $grid->getRoute());
 
         if ($grid->wasFilterSaved()) {
@@ -360,24 +359,21 @@ class GridService
      */
     public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
     {
-        $filterResponse = $this->getFilterResponse($gridHelper);
+        $grid           = $this->getGrid($gridHelper);
+        $filterResponse = $this->getFilterResponse($grid);
 
-        return $filterResponse ?? $this->renderGrid($template, $gridHelper, $parameters);
+        return $filterResponse ?? $this->renderGrid($template, $grid, $parameters);
     }
 
     /**
      * @param string $template #Template
      *
      * @throws LoaderError
-     * @throws NonUniqueResultException
-     * @throws ORMException
-     * @throws OptimisticLockException
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function renderGrid(string $template, GridHelper $gridHelper, array $parameters = []): Response
+    public function renderGrid(string $template, Grid $grid, array $parameters = []): Response
     {
-        $grid           = $this->getGrid($gridHelper);
         $gridParameters = [
             'grid' => $grid,
         ];
