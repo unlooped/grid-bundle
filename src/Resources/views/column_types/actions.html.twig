@@ -6,7 +6,7 @@
     <div class="btn-group" role="group">
         {% for action in column.options.actions %}
             {% if action.template is defined and action.template %}
-                {% include action.template with {'action': action, 'data': data} only %}
+                {% include action.template with {'action': action, 'data': data, 'column': column} only %}
             {% else %}
                 <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': column.type.value(action.path|default('id'), data)}) }}"{% endif %}>
                     <span class="{{ action.icon }}"></span>
