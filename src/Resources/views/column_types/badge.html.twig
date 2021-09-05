@@ -1,9 +1,9 @@
-{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{# @var type \Unlooped\GridBundle\Column\Column #}
 
-{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+{% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
-    <span class="badge badge-status-{% if type.options.classPrefix %}{{ type.options.classPrefix }}-{% endif %}{{ type.value(data) }}">
-        {{ type.value(data) }}
+    <span class="badge badge-status-{% if type.options.classPrefix %}{{ type.options.classPrefix }}-{% endif %}{{ value }}">
+        {{ value }}
     </span>
 {% endblock %}

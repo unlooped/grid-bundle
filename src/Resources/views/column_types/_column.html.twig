@@ -4,8 +4,11 @@
         {{ key }}="{{ value }}"
     {% endif %}
 {% endfor %}>
-        {% block column_content %}
-            {{ type.value(data) }}
+        {% block content %}
+            {% set value = type.value(data) %}
+            {% block column_content %}
+                {{ value }}
+            {% endblock %}
         {% endblock %}
     </td>
 {% endblock %}

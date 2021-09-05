@@ -1,10 +1,13 @@
-{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{# @var type \Unlooped\GridBundle\Column\Column #}
 
-{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+{% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
-    {% set amount = type.value(data) %}
+    {% set amount = value %}
     {% if amount %}
         {{ amount|format_currency(column.options.currency) }}
+        {% if it_loop is defined and not it_loop.last %}
+            {{ type.options.implode_separator }}
+        {% endif %}
     {% endif %}
 {% endblock %}

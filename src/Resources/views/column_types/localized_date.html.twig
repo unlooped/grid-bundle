@@ -1,9 +1,12 @@
-{# @var type \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{# @var type \Unlooped\GridBundle\Column\Column #}
 
-{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+{% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
-    {% if type.value(data) %}
-        {{ type.value(data)|format_datetime(type.options.date_format, type.options.time_format, locale=type.options.locale, timezone=type.options.timezone, pattern=type.options.format, calendar=type.options.calendar) }}
+    {% if value %}
+        {{ value|format_datetime(type.options.date_format, type.options.time_format, locale=type.options.locale, timezone=type.options.timezone, pattern=type.options.format, calendar=type.options.calendar) }}
+        {% if it_loop is defined and not it_loop.last %}
+            {{ type.options.implode_separator }}
+        {% endif %}
     {% endif %}
 {% endblock %}
