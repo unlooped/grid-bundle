@@ -1,0 +1,18 @@
+{# @var type \Unlooped\GridBundle\Column\Column #}
+
+{% extends '@UnloopedGrid/column_types/_column.html.twig' %}
+
+{% block content %}
+    {% set val = type.value(data) %}
+    {% if val is defined %}
+        {% if val is iterable %}
+            {% for value in val %}
+                {% set it_loop = loop %}
+                {{ block('column_content') }}
+            {% endfor %}
+        {% else %}
+            {% set value = val %}
+            {{ block('column_content') }}
+        {% endif %}
+    {% endif %}
+{% endblock %}

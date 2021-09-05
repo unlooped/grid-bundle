@@ -8,11 +8,14 @@ use Unlooped\GridBundle\FilterType\AutocompleteFilterType;
 use Unlooped\GridBundle\FilterType\AutocompleteTextFilterType;
 use Unlooped\GridBundle\FilterType\BooleanFilterType;
 use Unlooped\GridBundle\FilterType\ChoiceFilterType;
+use Unlooped\GridBundle\FilterType\CountryFilterType;
 use Unlooped\GridBundle\FilterType\DateFilterType;
 use Unlooped\GridBundle\FilterType\DateRangeFilterType;
 use Unlooped\GridBundle\FilterType\EntityFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
+use Unlooped\GridBundle\FilterType\NullFilterType;
 use Unlooped\GridBundle\FilterType\NumberRangeFilterType;
+use Unlooped\GridBundle\FilterType\PercentFilterType;
 use Unlooped\GridBundle\FilterType\TextFilterType;
 
 return static function (ContainerConfigurator $container): void {
@@ -32,6 +35,9 @@ return static function (ContainerConfigurator $container): void {
             ])
         ->set(BooleanFilterType::class)
         ->set(ChoiceFilterType::class)
+        ->set(CountryFilterType::class)
+        ->set(PercentFilterType::class)
+        ->set(NullFilterType::class)
         ->set(DateFilterType::class)
         ->set(DateRangeFilterType::class)
         ->set(EntityFilterType::class)
