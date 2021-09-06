@@ -17,11 +17,15 @@ class ChoiceFilterType extends AbstractFilterType
             'widget'            => 'select',
             'choices'           => [],
             'preferred_choices' => [],
+            'expanded'          => false,
+            'multiple'          => false,
         ]);
 
         $resolver->setAllowedValues('widget', ['select']);
         $resolver->setAllowedTypes('choices', ['array']);
         $resolver->setAllowedTypes('preferred_choices', ['array', \Traversable::class, 'callable', 'string', PropertyPath::class]);
+        $resolver->setAllowedTypes('expanded', ['bool']);
+        $resolver->setAllowedTypes('multiple', ['bool']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -31,6 +35,8 @@ class ChoiceFilterType extends AbstractFilterType
                 'required'           => false,
                 'translation_domain' => 'unlooped_grid',
                 'choices'            => $options['choices'],
+                'expanded'           => $options['expanded'],
+                'multiple'           => $options['multiple'],
                 'attr'               => [
                     'class' => 'custom-select',
                 ],
