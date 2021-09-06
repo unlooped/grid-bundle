@@ -19,6 +19,7 @@ class ChoiceFilterType extends AbstractFilterType
             'preferred_choices' => [],
             'expanded'          => false,
             'multiple'          => false,
+            'use_select2'       => false,
         ]);
 
         $resolver->setAllowedValues('widget', ['select']);
@@ -26,6 +27,7 @@ class ChoiceFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('preferred_choices', ['array', \Traversable::class, 'callable', 'string', PropertyPath::class]);
         $resolver->setAllowedTypes('expanded', ['bool']);
         $resolver->setAllowedTypes('multiple', ['bool']);
+        $resolver->setAllowedTypes('use_select2', ['bool']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -38,7 +40,7 @@ class ChoiceFilterType extends AbstractFilterType
                 'expanded'           => $options['expanded'],
                 'multiple'           => $options['multiple'],
                 'attr'               => [
-                    'class' => 'custom-select',
+                    'class' => ($options['use_select2'] ? 'initSelect2' : 'custom-select'),
                 ],
             ])
         ;
