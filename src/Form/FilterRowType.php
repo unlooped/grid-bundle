@@ -41,7 +41,7 @@ class FilterRowType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
-            if ($data->getField()) {
+            if ($this->hasFieldValue($options, $data->getField())) {
                 $filter = $this->getFilterFromOptions($options, $data->getField());
                 $filterType = $filter->getType();
                 $filterType->postSetFormData($form, $filter->getOptions(), $data, $event);
@@ -56,10 +56,12 @@ class FilterRowType extends AbstractType
             $data    = $event->getData();
             $form    = $event->getForm();
 
-            $filter = $this->getFilterFromOptions($options, $data['field']);
+            if ($this->hasFieldValue($options, $data['field'])) {
+                $filter = $this->getFilterFromOptions($options, $data['field']);
 
-            $filterType = $filter->getType();
-            $filterType->preSubmitFormData($form, $filter->getOptions(), $data, $event);
+                $filterType = $filter->getType();
+                $filterType->preSubmitFormData($form, $filter->getOptions(), $data, $event);
+            }
         });
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options): void {
@@ -71,10 +73,12 @@ class FilterRowType extends AbstractType
             $data    = $event->getData();
             $form    = $event->getForm();
 
-            $filter = $this->getFilterFromOptions($options, $data->getField());
+            if ($this->hasFieldValue($options, $data->getField())) {
+                $filter = $this->getFilterFromOptions($options, $data->getField());
 
-            $filterType = $filter->getType();
-            $filterType->postFormSubmit($form, $filter->getOptions(), $data, $event);
+                $filterType = $filter->getType();
+                $filterType->postFormSubmit($form, $filter->getOptions(), $data, $event);
+            }
         });
     }
 
@@ -99,5 +103,14 @@ class FilterRowType extends AbstractType
         }
 
         return $filters[$field];
+    }
+
+    private function hasFieldValue(array $options, ?string $field): bool
+    {
+        if (null === $field) {
+            return false;
+        }
+
+        return array_key_exists($field, $options['filters']);
     }
 }
