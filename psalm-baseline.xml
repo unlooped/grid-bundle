@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.7.0@d4377c0baf3ffbf0b1ec6998e8d1be2a40971005">
-  <file src="src/ColumnType/LocalizedDateColumn.php">
-    <UndefinedMethod occurrences="1">
-      <code>Intl::getLocaleBundle()</code>
-    </UndefinedMethod>
-  </file>
+<files psalm-version="4.9.3@4c262932602b9bbab5020863d1eb22d49de0dbf4">
   <file src="src/DependencyInjection/UnloopedGridExtension.php">
     <ParamNameMismatch occurrences="1">
       <code>$config</code>
@@ -28,6 +23,11 @@
       <code>getAssociationMapping</code>
       <code>getAssociationMapping</code>
     </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Service/AutocompleteService.php">
+    <InvalidArgument occurrences="1">
+      <code>$field</code>
+    </InvalidArgument>
   </file>
   <file src="src/Service/GridService.php">
     <UndefinedInterfaceMethod occurrences="4">
