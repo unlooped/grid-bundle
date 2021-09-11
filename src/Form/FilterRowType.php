@@ -111,6 +111,6 @@ class FilterRowType extends AbstractType
             return false;
         }
 
-        return array_key_exists($field, $options['filters']);
+        return \array_key_exists($field, $options['filters']);
     }
 }

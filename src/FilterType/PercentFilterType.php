@@ -4,8 +4,8 @@ namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 
-class PercentFilterType extends AbstractFilterType {
-
+class PercentFilterType extends AbstractFilterType
+{
     public static function getAvailableOperators(): array
     {
         return [
@@ -23,5 +23,4 @@ class PercentFilterType extends AbstractFilterType {
             ->add('value', PercentType::class, ['required' => false])
         ;
     }
-
 }

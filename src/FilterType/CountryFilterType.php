@@ -6,7 +6,6 @@ use Symfony\Component\Form\Extension\Core\Type\CountryType;
 
 class CountryFilterType extends ChoiceFilterType
 {
-
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
@@ -20,5 +19,4 @@ class CountryFilterType extends ChoiceFilterType
             ])
         ;
     }
-
 }

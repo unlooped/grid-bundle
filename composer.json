@@ -56,7 +56,7 @@
             "@composer bin all install --ansi"
         ],
         "cs": "PHP_CS_FIXER_IGNORE_ENV=1 && vendor/bin/php-cs-fixer fix --verbose",
-        "cs-diff": "PHP_CS_FIXER_IGNORE_ENV=1 && vendor/bin/php-cs-fixer fix  --verbose --diff --diff-format=udiff --dry-run",
+        "cs-diff": "PHP_CS_FIXER_IGNORE_ENV=1 && vendor/bin/php-cs-fixer fix  --verbose --diff --dry-run",
         "phpstan": "vendor/bin/phpstan analyse",
         "psalm": "vendor/bin/psalm",
         "test": "vendor/bin/phpunit --colors=always"

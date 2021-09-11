@@ -79,7 +79,6 @@ class DateRangeFilterType extends DateFilterType
             $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
             $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
         }
-
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
