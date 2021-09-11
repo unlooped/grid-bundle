@@ -177,7 +177,6 @@ class DateFilterType extends AbstractFilterType
         } elseif (!$this->hasExpressionValue($filterRow)) {
             $qb->andWhere($qb->expr()->{$op}($field));
         }
-
     }
 
     public function replaceVarsInValue(string $value, array $options = []): string

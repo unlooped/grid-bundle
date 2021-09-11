@@ -7,7 +7,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in([ __DIR__.'/src',  __DIR__.'/tests'])
 ;
 
-$config = PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
@@ -39,7 +39,4 @@ $config = PhpCsFixer\Config::create()
            'import_functions' => false,
         ],
     ])
-    ->setFinder($finder)
-;
-
-return $config;
+    ->setFinder($finder);

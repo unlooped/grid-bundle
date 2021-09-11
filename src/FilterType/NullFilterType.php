@@ -6,8 +6,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\Helper\StringHelper;
 
-class NullFilterType extends AbstractFilterType {
-
+class NullFilterType extends AbstractFilterType
+{
     public static function getAvailableOperators(): array
     {
         return [
@@ -20,7 +20,7 @@ class NullFilterType extends AbstractFilterType {
         $builder
             ->add('value', ChoiceType::class, [
                 'required' => false,
-                'choices' => ['Is Set' => 'is_set', 'Is Not Set' => 'is_not_set'],
+                'choices'  => ['Is Set' => 'is_set', 'Is Not Set' => 'is_not_set'],
             ])
         ;
     }
@@ -29,7 +29,7 @@ class NullFilterType extends AbstractFilterType {
     {
         $value = $filterRow->getValue();
 
-        if ($value === 'is_set') {
+        if ('is_set' === $value) {
             return StringHelper::camelize(self::IEXPR_IS_NOT_NULL)->toString();
         }
 
@@ -45,6 +45,4 @@ class NullFilterType extends AbstractFilterType {
     {
         return false;
     }
-
-
 }
