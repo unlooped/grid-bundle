@@ -380,13 +380,11 @@ class DateFilterType extends AbstractFilterType
         if (self::VALUE_CHOICE_DATE === $valueType) {
             $date = null !== $builder->get('_dateValue')->getData() ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
             $data->setValue($date);
-            $data->setMetaData(['value_type' => $valueType]);
+            $data->addMetaData('value_type', $valueType);
         } elseif (self::VALUE_CHOICE_VARIABLES === $valueType) {
             $data->setValue($builder->get('_variables')->getData());
-            $data->setMetaData([
-                'value_type' => $valueType,
-                'variable'   => $data->getValue(),
-            ]);
+            $data->addMetaData('value_type', $valueType);
+            $data->addMetaData('variable', $data->getValue());
         }
     }
 

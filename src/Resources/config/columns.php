@@ -7,6 +7,7 @@ use Unlooped\GridBundle\ColumnType\ActionsColumn;
 use Unlooped\GridBundle\ColumnType\BadgeColumn;
 use Unlooped\GridBundle\ColumnType\BooleanColumn;
 use Unlooped\GridBundle\ColumnType\ColumnTypeInterface;
+use Unlooped\GridBundle\ColumnType\CountColumn;
 use Unlooped\GridBundle\ColumnType\CurrencyColumn;
 use Unlooped\GridBundle\ColumnType\DateColumn;
 use Unlooped\GridBundle\ColumnType\LocalizedDateColumn;
@@ -32,6 +33,7 @@ return static function (ContainerConfigurator $container): void {
         ->set(DateColumn::class)
         ->set(LocalizedDateColumn::class)
         ->set(NumberColumn::class)
+        ->set(CountColumn::class)
         ->set(PercentColumn::class)
         ->set(TextColumn::class)
     ;
