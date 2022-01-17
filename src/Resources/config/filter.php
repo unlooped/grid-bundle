@@ -13,9 +13,11 @@ use Unlooped\GridBundle\FilterType\DateFilterType;
 use Unlooped\GridBundle\FilterType\DateRangeFilterType;
 use Unlooped\GridBundle\FilterType\EntityFilterType;
 use Unlooped\GridBundle\FilterType\FilterType;
+use Unlooped\GridBundle\FilterType\MoneyRangeFilterType;
 use Unlooped\GridBundle\FilterType\NullFilterType;
 use Unlooped\GridBundle\FilterType\NumberRangeFilterType;
 use Unlooped\GridBundle\FilterType\PercentFilterType;
+use Unlooped\GridBundle\FilterType\PercentRangeFilterType;
 use Unlooped\GridBundle\FilterType\TextFilterType;
 
 return static function (ContainerConfigurator $container): void {
@@ -42,6 +44,8 @@ return static function (ContainerConfigurator $container): void {
         ->set(DateRangeFilterType::class)
         ->set(EntityFilterType::class)
         ->set(NumberRangeFilterType::class)
+        ->set(PercentRangeFilterType::class)
+        ->set(MoneyRangeFilterType::class)
         ->set(TextFilterType::class)
         ->set(AutocompleteTextFilterType::class)
             ->args([

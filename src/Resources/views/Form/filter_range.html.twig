@@ -1,0 +1,32 @@
+{% extends 'bootstrap_4_layout.html.twig' %}
+
+{% block percent_widget -%}
+    {%- if symbol -%}
+        {{- block('form_widget_simple') -}}
+        <div class="input-group-append">
+            <span class="input-group-text">{{ symbol|default('%') }}</span>
+        </div>
+    {%- else -%}
+        {{- block('form_widget_simple') -}}
+    {%- endif -%}
+{%- endblock percent_widget %}
+
+{% block money_widget -%}
+    {%- set prepend = not (money_pattern starts with '{{') -%}
+    {%- set append = not (money_pattern ends with '}}') -%}
+    {%- if prepend or append -%}
+        {%- if prepend -%}
+            <div class="input-group-prepend">
+                <span class="input-group-text">{{ money_pattern|form_encode_currency }}</span>
+            </div>
+        {%- endif -%}
+        {{- block('form_widget_simple') -}}
+        {%- if append -%}
+            <div class="input-group-append">
+                <span class="input-group-text">{{ money_pattern|form_encode_currency }}</span>
+            </div>
+        {%- endif -%}
+    {%- else -%}
+        {{- block('form_widget_simple') -}}
+    {%- endif -%}
+{%- endblock money_widget %}
