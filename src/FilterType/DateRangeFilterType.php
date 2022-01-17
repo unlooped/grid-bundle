@@ -155,7 +155,7 @@ class DateRangeFilterType extends DateFilterType
 
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
-        $this->buildForm($builder, [], $data);
+        $this->buildForm($builder, $options, $data);
 
         $metaData = $data->getMetaData();
         if (!\array_key_exists('value_type', $metaData)) {
