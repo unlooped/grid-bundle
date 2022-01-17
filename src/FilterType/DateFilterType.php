@@ -359,7 +359,7 @@ class DateFilterType extends AbstractFilterType
 
     public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
-        $this->buildForm($builder, [], $data);
+        $this->buildForm($builder, $options, $data);
 
         $valueType = \array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : self::VALUE_CHOICE_DATE;
 
