@@ -4,7 +4,7 @@
 
 {% block column_content %}
     {% set number = value %}
-    {% if number is not null %}
+    {% if number is not null or column.options.nullAsZero %}
         {{ number|format_number(style='percent') }}
         {% if it_loop is defined and not it_loop.last %}
             {{ type.options.implode_separator }}

@@ -5,7 +5,7 @@ namespace Unlooped\GridBundle\ColumnType;
 use Symfony\Component\Intl\Currencies;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CurrencyColumn extends AbstractColumnType
+class CurrencyColumn extends NumberColumn
 {
     protected $template = '@UnloopedGrid/column_types/currency.html.twig';
 
