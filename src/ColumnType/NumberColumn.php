@@ -14,6 +14,7 @@ class NumberColumn extends AbstractColumnType
 
         $resolver->setDefaults([
             'nullAsZero' => false,
+            'nullSymbol' => '',
             'attr'       => ['class' => 'text-right'],
         ]);
     }
