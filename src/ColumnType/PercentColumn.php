@@ -2,7 +2,17 @@
 
 namespace Unlooped\GridBundle\ColumnType;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class PercentColumn extends NumberColumn
 {
-    protected $template = '@UnloopedGrid/column_types/percent.html.twig';
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'style' => 'percent',
+        ]);
+    }
+
 }

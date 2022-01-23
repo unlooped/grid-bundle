@@ -13,9 +13,10 @@ class NumberColumn extends AbstractColumnType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'nullAsZero' => false,
-            'nullSymbol' => '',
-            'attr'       => ['class' => 'text-right'],
+            'nullAsZero'    => false,
+            'attr'          => ['class' => 'text-right'],
+            'formatOptions' => [],
+            'style'         => 'decimal',
         ]);
     }
 

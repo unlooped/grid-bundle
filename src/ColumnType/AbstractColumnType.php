@@ -34,6 +34,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
             'permissions'         => [],
             'resolve_collections' => false,
             'implode_separator'   => ', ',
+            'nullSymbol'          => '',
         ]);
 
         $resolver->setDefault('visible', function (Options $options): bool {

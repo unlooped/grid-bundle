@@ -5,7 +5,7 @@
 {% block column_content %}
     {% set amount = value %}
     {% if amount is not null or column.options.nullAsZero %}
-        {{ amount|format_number() }}
+        {{ amount|format_number(style=column.options.style, column.options.formatOptions) }}
         {% if it_loop is defined and not it_loop.last %}
             {{ type.options.implode_separator }}
         {% endif %}
