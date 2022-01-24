@@ -23,5 +23,7 @@ export class DateRangeFilterType extends DateFilterType {
             dateFromEl.classList.add('d-none');
             dateToEl.classList.add('d-none');
         }
+
+        this.conditionUpdated(row);
     }
 }

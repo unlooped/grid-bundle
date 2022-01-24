@@ -43,6 +43,11 @@ class DateRangeFilterType extends DateFilterType
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
+        if ($filterRow->getOperator() !== self::EXPR_IN_RANGE) {
+            parent::handleFilter($qb, $filterRow);
+            return;
+        }
+
         $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
@@ -182,12 +187,14 @@ class DateRangeFilterType extends DateFilterType
             $dateTo   = null !== $builder->get('_dateValue_to')->getData() ? Carbon::parse($builder->get('_dateValue_to')->getData())->toFormattedDateString() : null;
 
             $data->setMetaData([
+                'operator'       => $data->getOperator(),
                 'value_type'     => $valueType,
                 'dateValue_from' => $dateFrom,
                 'dateValue_to'   => $dateTo,
             ]);
         } elseif (self::VALUE_CHOICE_VARIABLES === $valueType) {
             $data->setMetaData([
+                'operator'      => $data->getOperator(),
                 'value_type'    => $valueType,
                 'variable_from' => $builder->get('_variables_from')->getData(),
                 'variable_to'   => $builder->get('_variables_to')->getData(),
@@ -199,6 +206,7 @@ class DateRangeFilterType extends DateFilterType
     {
         return [
             self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
+            self::EXPR_IS_EMPTY => self::EXPR_IS_EMPTY,
         ];
     }
 }
