@@ -1,11 +1,37 @@
 export class FilterType {
 
     constructor(options: any[] = []) {
+    }
 
+    public getSelectedValue(select: HTMLSelectElement) {
+        let currentValue = null;
+        if (select.selectedIndex !== null) {
+            currentValue = select.options[select.selectedIndex].value;
+        }
+
+        return currentValue;
     }
 
     public attachEventListeners(row: Element) {
-        // nothing to do
+        let conditionField = <HTMLSelectElement>row.querySelector('select[name$="[operator]"]');
+        conditionField.addEventListener('change', (event: Event) => {
+            this.conditionUpdated(row);
+        });
+
+        this.conditionUpdated(row);
+    }
+
+    protected getSelectedCondition(row: Element) {
+        return this.getSelectedValue(row.querySelector('select[name$="[operator]"]'));
+    }
+
+    protected conditionUpdated(row: Element) {
+        let valueContainer = row.querySelector('.filter-value-container');
+        if (this.getSelectedCondition(row) === 'is_empty') {
+            valueContainer.classList.add('d-none');
+        } else {
+            valueContainer.classList.remove('d-none');
+        }
     }
 
     public fieldWithFilterChosen(row: Element, fieldName: string, config: any) {

@@ -13,6 +13,11 @@ class NumberRangeFilterType extends AbstractFilterType
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
+        if ($filterRow->getOperator() !== self::EXPR_IN_RANGE) {
+            parent::handleFilter($qb, $filterRow);
+            return;
+        }
+
         $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
@@ -68,8 +73,9 @@ class NumberRangeFilterType extends AbstractFilterType
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $data->setMetaData([
-            'from' => $builder->get('_number_from')->getData(),
-            'to'   => $builder->get('_number_to')->getData(),
+            'operator' => $data->getOperator(),
+            'from'     => $builder->get('_number_from')->getData(),
+            'to'       => $builder->get('_number_to')->getData(),
         ]);
     }
 
@@ -77,6 +83,7 @@ class NumberRangeFilterType extends AbstractFilterType
     {
         return [
             self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
+            self::EXPR_IS_EMPTY => self::EXPR_IS_EMPTY,
         ];
     }
 }

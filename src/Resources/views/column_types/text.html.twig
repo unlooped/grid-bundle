@@ -3,7 +3,7 @@
 {% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
-    {% if amount is not null %}
+    {% if value is not null %}
         {{ value }}
     {% else %}
         {{ column.options.nullSymbol }}
