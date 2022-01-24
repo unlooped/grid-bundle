@@ -182,7 +182,17 @@ abstract class AbstractFilterType implements FilterType
 
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
-            $qb->andWhere($qb->expr()->{$op}($alias));
+            if ($filterRow->getOperator() === self::EXPR_IS_EMPTY) {
+                $suffix = uniqid('', false);
+
+                $orX = $qb->expr()->orX();
+                $orX->add($qb->expr()->{$op}($alias));
+                $orX->add($qb->expr()->eq($alias, ':empty_'.$suffix));
+                $qb->andWhere($orX);
+                $qb->setParameter('empty_'.$suffix, '');
+            } else {
+                $qb->andWhere($qb->expr()->{$op}($alias));
+            }
         }
     }
 
