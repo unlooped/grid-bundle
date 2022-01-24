@@ -28,6 +28,7 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setDefaults([
             'route'                => 'unlooped_grid_autocomplete',
             'multiple'             => false,
+            'multiple_expr'        => 'OR',
             'entity_primary_key'   => 'id',
             'minimum_input_length' => 2,
             'grid'                 => null,
@@ -50,6 +51,8 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
         $resolver->setAllowedTypes('property', ['string', 'array', 'null']);
         $resolver->setAllowedTypes('multiple', 'boolean');
+        $resolver->setAllowedTypes('multiple_expr', 'string');
+        $resolver->setAllowedValues('multiple_expr', ['AND', 'OR']);
         $resolver->setAllowedTypes('filter_callback', ['null', 'callable']);
     }
 

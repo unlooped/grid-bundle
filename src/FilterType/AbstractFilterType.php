@@ -171,6 +171,12 @@ abstract class AbstractFilterType implements FilterType
             }
 
             $qb->andWhere($orX);
+
+            if ($options['multiple_expr'] === 'AND') {
+                $qb->groupBy($qb->getRootAliases()[0] . '.id');
+                $qb->having('COUNT(DISTINCT ' . $alias . ') = :cnt_' . $suffix);
+                $qb->setParameter('cnt_'.$suffix, count($value));
+            }
         } elseif (null !== $value) {
             $suffix = uniqid('', false);
 
@@ -182,7 +188,17 @@ abstract class AbstractFilterType implements FilterType
 
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
-            $qb->andWhere($qb->expr()->{$op}($alias));
+            if ($filterRow->getOperator() === self::EXPR_IS_EMPTY) {
+                $suffix = uniqid('', false);
+
+                $orX = $qb->expr()->orX();
+                $orX->add($qb->expr()->{$op}($alias));
+                $orX->add($qb->expr()->eq($alias, ':empty_'.$suffix));
+                $qb->andWhere($orX);
+                $qb->setParameter('empty_'.$suffix, '');
+            } else {
+                $qb->andWhere($qb->expr()->{$op}($alias));
+            }
         }
     }
 

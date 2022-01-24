@@ -3,7 +3,9 @@
 {% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
-    {% if value %}
+    {% if value is null and not column.options.nullAsFalse %}
+        {{ column.options.nullSymbol }}
+    {% elseif value %}
         <span class="badge badge-success">{% trans %}Yes{% endtrans %}</span>
     {% else %}
         <span class="badge badge-danger">{% trans %}No{% endtrans %}</span>

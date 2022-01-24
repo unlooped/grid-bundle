@@ -8,5 +8,7 @@
         {% if it_loop is defined and not it_loop.last %}
             {{ type.options.implode_separator }}
         {% endif %}
+    {% else %}
+        {{ column.options.nullSymbol }}
     {% endif %}
 {% endblock %}
