@@ -76,7 +76,6 @@ class AutocompleteService
             ->createQueryBuilder($repository, $filterOptions, $term)
             ->setMaxResults($maxResults)
             ->setFirstResult($offset)
-            ->addGroupBy(sprintf('e.%s', $searchProperty))
             ->getQuery()
             ->getResult()
         ;
