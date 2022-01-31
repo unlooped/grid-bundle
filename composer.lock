@@ -3576,16 +3576,16 @@
         },
         {
             "name": "symfony/password-hasher",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/password-hasher.git",
-                "reference": "62748882f339e2a00751af8375258cf1b66a1c57"
+                "reference": "b5ed59c4536d8386cd37bb86df2b7bd5fbbd46d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/password-hasher/zipball/62748882f339e2a00751af8375258cf1b66a1c57",
-                "reference": "62748882f339e2a00751af8375258cf1b66a1c57",
+                "url": "https://api.github.com/repos/symfony/password-hasher/zipball/b5ed59c4536d8386cd37bb86df2b7bd5fbbd46d4",
+                "reference": "b5ed59c4536d8386cd37bb86df2b7bd5fbbd46d4",
                 "shasum": ""
             },
             "require": {
@@ -3629,7 +3629,7 @@
                 "password"
             ],
             "support": {
-                "source": "https://github.com/symfony/password-hasher/tree/v5.4.2"
+                "source": "https://github.com/symfony/password-hasher/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -3645,7 +3645,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-16T21:58:21+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4877,16 +4877,16 @@
         },
         {
             "name": "symfony/security-core",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "11d87d17650a5b8b21da8b6df208bfc8a9b918c7"
+                "reference": "b26a44457a4d1a60c79f1c23273e812c4077ce85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/11d87d17650a5b8b21da8b6df208bfc8a9b918c7",
-                "reference": "11d87d17650a5b8b21da8b6df208bfc8a9b918c7",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/b26a44457a4d1a60c79f1c23273e812c4077ce85",
+                "reference": "b26a44457a4d1a60c79f1c23273e812c4077ce85",
                 "shasum": ""
             },
             "require": {
@@ -4950,7 +4950,7 @@
             "description": "Symfony Security Component - Core Library",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/security-core/tree/v5.4.2"
+                "source": "https://github.com/symfony/security-core/tree/v5.4.3"
             },
             "funding": [
                 {
@@ -4966,7 +4966,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-28T17:15:56+00:00"
+            "time": "2022-01-02T09:53:40+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -7148,5 +7148,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
