@@ -172,7 +172,7 @@ abstract class AbstractFilterType implements FilterType
 
             $qb->andWhere($orX);
 
-            if ($options['multiple_expr'] === 'AND') {
+            if (array_key_exists('multiple_expr', $options) && $options['multiple_expr'] === 'AND') {
                 $qb->groupBy($qb->getRootAliases()[0] . '.id');
                 $qb->having('COUNT(DISTINCT ' . $alias . ') = :cnt_' . $suffix);
                 $qb->setParameter('cnt_'.$suffix, count($value));
