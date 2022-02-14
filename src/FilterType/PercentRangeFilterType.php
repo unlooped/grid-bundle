@@ -8,15 +8,19 @@ class PercentRangeFilterType extends NumberRangeFilterType
 {
     public function buildForm($builder, array $options = [], $data = null): void
     {
+        $constraints = $this->getFormConstraints($builder, $options, $data);
+
         $builder
             ->remove('value')
             ->add('_number_from', PercentType::class, [
-                'mapped'   => false,
-                'required' => false,
+                'mapped'      => false,
+                'required'    => false,
+                'constraints' => $constraints,
             ])
             ->add('_number_to', PercentType::class, [
-                'mapped'   => false,
-                'required' => false,
+                'mapped'      => false,
+                'required'    => false,
+                'constraints' => $constraints,
             ])
         ;
     }

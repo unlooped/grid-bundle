@@ -42,7 +42,7 @@ class FilterRowType extends AbstractType
             $form = $event->getForm();
             $filter = $this->getFilterFromOptions($options, $data->getField());
             $filterOptions = $filter->getOptions();
-            if (array_key_exists('is_removable', $filterOptions) && $filterOptions['is_removable'] === false) {
+            if (\array_key_exists('is_removable', $filterOptions) && false === $filterOptions['is_removable']) {
                 $form
                     ->add('field', ChoiceType::class, [
                         'translation_domain' => 'unlooped_grid',
@@ -54,7 +54,8 @@ class FilterRowType extends AbstractType
 
                             return [];
                         },
-                    ]);
+                    ])
+                ;
             }
 
             if ($this->hasFieldValue($options, $data->getField())) {

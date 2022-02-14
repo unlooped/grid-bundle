@@ -125,7 +125,7 @@ class GridService
 
         $qb = $gridHelper->getQueryBuilder();
 
-        if ($filter->getHash() || $filter->hasDefaultShowFilter() || ($form->isSubmitted() && $form->isValid())) {
+        if ($filter->getHash() || ($filter->hasDefaultShowFilter() && !$form->isSubmitted()) || ($form->isSubmitted() && $form->isValid())) {
             $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
 
             $this->handleFilter($qb, $filter, $gridHelper);

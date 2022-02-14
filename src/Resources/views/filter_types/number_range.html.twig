@@ -4,9 +4,9 @@
     <div class="input-group-prepend">
         <div class="input-group-text">From:</div>
     </div>
-    {{ form_widget(data._number_from) }}
+    {{ form_widget(data._number_from, {'attr': {'data-toggle': 'tooltip', 'data-html': 'true', 'data-title': form_errors(data._number_from)}}) }}
     <div class="input-group-prepend">
         <div class="input-group-text">To:</div>
     </div>
-    {{ form_widget(data._number_to) }}
+    {{ form_widget(data._number_to, {'attr': {'data-toggle': 'tooltip', 'data-html': 'true', 'data-title': form_errors(data._number_to)}}) }}
 </div>
