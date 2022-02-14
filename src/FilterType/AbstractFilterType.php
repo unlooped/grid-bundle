@@ -125,6 +125,7 @@ abstract class AbstractFilterType implements FilterType
             'attr'          => [],
             'widget'        => 'text',
             'operators'     => static::getAvailableOperators(),
+            'is_removable'  => true,
         ]);
 
         $resolver->setAllowedTypes('show_filter', ['boolean']);
@@ -134,6 +135,7 @@ abstract class AbstractFilterType implements FilterType
         $resolver->setAllowedTypes('widget', 'string');
         $resolver->setAllowedTypes('operators', 'array');
         $resolver->setAllowedTypes('default_data', ['null', DefaultFilterDataStruct::class]);
+        $resolver->setAllowedTypes('is_removable', ['boolean']);
 
         $resolver->setAllowedValues('widget', ['text']);
     }
