@@ -30,7 +30,7 @@ class GridHelper
 
     private FilterRegistry $filterRegistry;
 
-    private string $name;
+    private ?string $name = null;
 
     private int $defaultPage = 1;
 
