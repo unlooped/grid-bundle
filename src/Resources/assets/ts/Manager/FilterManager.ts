@@ -20,7 +20,8 @@ export class FilterManager {
         'Unlooped\\GridBundle\\FilterType\\ChoiceFilterType': new ChoiceFilterType(),
     };
 
-    constructor(filterForm: Element, options = []) {
+    constructor(filterForm: Element, options = [], filters: any = {}) {
+        this.filters = {...this.filters, ...filters};
         this.filterForm = filterForm;
         this.config = JSON.parse(this.filterForm.getAttribute('data-ug-filter'));
         this.options = options;
