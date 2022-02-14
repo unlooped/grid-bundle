@@ -45,6 +45,7 @@ class DateRangeFilterType extends DateFilterType
     {
         if ($filterRow->getOperator() !== static::EXPR_IN_RANGE) {
             parent::handleFilter($qb, $filterRow);
+
             return;
         }
 

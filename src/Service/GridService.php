@@ -36,8 +36,10 @@ class GridService
 {
     /** @var RequestStack */
     private $requestStack;
+
     /** @var PaginatorInterface */
     private $paginator;
+
     /** @var FormFactoryInterface */
     private $formFactory;
     private $em;

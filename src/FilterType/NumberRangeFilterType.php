@@ -15,6 +15,7 @@ class NumberRangeFilterType extends AbstractFilterType
     {
         if ($filterRow->getOperator() !== static::EXPR_IN_RANGE) {
             parent::handleFilter($qb, $filterRow);
+
             return;
         }
 

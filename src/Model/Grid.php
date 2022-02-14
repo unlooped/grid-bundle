@@ -11,34 +11,20 @@ use Unlooped\GridBundle\Helper\GridHelper;
 
 class Grid
 {
-    /** @var GridHelper */
-    private $gridHelper;
-    /** @var PaginationInterface */
-    private $pagination;
-    /** @var FormInterface */
-    private $filterForm;
-    /** @var FormView */
-    private $filterFormView;
-    /** @var bool */
-    private $filterApplied;
-    /** @var string */
-    private $route;
-    /** @var array */
-    private $routeParams;
-    /** @var int */
-    private $currentPage;
-    /** @var int */
-    private $currentPerPage;
-    /** @var bool */
-    private $saveFilter;
-    /** @var Filter[] */
-    private $existingFilters;
-    /** @var bool */
-    private $filterSaved;
-    /** @var bool */
-    private $filterDeleted;
-    /** @var array */
-    private $filterData;
+    private GridHelper $gridHelper;
+    private PaginationInterface $pagination;
+    private FormInterface $filterForm;
+    private FormView $filterFormView;
+    private bool $filterApplied;
+    private string $route;
+    private array $routeParams;
+    private int $currentPage;
+    private int $currentPerPage;
+    private bool $saveFilter;
+    private array $existingFilters;
+    private bool $filterSaved;
+    private bool $filterDeleted;
+    private array $filterData;
 
     public function __construct(
         GridHelper $gridHelper,

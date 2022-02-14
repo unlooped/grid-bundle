@@ -14,7 +14,7 @@ return (new PhpCsFixer\Config())
         '@Symfony:risky' => true,
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
-        '@PHP70Migration' => true,
+        '@PHP74Migration' => true,
         '@PHPUnit60Migration:risky' => true,
         'header_comment' => [
             'header' => $header,
@@ -38,5 +38,6 @@ return (new PhpCsFixer\Config())
            'import_constants' => false,
            'import_functions' => false,
         ],
+        'void_return' => true,
     ])
     ->setFinder($finder);

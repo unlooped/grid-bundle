@@ -14,5 +14,4 @@ class PercentColumn extends NumberColumn
             'style' => 'percent',
         ]);
     }
-
 }

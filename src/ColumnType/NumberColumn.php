@@ -19,5 +19,4 @@ class NumberColumn extends AbstractColumnType
             'style'         => 'decimal',
         ]);
     }
-
 }

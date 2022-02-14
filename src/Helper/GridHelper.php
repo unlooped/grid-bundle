@@ -25,44 +25,29 @@ use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 class GridHelper
 {
     private QueryBuilder $queryBuilder;
-
     private ColumnRegistry $columnRegistry;
-
     private FilterRegistry $filterRegistry;
-
-    private ?string $name = null;
-
+    private ?string $name    = null;
     private int $defaultPage = 1;
 
-    /**
-     * @var Column[]
-     */
+    /** @var Column[] */
     private array $columns = [];
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private array $columnNames = [];
 
     private ?FilterEntity $filter;
 
-    /**
-     * @var Filter[]
-     */
+    /** @var Filter[] */
     private array $filters = [];
 
-    /** @var Filter[]
-     */
+    /** @var Filter[] */
     private array $defaultShowFilters = [];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     private array $filterNames = [];
 
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private array $options;
 
     private string $alias;
@@ -139,7 +124,7 @@ class GridHelper
      */
     public function addColumn(string $identifier, ?string $type = null, array $options = []): self
     {
-        $type = $type ?? TextColumn::class;
+        $type ??= TextColumn::class;
 
         if (false === $this->options['allow_duplicate_columns'] && \in_array($identifier, $this->columnNames, true)) {
             throw new DuplicateColumnException('Column '.$identifier.' already exists in '.$this->name.' Grid Helper');
@@ -171,7 +156,7 @@ class GridHelper
      */
     public function addFilter(string $identifier, ?string $type = null, array $options = []): self
     {
-        $type = $type ?? DefaultFilterType::class;
+        $type ??= DefaultFilterType::class;
 
         if (\in_array($identifier, $this->filterNames, true)) {
             throw new DuplicateFilterException('Filter '.$identifier.' already exists in '.$this->name.' Grid Helper');

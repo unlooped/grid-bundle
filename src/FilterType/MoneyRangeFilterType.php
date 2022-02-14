@@ -5,8 +5,8 @@ namespace Unlooped\GridBundle\FilterType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MoneyRangeFilterType extends NumberRangeFilterType {
-
+class MoneyRangeFilterType extends NumberRangeFilterType
+{
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
@@ -34,6 +34,4 @@ class MoneyRangeFilterType extends NumberRangeFilterType {
 
         $resolver->setAllowedTypes('currency', ['string']);
     }
-
-
 }

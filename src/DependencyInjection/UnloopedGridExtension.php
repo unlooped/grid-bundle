@@ -33,7 +33,7 @@ class UnloopedGridExtension extends ConfigurableExtension implements PrependExte
         ;
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         if ($container->hasExtension('twig')) {
             $container->prependExtensionConfig('twig', [

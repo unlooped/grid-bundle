@@ -4,8 +4,8 @@ namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
 
-class PercentRangeFilterType extends NumberRangeFilterType {
-
+class PercentRangeFilterType extends NumberRangeFilterType
+{
     public function buildForm($builder, array $options = [], $data = null): void
     {
         $builder
@@ -20,5 +20,4 @@ class PercentRangeFilterType extends NumberRangeFilterType {
             ])
         ;
     }
-
 }

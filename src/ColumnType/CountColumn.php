@@ -8,6 +8,6 @@ class CountColumn extends NumberColumn
     {
         $value = parent::getValue($field, $object, $options);
 
-        return is_countable($value) ? count($value) : null;
+        return is_countable($value) ? \count($value) : null;
     }
 }
