@@ -95,19 +95,19 @@ class DateFilterType extends AbstractFilterType
     public static function createDefaultData(
         string $operator,
         $value = null,
-        string $valueChoice = self::VALUE_CHOICE_DATE
+        string $valueChoice = static::VALUE_CHOICE_DATE
     ): DefaultFilterDataStruct {
         $dto = parent::createDefaultData($operator, $value);
 
-        if (!\in_array($valueChoice, self::getValueChoices(), true)) {
-            throw new DateFilterValueChoiceDoesNotExistException($valueChoice, self::class);
+        if (!\in_array($valueChoice, static::getValueChoices(), true)) {
+            throw new DateFilterValueChoiceDoesNotExistException($valueChoice, static::class);
         }
 
         $metaData = [
             'value_type' => $valueChoice,
         ];
 
-        if (self::VALUE_CHOICE_VARIABLES === $valueChoice) {
+        if (static::VALUE_CHOICE_VARIABLES === $valueChoice) {
             $metaData['variable'] = $value;
         }
 
@@ -122,7 +122,7 @@ class DateFilterType extends AbstractFilterType
      */
     public static function createDefaultDataForDate(string $operator, DateTimeInterface $dateTime): DefaultFilterDataStruct
     {
-        return self::createDefaultData($operator, Carbon::instance($dateTime)->toFormattedDateString());
+        return static::createDefaultData($operator, Carbon::instance($dateTime)->toFormattedDateString());
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -130,8 +130,8 @@ class DateFilterType extends AbstractFilterType
         parent::configureOptions($resolver);
         $resolver->setDefaults([
             'widget'          => 'date',
-            'value_choices'   => self::getValueChoices(),
-            'choices'         => self::getVariables(),
+            'value_choices'   => static::getValueChoices(),
+            'choices'         => static::getVariables(),
             'view_timezone'   => date_default_timezone_get(),
             'target_timezone' => 'UTC',
         ]);
@@ -162,7 +162,7 @@ class DateFilterType extends AbstractFilterType
                 $date = Carbon::now($options['view_timezone'])->startOfDay();
             }
 
-            if (self::EXPR_EQ === $op) {
+            if (static::EXPR_EQ === $op) {
                 $endDate = $date->clone()->addDay()->startOfDay();
 
                 $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
@@ -315,7 +315,7 @@ class DateFilterType extends AbstractFilterType
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())
-            && self::VALUE_CHOICE_VARIABLES === $data->getMetaData()['value_type']) {
+            && static::VALUE_CHOICE_VARIABLES === $data->getMetaData()['value_type']) {
             $hideDate      = true;
             $hideVariables = false;
         }
@@ -325,7 +325,7 @@ class DateFilterType extends AbstractFilterType
             ->add('_valueChoices', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
-                'choices'            => self::getValueChoices(),
+                'choices'            => static::getValueChoices(),
                 'attr'               => [
                     'class' => 'custom-select',
                 ],
@@ -333,7 +333,7 @@ class DateFilterType extends AbstractFilterType
             ->add('_variables', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
-                'choices'            => self::getVariables(),
+                'choices'            => static::getVariables(),
                 'attr'               => [
                     'class' => 'custom-select'.($hideVariables ? ' d-none' : ''),
                 ],
@@ -361,13 +361,13 @@ class DateFilterType extends AbstractFilterType
     {
         $this->buildForm($builder, $options, $data);
 
-        $valueType = \array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : self::VALUE_CHOICE_DATE;
+        $valueType = \array_key_exists('value_type', $data->getMetaData()) ? $data->getMetaData()['value_type'] : static::VALUE_CHOICE_DATE;
 
         $builder->get('_valueChoices')->setData($valueType);
 
-        if (self::VALUE_CHOICE_VARIABLES === $valueType) {
+        if (static::VALUE_CHOICE_VARIABLES === $valueType) {
             $builder->get('_variables')->setData($data->getValue());
-        } elseif (self::VALUE_CHOICE_DATE === $valueType) {
+        } elseif (static::VALUE_CHOICE_DATE === $valueType) {
             if ($data->getValue()) {
                 $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
             }
@@ -377,11 +377,11 @@ class DateFilterType extends AbstractFilterType
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
-        if (self::VALUE_CHOICE_DATE === $valueType) {
+        if (static::VALUE_CHOICE_DATE === $valueType) {
             $date = null !== $builder->get('_dateValue')->getData() ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
             $data->setValue($date);
             $data->addMetaData('value_type', $valueType);
-        } elseif (self::VALUE_CHOICE_VARIABLES === $valueType) {
+        } elseif (static::VALUE_CHOICE_VARIABLES === $valueType) {
             $data->setValue($builder->get('_variables')->getData());
             $data->addMetaData('value_type', $valueType);
             $data->addMetaData('variable', $data->getValue());
@@ -391,13 +391,13 @@ class DateFilterType extends AbstractFilterType
     protected static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_EQ           => self::EXPR_EQ,
-            self::EXPR_LT           => self::EXPR_LT,
-            self::EXPR_LTE          => self::EXPR_LTE,
-            self::EXPR_GT           => self::EXPR_GT,
-            self::EXPR_GTE          => self::EXPR_GTE,
-            self::EXPR_IS_EMPTY     => self::EXPR_IS_EMPTY,
-            self::EXPR_IS_NOT_EMPTY => self::EXPR_IS_NOT_EMPTY,
+            static::EXPR_EQ           => static::EXPR_EQ,
+            static::EXPR_LT           => static::EXPR_LT,
+            static::EXPR_LTE          => static::EXPR_LTE,
+            static::EXPR_GT           => static::EXPR_GT,
+            static::EXPR_GTE          => static::EXPR_GTE,
+            static::EXPR_IS_EMPTY     => static::EXPR_IS_EMPTY,
+            static::EXPR_IS_NOT_EMPTY => static::EXPR_IS_NOT_EMPTY,
         ];
     }
 }

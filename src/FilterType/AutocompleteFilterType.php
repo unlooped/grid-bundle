@@ -164,7 +164,7 @@ class AutocompleteFilterType extends AbstractFilterType
     protected static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_EQ => self::EXPR_EQ,
+            static::EXPR_EQ => static::EXPR_EQ,
         ];
     }
 
