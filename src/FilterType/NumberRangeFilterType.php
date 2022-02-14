@@ -22,16 +22,20 @@ class NumberRangeFilterType extends AbstractFilterType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'min_value' => null,
-            'max_value' => null,
-            'min_range' => null,
-            'max_range' => null,
+            'min_value'        => null,
+            'max_value'        => null,
+            'min_range'        => null,
+            'max_range'        => null,
+            'from_is_nullable' => true,
+            'to_is_nullable'   => true,
         ]);
 
         $resolver->setAllowedTypes('min_value', ['null', 'float', 'int']);
         $resolver->setAllowedTypes('max_value', ['null', 'float', 'int']);
         $resolver->setAllowedTypes('min_range', ['null', 'float', 'int']);
         $resolver->setAllowedTypes('max_range', ['null', 'float', 'int']);
+        $resolver->setAllowedTypes('from_is_nullable', ['boolean']);
+        $resolver->setAllowedTypes('to_is_nullable', ['boolean']);
     }
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
@@ -59,19 +63,17 @@ class NumberRangeFilterType extends AbstractFilterType
 
     public function buildForm($builder, array $options = [], $data = null): void
     {
-        $constraints = $this->getFormConstraints($builder, $options, $data);
-
         $builder
             ->remove('value')
             ->add('_number_from', NumberType::class, [
                 'mapped'      => false,
                 'required'    => false,
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_from'),
             ])
             ->add('_number_to', NumberType::class, [
                 'mapped'      => false,
                 'required'    => false,
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_to'),
             ])
         ;
     }
@@ -107,22 +109,32 @@ class NumberRangeFilterType extends AbstractFilterType
         ]);
     }
 
-    protected function getFormConstraints($builder, array $options, $data): array
+    protected function getFormConstraints($builder, array $options, $data, string $field = null): array
     {
         $constraints = [];
         if (null !== $options['min_value']) {
             $constraints[] = new GreaterThanOrEqual($options['min_value']);
         }
+
         if (null !== $options['max_value']) {
             $constraints[] = new LessThanOrEqual($options['max_value']);
         }
+
         if (null !== $options['min_range'] || null !== $options['max_range']) {
             $constraints[] = new NotNull();
+        } else {
+            if (false === $options['from_is_nullable'] && '_number_from' === $field) {
+                $constraints[] = new NotNull();
+            }
+            if (false === $options['to_is_nullable'] && '_number_to' === $field) {
+                $constraints[] = new NotNull();
+            }
         }
+
         if (null !== $options['min_range']) {
             $constraints[] = new Callback(static function ($object, ExecutionContextInterface $context) use ($options, $data): void {
-                $number_from = (float)$data['_number_from'];
-                $number_to   = (float)$data['_number_to'];
+                $number_from = (float) $data['_number_from'];
+                $number_to   = (float) $data['_number_to'];
 
                 $diff        = abs($number_from - $number_to);
                 if ($diff < $options['min_range']) {
@@ -130,10 +142,11 @@ class NumberRangeFilterType extends AbstractFilterType
                 }
             });
         }
+
         if (null !== $options['max_range']) {
             $constraints[] = new Callback(static function ($object, ExecutionContextInterface $context) use ($options, $data): void {
-                $number_from = (float)$data['_number_from'];
-                $number_to   = (float)$data['_number_to'];
+                $number_from = (float) $data['_number_from'];
+                $number_to   = (float) $data['_number_to'];
 
                 $diff        = abs($number_from - $number_to);
                 if ($diff > $options['max_range']) {

@@ -15,12 +15,12 @@ class PercentRangeFilterType extends NumberRangeFilterType
             ->add('_number_from', PercentType::class, [
                 'mapped'      => false,
                 'required'    => false,
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_from'),
             ])
             ->add('_number_to', PercentType::class, [
                 'mapped'      => false,
                 'required'    => false,
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_to'),
             ])
         ;
     }

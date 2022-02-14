@@ -9,21 +9,19 @@ class MoneyRangeFilterType extends NumberRangeFilterType
 {
     public function buildForm($builder, array $options = [], $data = null): void
     {
-        $constraints = $this->getFormConstraints($builder, $options, $data);
-
         $builder
             ->remove('value')
             ->add('_number_from', MoneyType::class, [
                 'mapped'      => false,
                 'required'    => false,
                 'currency'    => $options['currency'],
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_from'),
             ])
             ->add('_number_to', MoneyType::class, [
                 'mapped'      => false,
                 'required'    => false,
                 'currency'    => $options['currency'],
-                'constraints' => $constraints,
+                'constraints' => $this->getFormConstraints($builder, $options, $data, '_number_to'),
             ])
         ;
     }
