@@ -44,45 +44,45 @@ abstract class AbstractFilterType implements FilterType
      * @var array<string, string>
      */
     protected static $conditionMap = [
-        static::EXPR_CONTAINS     => static::EXPR_LIKE,
-        static::EXPR_NOT_CONTAINS => static::EXPR_NOT_LIKE,
-        static::EXPR_BEGINS_WITH  => static::EXPR_LIKE,
-        static::EXPR_ENDS_WITH    => static::EXPR_LIKE,
-        static::EXPR_IS_EMPTY     => static::IEXPR_IS_NULL,
-        static::EXPR_IS_NOT_EMPTY => static::IEXPR_IS_NOT_NULL,
+        self::EXPR_CONTAINS     => self::EXPR_LIKE,
+        self::EXPR_NOT_CONTAINS => self::EXPR_NOT_LIKE,
+        self::EXPR_BEGINS_WITH  => self::EXPR_LIKE,
+        self::EXPR_ENDS_WITH    => self::EXPR_LIKE,
+        self::EXPR_IS_EMPTY     => self::IEXPR_IS_NULL,
+        self::EXPR_IS_NOT_EMPTY => self::IEXPR_IS_NOT_NULL,
     ];
 
     /**
      * @var array<string, array<string, mixed>>
      */
     protected static $valueMap = [
-        static::EXPR_CONTAINS     => [
+        self::EXPR_CONTAINS     => [
             'prefix' => '%',
             'suffix' => '%',
             'value'  => true,
         ],
-        static::EXPR_NOT_CONTAINS => [
+        self::EXPR_NOT_CONTAINS => [
             'prefix' => '%',
             'suffix' => '%',
             'value'  => true,
         ],
-        static::EXPR_BEGINS_WITH  => [
+        self::EXPR_BEGINS_WITH  => [
             'prefix' => '',
             'suffix' => '%',
             'value'  => true,
         ],
-        static::EXPR_ENDS_WITH    => [
+        self::EXPR_ENDS_WITH    => [
             'prefix' => '%',
             'suffix' => '',
             'value'  => true,
         ],
-        static::EXPR_IS_EMPTY     => [
+        self::EXPR_IS_EMPTY     => [
             'value' => false,
         ],
-        static::EXPR_IS_NOT_EMPTY => [
+        self::EXPR_IS_NOT_EMPTY => [
             'value' => false,
         ],
-        static::EXPR_IN           => [
+        self::EXPR_IN           => [
             'split' => true,
         ],
     ];

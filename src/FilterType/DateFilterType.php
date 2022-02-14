@@ -95,7 +95,7 @@ class DateFilterType extends AbstractFilterType
     public static function createDefaultData(
         string $operator,
         $value = null,
-        string $valueChoice = static::VALUE_CHOICE_DATE
+        string $valueChoice = self::VALUE_CHOICE_DATE
     ): DefaultFilterDataStruct {
         $dto = parent::createDefaultData($operator, $value);
 
