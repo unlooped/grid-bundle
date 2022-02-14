@@ -44,45 +44,45 @@ abstract class AbstractFilterType implements FilterType
      * @var array<string, string>
      */
     protected static $conditionMap = [
-        self::EXPR_CONTAINS     => self::EXPR_LIKE,
-        self::EXPR_NOT_CONTAINS => self::EXPR_NOT_LIKE,
-        self::EXPR_BEGINS_WITH  => self::EXPR_LIKE,
-        self::EXPR_ENDS_WITH    => self::EXPR_LIKE,
-        self::EXPR_IS_EMPTY     => self::IEXPR_IS_NULL,
-        self::EXPR_IS_NOT_EMPTY => self::IEXPR_IS_NOT_NULL,
+        static::EXPR_CONTAINS     => static::EXPR_LIKE,
+        static::EXPR_NOT_CONTAINS => static::EXPR_NOT_LIKE,
+        static::EXPR_BEGINS_WITH  => static::EXPR_LIKE,
+        static::EXPR_ENDS_WITH    => static::EXPR_LIKE,
+        static::EXPR_IS_EMPTY     => static::IEXPR_IS_NULL,
+        static::EXPR_IS_NOT_EMPTY => static::IEXPR_IS_NOT_NULL,
     ];
 
     /**
      * @var array<string, array<string, mixed>>
      */
     protected static $valueMap = [
-        self::EXPR_CONTAINS     => [
+        static::EXPR_CONTAINS     => [
             'prefix' => '%',
             'suffix' => '%',
             'value'  => true,
         ],
-        self::EXPR_NOT_CONTAINS => [
+        static::EXPR_NOT_CONTAINS => [
             'prefix' => '%',
             'suffix' => '%',
             'value'  => true,
         ],
-        self::EXPR_BEGINS_WITH  => [
+        static::EXPR_BEGINS_WITH  => [
             'prefix' => '',
             'suffix' => '%',
             'value'  => true,
         ],
-        self::EXPR_ENDS_WITH    => [
+        static::EXPR_ENDS_WITH    => [
             'prefix' => '%',
             'suffix' => '',
             'value'  => true,
         ],
-        self::EXPR_IS_EMPTY     => [
+        static::EXPR_IS_EMPTY     => [
             'value' => false,
         ],
-        self::EXPR_IS_NOT_EMPTY => [
+        static::EXPR_IS_NOT_EMPTY => [
             'value' => false,
         ],
-        self::EXPR_IN           => [
+        static::EXPR_IN           => [
             'split' => true,
         ],
     ];
@@ -104,8 +104,8 @@ abstract class AbstractFilterType implements FilterType
      */
     public static function createDefaultData(string $operator, $value = null): DefaultFilterDataStruct
     {
-        if (!\in_array($operator, self::getAvailableOperators(), true)) {
-            throw new OperatorDoesNotExistException($operator, self::class);
+        if (!\in_array($operator, static::getAvailableOperators(), true)) {
+            throw new OperatorDoesNotExistException($operator, static::class);
         }
 
         $dto           = new DefaultFilterDataStruct();
@@ -188,7 +188,7 @@ abstract class AbstractFilterType implements FilterType
 
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
-            if ($filterRow->getOperator() === self::EXPR_IS_EMPTY) {
+            if ($filterRow->getOperator() === static::EXPR_IS_EMPTY) {
                 $suffix = uniqid('', false);
 
                 $orX = $qb->expr()->orX();
@@ -206,8 +206,8 @@ abstract class AbstractFilterType implements FilterType
     {
         $condition = $filterRow->getOperator();
 
-        if (\array_key_exists($condition, self::$conditionMap)) {
-            $condition = self::$conditionMap[$condition];
+        if (\array_key_exists($condition, static::$conditionMap)) {
+            $condition = static::$conditionMap[$condition];
         }
 
         return StringHelper::camelize($condition)->toString();
@@ -221,8 +221,8 @@ abstract class AbstractFilterType implements FilterType
         $value    = $filterRow->getValue();
         $operator = $filterRow->getOperator();
 
-        if (\array_key_exists($operator, self::$valueMap)) {
-            $mapVal = self::$valueMap[$operator];
+        if (\array_key_exists($operator, static::$valueMap)) {
+            $mapVal = static::$valueMap[$operator];
             if (\array_key_exists('split', $mapVal) && $mapVal['split']) {
                 return array_map('trim', explode(',', $value));
             }
@@ -245,8 +245,8 @@ abstract class AbstractFilterType implements FilterType
     {
         $operator = $filterRow->getOperator();
 
-        if (\array_key_exists($operator, self::$valueMap)) {
-            $mapVal = self::$valueMap[$operator];
+        if (\array_key_exists($operator, static::$valueMap)) {
+            $mapVal = static::$valueMap[$operator];
 
             return $mapVal['value'];
         }
@@ -286,7 +286,7 @@ abstract class AbstractFilterType implements FilterType
      */
     protected static function getAvailableOperators(): array
     {
-        return self::getExprList();
+        return static::getExprList();
     }
 
     /**

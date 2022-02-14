@@ -11,7 +11,7 @@ class NullFilterType extends AbstractFilterType
     public static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_EQ  => self::EXPR_EQ,
+            static::EXPR_EQ  => static::EXPR_EQ,
         ];
     }
 
@@ -30,10 +30,10 @@ class NullFilterType extends AbstractFilterType
         $value = $filterRow->getValue();
 
         if ('is_set' === $value) {
-            return StringHelper::camelize(self::IEXPR_IS_NOT_NULL)->toString();
+            return StringHelper::camelize(static::IEXPR_IS_NOT_NULL)->toString();
         }
 
-        return StringHelper::camelize(self::IEXPR_IS_NULL)->toString();
+        return StringHelper::camelize(static::IEXPR_IS_NULL)->toString();
     }
 
     public function getExpressionValue(FilterRow $filterRow)

@@ -13,7 +13,7 @@ class NumberRangeFilterType extends AbstractFilterType
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        if ($filterRow->getOperator() !== self::EXPR_IN_RANGE) {
+        if ($filterRow->getOperator() !== static::EXPR_IN_RANGE) {
             parent::handleFilter($qb, $filterRow);
             return;
         }
@@ -82,8 +82,8 @@ class NumberRangeFilterType extends AbstractFilterType
     protected static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
-            self::EXPR_IS_EMPTY => self::EXPR_IS_EMPTY,
+            static::EXPR_IN_RANGE => static::EXPR_IN_RANGE,
+            static::EXPR_IS_EMPTY => static::EXPR_IS_EMPTY,
         ];
     }
 }

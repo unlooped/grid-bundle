@@ -9,11 +9,11 @@ class PercentFilterType extends AbstractFilterType
     public static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_EQ  => self::EXPR_EQ,
-            self::EXPR_LT  => self::EXPR_LT,
-            self::EXPR_LTE => self::EXPR_LTE,
-            self::EXPR_GT  => self::EXPR_GT,
-            self::EXPR_GTE => self::EXPR_GTE,
+            static::EXPR_EQ  => static::EXPR_EQ,
+            static::EXPR_LT  => static::EXPR_LT,
+            static::EXPR_LTE => static::EXPR_LTE,
+            static::EXPR_GT  => static::EXPR_GT,
+            static::EXPR_GTE => static::EXPR_GTE,
         ];
     }
 

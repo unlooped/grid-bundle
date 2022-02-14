@@ -18,9 +18,9 @@ class DateRangeFilterType extends DateFilterType
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {
         $dto           = new DefaultFilterDataStruct();
-        $dto->operator = self::EXPR_IN_RANGE;
+        $dto->operator = static::EXPR_IN_RANGE;
         $dto->metaData = [
-            'value_type'    => self::VALUE_CHOICE_VARIABLES,
+            'value_type'    => static::VALUE_CHOICE_VARIABLES,
             'variable_from' => $fromDate,
             'variable_to'   => $toDate,
         ];
@@ -31,9 +31,9 @@ class DateRangeFilterType extends DateFilterType
     public static function createDefaultDataForDateRange(DateTimeInterface $fromDate, DateTimeInterface $toDate): DefaultFilterDataStruct
     {
         $dto           = new DefaultFilterDataStruct();
-        $dto->operator = self::EXPR_IN_RANGE;
+        $dto->operator = static::EXPR_IN_RANGE;
         $dto->metaData = [
-            'value_type'     => self::VALUE_CHOICE_DATE,
+            'value_type'     => static::VALUE_CHOICE_DATE,
             'dateValue_from' => Carbon::instance($fromDate)->toFormattedDateString(),
             'dateValue_to'   => Carbon::instance($toDate)->toFormattedDateString(),
         ];
@@ -43,7 +43,7 @@ class DateRangeFilterType extends DateFilterType
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        if ($filterRow->getOperator() !== self::EXPR_IN_RANGE) {
+        if ($filterRow->getOperator() !== static::EXPR_IN_RANGE) {
             parent::handleFilter($qb, $filterRow);
             return;
         }
@@ -56,7 +56,7 @@ class DateRangeFilterType extends DateFilterType
         if (!\array_key_exists('value_type', $metaData)) {
             $startValue = null;
             $endValue   = null;
-        } elseif (self::VALUE_CHOICE_VARIABLES === $metaData['value_type']) {
+        } elseif (static::VALUE_CHOICE_VARIABLES === $metaData['value_type']) {
             $startValue = $metaData['variable_from'];
             $endValue   = $metaData['variable_to'];
         } else {
@@ -95,7 +95,7 @@ class DateRangeFilterType extends DateFilterType
             && is_a($data, FilterRow::class, true)
             && $data->getMetaData()
             && \array_key_exists('value_type', $data->getMetaData())
-            && self::VALUE_CHOICE_VARIABLES === $data->getMetaData()['value_type']) {
+            && static::VALUE_CHOICE_VARIABLES === $data->getMetaData()['value_type']) {
             $hideDate      = true;
             $hideVariables = false;
         }
@@ -105,7 +105,7 @@ class DateRangeFilterType extends DateFilterType
             ->add('_valueChoices', ChoiceType::class, [
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
-                'choices'            => self::getValueChoices(),
+                'choices'            => static::getValueChoices(),
                 'attr'               => [
                     'class' => 'custom-select',
                 ],
@@ -114,7 +114,7 @@ class DateRangeFilterType extends DateFilterType
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
                 'required'           => false,
-                'choices'            => self::getVariables(),
+                'choices'            => static::getVariables(),
                 'attr'               => [
                     'class' => 'custom-select'.($hideVariables ? ' d-none' : ''),
                 ],
@@ -131,7 +131,7 @@ class DateRangeFilterType extends DateFilterType
                 'translation_domain' => 'unlooped_grid',
                 'mapped'             => false,
                 'required'           => false,
-                'choices'            => self::getVariables(),
+                'choices'            => static::getVariables(),
                 'attr'               => [
                     'class' => 'custom-select'.($hideVariables ? ' d-none' : ''),
                 ],
@@ -170,10 +170,10 @@ class DateRangeFilterType extends DateFilterType
         $valueType = $metaData['value_type'];
         $builder->get('_valueChoices')->setData($valueType);
 
-        if (self::VALUE_CHOICE_VARIABLES === $valueType) {
+        if (static::VALUE_CHOICE_VARIABLES === $valueType) {
             $builder->get('_variables_from')->setData($metaData['variable_from']);
             $builder->get('_variables_to')->setData($metaData['variable_to']);
-        } elseif (self::VALUE_CHOICE_DATE === $valueType) {
+        } elseif (static::VALUE_CHOICE_DATE === $valueType) {
             $builder->get('_dateValue_from')->setData(Carbon::parse($metaData['dateValue_from']));
             $builder->get('_dateValue_to')->setData(Carbon::parse($metaData['dateValue_to']));
         }
@@ -182,7 +182,7 @@ class DateRangeFilterType extends DateFilterType
     public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
-        if (self::VALUE_CHOICE_DATE === $valueType) {
+        if (static::VALUE_CHOICE_DATE === $valueType) {
             $dateFrom = null !== $builder->get('_dateValue_from')->getData() ? Carbon::parse($builder->get('_dateValue_from')->getData())->toFormattedDateString() : null;
             $dateTo   = null !== $builder->get('_dateValue_to')->getData() ? Carbon::parse($builder->get('_dateValue_to')->getData())->toFormattedDateString() : null;
 
@@ -192,7 +192,7 @@ class DateRangeFilterType extends DateFilterType
                 'dateValue_from' => $dateFrom,
                 'dateValue_to'   => $dateTo,
             ]);
-        } elseif (self::VALUE_CHOICE_VARIABLES === $valueType) {
+        } elseif (static::VALUE_CHOICE_VARIABLES === $valueType) {
             $data->setMetaData([
                 'operator'      => $data->getOperator(),
                 'value_type'    => $valueType,
@@ -205,8 +205,8 @@ class DateRangeFilterType extends DateFilterType
     protected static function getAvailableOperators(): array
     {
         return [
-            self::EXPR_IN_RANGE => self::EXPR_IN_RANGE,
-            self::EXPR_IS_EMPTY => self::EXPR_IS_EMPTY,
+            static::EXPR_IN_RANGE => static::EXPR_IN_RANGE,
+            static::EXPR_IS_EMPTY => static::EXPR_IS_EMPTY,
         ];
     }
 }
