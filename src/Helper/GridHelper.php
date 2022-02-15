@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\ColumnType\AbstractColumnType;
+use Unlooped\GridBundle\ColumnType\ColumnTypeInterface;
 use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
 use Unlooped\GridBundle\Entity\FilterRow;
@@ -120,7 +121,7 @@ class GridHelper
      * @throws DuplicateColumnException
      * @throws TypeNotAColumnException
      *
-     * @phpstan-param class-string<\Unlooped\GridBundle\ColumnType\ColumnTypeInterface>|null $type
+     * @phpstan-param class-string<ColumnTypeInterface>|null $type
      */
     public function addColumn(string $identifier, ?string $type = null, array $options = []): self
     {

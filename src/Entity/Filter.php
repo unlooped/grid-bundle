@@ -53,8 +53,6 @@ class Filter
     private bool $showAdvancedFilter = false;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
     private bool $isDefault = false;
@@ -67,7 +65,7 @@ class Filter
 
     public function __construct(string $entity)
     {
-        $this->rows = new ArrayCollection();
+        $this->rows   = new ArrayCollection();
         $this->entity = $entity;
     }
 
@@ -222,7 +220,7 @@ class Filter
     public function setShowAdvancedFilter(bool $showAdvancedFilter): self
     {
         $this->showAdvancedFilter = $showAdvancedFilter;
+
         return $this;
     }
-
 }
