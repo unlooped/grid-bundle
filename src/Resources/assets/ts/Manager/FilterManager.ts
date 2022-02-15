@@ -11,7 +11,7 @@ export class FilterManager {
     private config: string;
     private options: any[];
     private defaultFilter = new FilterType();
-    private advancedFilterBtn: Element;
+    private advancedFilterCb: HTMLInputElement;
     private filters: any = {
         'Unlooped\\GridBundle\\FilterType\\DateFilterType': new DateFilterType(),
         'Unlooped\\GridBundle\\FilterType\\DateRangeFilterType': new DateRangeFilterType(),
@@ -32,7 +32,7 @@ export class FilterManager {
     }
 
     private loadElements() {
-        this.advancedFilterBtn = this.filterForm.querySelector('button[data-toggle="advanced-filter"]');
+        this.advancedFilterCb = <HTMLInputElement>this.filterForm.querySelector('#filter_form_showAdvancedFilter');
     }
 
     private loadEvents() {
@@ -43,10 +43,16 @@ export class FilterManager {
             this.updateForField(row.querySelector('[name*="[field]"]'));
         });
 
-        this.advancedFilterBtn.addEventListener('click', this.toggleAdvancedFilter.bind(this));
+        this.advancedFilterCb.addEventListener('change', (e: Event) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            this.toggleAdvancedFilter();
+        });
     }
 
     private init() {
+        this.toggleAdvancedFilter();
         let firstFieldSelect = this.filterForm.querySelectorAll('select[name$="[field]"]');
 
         firstFieldSelect.forEach((fieldSelect: HTMLSelectElement, idx: number) => {
@@ -78,12 +84,10 @@ export class FilterManager {
         filter.attachEventListeners(row);
     }
 
-    private toggleAdvancedFilter(e: Event) {
-        e.preventDefault();
-        e.stopPropagation();
+    private toggleAdvancedFilter() {
         let conditionColumns = this.filterForm.querySelectorAll('.filter-condition-column');
         if (conditionColumns.length > 0) {
-            if (conditionColumns[0].classList.contains('d-none')) {
+            if (this.advancedFilterCb.checked) {
                 conditionColumns.forEach((el: Element) => {
                     el.classList.remove('d-none');
                 });

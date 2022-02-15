@@ -48,6 +48,11 @@ class Filter
     private ?string $name = null;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $showAdvancedFilter = false;
+
+    /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
@@ -208,4 +213,16 @@ class Filter
 
         return $this;
     }
+
+    public function isShowAdvancedFilter(): bool
+    {
+        return $this->showAdvancedFilter;
+    }
+
+    public function setShowAdvancedFilter(bool $showAdvancedFilter): self
+    {
+        $this->showAdvancedFilter = $showAdvancedFilter;
+        return $this;
+    }
+
 }
