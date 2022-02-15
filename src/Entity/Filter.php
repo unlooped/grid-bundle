@@ -18,49 +18,52 @@ class Filter
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Unlooped\GridBundle\Entity\FilterRow", mappedBy="filter", orphanRemoval=true, cascade={"ALL"})
      *
      * @Assert\Valid()
      */
-    private $rows;
+    private Collection $rows;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $entity;
+    private string $entity;
 
     /**
      * @ORM\Column(type="string", unique=true)
      */
-    private $hash;
+    private ?string $hash = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $route;
+    private ?string $route = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    private $isDefault = false;
+    private bool $isDefault = false;
 
-    private $hasDefaultShowFilter = false;
-    private $fields;
-    private $isSaveable = false;
+    private bool $hasDefaultShowFilter = false;
 
-    public function __construct()
+    /** @var array<string, string> */
+    private array $fields;
+    private bool $isSaveable = false;
+
+    public function __construct(string $entity)
     {
         $this->rows = new ArrayCollection();
+        $this->entity = $entity;
     }
 
     public function getId(): ?int

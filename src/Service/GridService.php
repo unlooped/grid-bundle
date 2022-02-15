@@ -30,25 +30,21 @@ use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Model\Grid;
+use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\Helper\StringHelper;
 
 class GridService
 {
-    /** @var RequestStack */
-    private $requestStack;
-
-    /** @var PaginatorInterface */
-    private $paginator;
-
-    /** @var FormFactoryInterface */
-    private $formFactory;
-    private $em;
-    private $saveFilter;
-    private $useRouteInFilterReference;
-    private $filterRepo;
-    private $flashBag;
-    private $templating;
-    private $router;
+    private RequestStack $requestStack;
+    private PaginatorInterface $paginator;
+    private FormFactoryInterface $formFactory;
+    private EntityManager $em;
+    private bool $saveFilter;
+    private bool $useRouteInFilterReference;
+    private FilterRepository $filterRepo;
+    private FlashBagInterface $flashBag;
+    private Environment $templating;
+    private RouterInterface $router;
 
     private ColumnRegistry $columnRegistry;
     private FilterRegistry $filterRegistry;
@@ -406,8 +402,7 @@ class GridService
             return $filter;
         }
 
-        $filter = new FilterEntity();
-        $filter->setEntity($className);
+        $filter = new FilterEntity($className);
 
         if ($request) {
             $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
