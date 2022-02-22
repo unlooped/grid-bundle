@@ -40,11 +40,27 @@ class FilterRowType extends AbstractType
             /** @var FilterRow $data */
             $data = $event->getData();
             $form = $event->getForm();
+            $filter = $this->getFilterFromOptions($options, $data->getField());
+            $filterOptions = $filter->getOptions();
+            if (\array_key_exists('is_removable', $filterOptions) && false === $filterOptions['is_removable']) {
+                $form
+                    ->add('field', ChoiceType::class, [
+                        'translation_domain' => 'unlooped_grid',
+                        'choices'            => $options['fields'],
+                        'choice_attr'        => static function ($val, $key, $index) use ($data) {
+                            if ($val !== $data->getField()) {
+                                return ['disabled' => true];
+                            }
+
+                            return [];
+                        },
+                    ])
+                ;
+            }
 
             if ($this->hasFieldValue($options, $data->getField())) {
-                $filter = $this->getFilterFromOptions($options, $data->getField());
                 $filterType = $filter->getType();
-                $filterType->postSetFormData($form, $filter->getOptions(), $data, $event);
+                $filterType->postSetFormData($form, $filterOptions, $data, $event);
             }
         });
 

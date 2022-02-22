@@ -6,6 +6,7 @@ class FieldMetaDataStruct
 {
     /** @var string */
     public $alias;
+
     /** @var array */
     public $fieldData;
 

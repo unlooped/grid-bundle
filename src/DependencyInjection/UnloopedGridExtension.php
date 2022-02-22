@@ -29,11 +29,10 @@ class UnloopedGridExtension extends ConfigurableExtension implements PrependExte
 
         $container->getDefinition(GridService::class)
             ->replaceArgument(9, $config['save_filter'])
-            ->replaceArgument(10, $config['use_route_in_filter_reference'])
         ;
     }
 
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         if ($container->hasExtension('twig')) {
             $container->prependExtensionConfig('twig', [

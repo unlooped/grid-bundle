@@ -3,7 +3,7 @@
 
 {% block grid_list_row %}
     <tr>
-        {% for column in grid.columns|filter(column => column.visible) %}
+        {% for column in grid.visibleColumns %}
             {% include column.template with {'type': column, 'data': data} %}
         {% endfor %}
     </tr>

@@ -3,6 +3,10 @@ services:
         public: true
         autoconfigure: true
         autowire: true
+    Unlooped\GridBundle\Repository\FilterUserSettingsRepository:
+        public: true
+        autoconfigure: true
+        autowire: true
     Unlooped\GridBundle\Service\GridService:
         public: true
         arguments:
@@ -15,7 +19,6 @@ services:
           - '@router.default'
           - '@Unlooped\GridBundle\Column\Registry\ColumnRegistry'
           - '@Unlooped\GridBundle\Filter\Registry\FilterRegistry'
-          -
           -
 
     Unlooped\GridBundle\Service\AutocompleteService:

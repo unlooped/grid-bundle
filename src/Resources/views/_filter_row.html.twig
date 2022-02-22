@@ -1,3 +1,8 @@
+{% set filterRowData = null %}
+{% if data.vars.value.field is defined %}
+    {% set filterRowData = grid.filterData[data.vars.value.field]|default(null) %}
+{% endif %}
+
 <div class="row form-row" data-row="{% if _key is defined %}{{_key}}{% else %}__name__{% endif %}">
     <div class="form-group col-2">
         {{ form_widget(data.field, {'label': false, 'attr': {'class': 'custom-select'}}) }}
@@ -6,12 +11,14 @@
         {{ form_widget(data.operator, {'label': false, 'attr': {'class': 'custom-select'}}) }}
     </div>
     <div class="form-group col-7 d-flex justify-content-between align-items-center">
-        {% if data.vars.value.field is defined and grid.filterData[data.vars.value.field] is defined %}
-            {% include grid.filterData[data.vars.value.field].templatePath with {'data': data} %}
+        {% if filterRowData is not null %}
+            {% include filterRowData.templatePath with {'data': data} %}
         {% else %}
             {% include '@UnloopedGrid/filter_types/text.html.twig' with {'data': data} %}
         {% endif %}
 
-        <button type="button" class="ml-2 btn btn-sm btn-link text-danger {{ deleteBtnSel|replace({'.': ''}) }}"><i class="fas fa-minus-circle"></i></button>
+        {% if filterRowData is null or filterRowData.options.is_removable == true %}
+            <button type="button" class="ml-2 btn btn-sm btn-link text-danger {{ deleteBtnSel|replace({'.': ''}) }}"><i class="fas fa-minus-circle"></i></button>
+        {% endif %}
     </div>
 </div>

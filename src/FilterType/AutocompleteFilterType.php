@@ -85,6 +85,7 @@ class AutocompleteFilterType extends AbstractFilterType
     {
         if (null === $event) {
             parent::postSetFormData($builder, $options, $data, $event);
+
             return;
         }
 
@@ -92,13 +93,15 @@ class AutocompleteFilterType extends AbstractFilterType
 
         if (!$filterRow instanceof FilterRow) {
             parent::postSetFormData($builder, $options, $data, $event);
+
             return;
         }
 
         $value = $filterRow->getValue();
         if (true === $options['multiple']) {
-            if (!is_array($value)) {
+            if (!\is_array($value)) {
                 parent::postSetFormData($builder, $options, $data, $event);
+
                 return;
             }
 
@@ -109,8 +112,9 @@ class AutocompleteFilterType extends AbstractFilterType
 
             $entity = array_filter($entity);
         } else {
-            if (is_object($value)) {
+            if (\is_object($value)) {
                 parent::postSetFormData($builder, $options, $data, $event);
+
                 return;
             }
 

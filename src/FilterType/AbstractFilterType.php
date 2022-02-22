@@ -125,6 +125,7 @@ abstract class AbstractFilterType implements FilterType
             'attr'          => [],
             'widget'        => 'text',
             'operators'     => static::getAvailableOperators(),
+            'is_removable'  => true,
         ]);
 
         $resolver->setAllowedTypes('show_filter', ['boolean']);
@@ -134,6 +135,7 @@ abstract class AbstractFilterType implements FilterType
         $resolver->setAllowedTypes('widget', 'string');
         $resolver->setAllowedTypes('operators', 'array');
         $resolver->setAllowedTypes('default_data', ['null', DefaultFilterDataStruct::class]);
+        $resolver->setAllowedTypes('is_removable', ['boolean']);
 
         $resolver->setAllowedValues('widget', ['text']);
     }
@@ -172,10 +174,10 @@ abstract class AbstractFilterType implements FilterType
 
             $qb->andWhere($orX);
 
-            if (array_key_exists('multiple_expr', $options) && $options['multiple_expr'] === 'AND') {
-                $qb->groupBy($qb->getRootAliases()[0] . '.id');
-                $qb->having('COUNT(DISTINCT ' . $alias . ') = :cnt_' . $suffix);
-                $qb->setParameter('cnt_'.$suffix, count($value));
+            if (\array_key_exists('multiple_expr', $options) && 'AND' === $options['multiple_expr']) {
+                $qb->groupBy($qb->getRootAliases()[0].'.id');
+                $qb->having('COUNT(DISTINCT '.$alias.') = :cnt_'.$suffix);
+                $qb->setParameter('cnt_'.$suffix, \count($value));
             }
         } elseif (null !== $value) {
             $suffix = uniqid('', false);

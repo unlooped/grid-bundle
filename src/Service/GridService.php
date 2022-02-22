@@ -8,7 +8,10 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\Mapping\MappingException;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use LogicException;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -18,38 +21,42 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use function Symfony\Component\String\u;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
+use Unlooped\GridBundle\Entity\FilterUserSettings;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\Form\FilterFormType;
+use Unlooped\GridBundle\Form\FilterUserSettingsFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
+use Unlooped\GridBundle\Model\FilterFormRequest;
+use Unlooped\GridBundle\Model\FilterUserSettingsFormRequest;
 use Unlooped\GridBundle\Model\Grid;
+use Unlooped\GridBundle\Repository\FilterRepository;
+use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\Helper\StringHelper;
 
 class GridService
 {
-    /** @var RequestStack */
-    private $requestStack;
-    /** @var PaginatorInterface */
-    private $paginator;
-    /** @var FormFactoryInterface */
-    private $formFactory;
-    private $em;
-    private $saveFilter;
-    private $useRouteInFilterReference;
-    private $filterRepo;
-    private $flashBag;
-    private $templating;
-    private $router;
+    private RequestStack $requestStack;
+    private PaginatorInterface $paginator;
+    private FormFactoryInterface $formFactory;
+    private EntityManager $em;
+    private bool $saveFilter;
+    private FilterRepository $filterRepo;
+    private FlashBagInterface $flashBag;
+    private Environment $templating;
+    private RouterInterface $router;
 
     private ColumnRegistry $columnRegistry;
     private FilterRegistry $filterRegistry;
+    private FilterUserSettingsRepository $filterUserSettingsRepo;
 
     public function __construct(
         RequestStack $requestStack,
@@ -61,21 +68,20 @@ class GridService
         RouterInterface $router,
         ColumnRegistry $columnRegistry,
         FilterRegistry $filterRegistry,
-        bool $saveFilter,
-        bool $useRouteInFilterReference
+        bool $saveFilter
     ) {
-        $this->requestStack              = $requestStack;
-        $this->paginator                 = $paginator;
-        $this->formFactory               = $formFactory;
-        $this->em                        = $em;
-        $this->saveFilter                = $saveFilter;
-        $this->useRouteInFilterReference = $useRouteInFilterReference;
-        $this->flashBag                  = $flashBag;
-        $this->templating                = $templating;
-        $this->router                    = $router;
-        $this->filterRepo                = $em->getRepository(FilterEntity::class);
-        $this->columnRegistry            = $columnRegistry;
-        $this->filterRegistry            = $filterRegistry;
+        $this->requestStack           = $requestStack;
+        $this->paginator              = $paginator;
+        $this->formFactory            = $formFactory;
+        $this->em                     = $em;
+        $this->saveFilter             = $saveFilter;
+        $this->flashBag               = $flashBag;
+        $this->templating             = $templating;
+        $this->router                 = $router;
+        $this->filterRepo             = $em->getRepository(FilterEntity::class);
+        $this->filterUserSettingsRepo = $em->getRepository(FilterUserSettings::class);
+        $this->columnRegistry         = $columnRegistry;
+        $this->filterRegistry         = $filterRegistry;
     }
 
     /**
@@ -100,95 +106,43 @@ class GridService
      * @throws NonUniqueResultException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws ReflectionException
+     * @throws MappingException
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
-        $request             = $this->requestStack->getCurrentRequest();
-        $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
-
-        $filter = $gridHelper->getFilter();
-        $filter->setIsSaveable($filterAllowedToSave);
-
-        $form = $this->formFactory->create(FilterFormType::class, $filter, [
-            'fields'  => $filter->getFields(),
-            'filters' => $gridHelper->getFilters(),
-            'method'  => 'get',
-        ]);
-
-        $form->handleRequest($request);
-
-        $filterApplied = false;
-        $filterSaved   = false;
-        $filterDeleted = false;
-
-        $qb = $gridHelper->getQueryBuilder();
-
-        if ($filter->getHash() || $filter->hasDefaultShowFilter() || ($form->isSubmitted() && $form->isValid())) {
-            $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
-
-            $this->handleFilter($qb, $filter, $gridHelper);
-
-            if ($filterAllowedToSave && $form->get('filter_and_save')->isClicked()) {
-                $this->saveFilter($filter);
-                $filterSaved = true;
-            }
-
-            if ($filterAllowedToSave && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
-                $this->deleteFilter($filter);
-                $filterDeleted = true;
-            }
-
-            if ($filter->getHash()) {
-                if ($form->has('remove_default') && $form->get('remove_default')->isClicked()) {
-                    $this->removeFilterAsDefault($filter);
-                    $filterSaved = true;
-                } elseif ($form->has('make_default') && $form->get('make_default')->isClicked()) {
-                    $this->makeFilterAsDefault($filter);
-                    $filterSaved = true;
-                }
-            }
-        }
-
-        if ($request) {
-            $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
-            $currentPerPage = $request->query->getInt($gridHelper->getPerPageParameterName(), $gridHelper->getPerPage());
-        } else {
-            $currentPage    = 1;
-            $currentPerPage = 1;
-        }
-
         $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            throw new LogicException('No Request Available');
+        }
 
-        if (($sort = $request->get('sort')) && ($col = $gridHelper->getColumnForAlias($sort))) {
+        $qb      = $gridHelper->getQueryBuilder();
+        $sort    = $request->get('sort');
+        $route   = $request->get('_route');
+
+        $filterFormRequest = $this->handleFilterForm($gridHelper);
+        if ($gridHelper->getUserSettingsEnabled()) {
+            $filterUserSettingsFormRequest = $this->handleColumnsForm($gridHelper);
+        } else {
+            $filterUserSettingsFormRequest = null;
+        }
+
+        if ($sort && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
         }
 
-        $pagination = $this->paginator->paginate(
-            $qb,
-            $currentPage,
-            $currentPerPage,
-            [
-                'wrap-queries' => $gridHelper->getWrapQueries(),
-                'distinct'     => $gridHelper->getDistinctQuery(),
-            ]
-        );
-
-        $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
-
-        $filterData = $this->getFilterData($gridHelper);
+        $pagination      = $this->getPagination($gridHelper);
+        $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $route));
+        $filterData      = $this->getFilterData($gridHelper);
 
         return new Grid(
             $gridHelper,
             $pagination,
-            $form,
-            $currentPage,
-            $currentPerPage,
+            $filterFormRequest,
+            $filterUserSettingsFormRequest,
             $filterData,
-            $filterAllowedToSave,
-            $filterApplied,
-            $filterSaved,
-            $filterDeleted,
-            $request->get('_route'),
+            ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
+            $route,
             $request->query->all(),
             $existingFilters
         );
@@ -300,7 +254,7 @@ class GridService
         }
 
         foreach ($filter->getRows() as $row) {
-            $arr[]= $row->getField().$row->getOperator().serialize($row->getValue());
+            $arr[] = $row->getField().$row->getOperator().serialize($row->getValue());
         }
 
         sort($arr);
@@ -404,8 +358,7 @@ class GridService
             return $filter;
         }
 
-        $filter = new FilterEntity();
-        $filter->setEntity($className);
+        $filter = new FilterEntity($className);
 
         if ($request) {
             $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
@@ -420,5 +373,112 @@ class GridService
     protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
     {
         return new RedirectResponse($this->router->generate($route, $parameters), $status);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleFilterForm(GridHelper $gridHelper): FilterFormRequest
+    {
+        $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
+
+        $filter = $gridHelper->getFilter();
+        $filter->setIsSaveable($filterAllowedToSave);
+
+        $filterForm = $this->formFactory->create(FilterFormType::class, $filter, [
+            'fields'  => $filter->getFields(),
+            'filters' => $gridHelper->getFilters(),
+            'method'  => 'get',
+        ]);
+        $ffr = new FilterFormRequest($filterForm);
+
+        $filterForm->handleRequest($this->requestStack->getCurrentRequest());
+
+        $qb = $gridHelper->getQueryBuilder();
+
+        if ($filter->getHash() || ($filter->hasDefaultShowFilter() && !$filterForm->isSubmitted()) || ($filterForm->isSubmitted() && $filterForm->isValid())) {
+            $ffr->setIsFilterApplied($filter->getHash() || ($filterForm->isSubmitted() && $filterForm->isValid()));
+
+            $this->handleFilter($qb, $filter, $gridHelper);
+
+            if ($filterAllowedToSave && $filterForm->get('filter_and_save')->isClicked()) {
+                $this->saveFilter($filter);
+                $ffr->setIsFilterSaved(true);
+            }
+
+            if ($filterAllowedToSave && $filterForm->has('delete_filter') && $filterForm->get('delete_filter')->isClicked()) {
+                $this->deleteFilter($filter);
+                $ffr->setIsFilterDeleted(true);
+            }
+
+            if ($filter->getHash()) {
+                if ($filterForm->has('remove_default') && $filterForm->get('remove_default')->isClicked()) {
+                    $this->removeFilterAsDefault($filter);
+                    $ffr->setIsFilterSaved(true);
+                } elseif ($filterForm->has('make_default') && $filterForm->get('make_default')->isClicked()) {
+                    $this->makeFilterAsDefault($filter);
+                    $ffr->setIsFilterSaved(true);
+                }
+            }
+        }
+
+        return $ffr;
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleColumnsForm(GridHelper $gridHelper): FilterUserSettingsFormRequest
+    {
+        if (!$gridHelper->getUserSettingsEnabled()) {
+            throw new LogicException('User Settings are not manageable');
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            throw new LogicException('No Request Available');
+        }
+
+        $filter = $gridHelper->getFilter();
+
+        $route      = u($request->get('_route'))->replace('.filter', '');
+        $filterHash = $filter->getHash() ?? '_default';
+
+        $filterUserSettings = $this->filterUserSettingsRepo->findOneByRouteAndUserId($route, $filterHash, $gridHelper->getCurrentUserIdentifier());
+        if (!$filterUserSettings) {
+            $filterUserSettings = new FilterUserSettings($route, $filterHash, $gridHelper->getCurrentUserIdentifier());
+            $filterUserSettings->setVisibleColumns($gridHelper->getHideableColumns());
+        }
+
+        $filterUserSettingsForm = $this->formFactory->create(FilterUserSettingsFormType::class, $filterUserSettings, ['available_columns' => $gridHelper->getHideableColumns()]);
+
+        $filterUserSettingsForm->handleRequest($request);
+        if ($filterUserSettingsForm->isSubmitted() && $filterUserSettingsForm->isValid()) {
+            $this->em->persist($filterUserSettings);
+            $this->em->flush();
+        }
+
+        return new FilterUserSettingsFormRequest($filterUserSettingsForm, $filterUserSettings);
+    }
+
+    private function getPagination(GridHelper $gridHelper): PaginationInterface
+    {
+        $request = $this->requestStack->getMainRequest();
+
+        $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
+        $currentPerPage = $request->query->getInt($gridHelper->getPerPageParameterName(), $gridHelper->getPerPage());
+
+        return $this->paginator->paginate(
+            $gridHelper->getQueryBuilder(),
+            $currentPage,
+            $currentPerPage,
+            [
+                'wrap-queries' => $gridHelper->getWrapQueries(),
+                'distinct'     => $gridHelper->getDistinctQuery(),
+            ]
+        );
     }
 }

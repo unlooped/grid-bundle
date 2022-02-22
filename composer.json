@@ -23,6 +23,7 @@
         "symfony/options-resolver": "^4.2 || ^5.1",
         "symfony/property-access": "^4.3 || ^5.1",
         "symfony/security-core": "^4.2 || ^5.1",
+        "symfony/validator": "^5.4",
         "tetranz/select2entity-bundle": "^3.1",
         "twig/extra-bundle": "^2 || ^3.3",
         "twig/intl-extra": "^2 || ^3.3",
@@ -36,7 +37,11 @@
         "symfony/var-dumper": "^4.3 || ^5.1"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "bamarni/composer-bin-plugin": true
+        }
     },
     "autoload": {
         "psr-4": {

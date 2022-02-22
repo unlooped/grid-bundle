@@ -1,5 +1,5 @@
 {% block column %}
-    <td {% for key, value in column.options.attr %}
+    <td data-field="{{ column.field }}" {% for key, value in column.options.attr %}
     {% if column.options.attr %}
         {{ key }}="{{ value }}"
     {% endif %}

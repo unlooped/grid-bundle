@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Unlooped\GridBundle\Repository\FilterRepository")
@@ -17,47 +18,55 @@ class Filter
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\OneToMany(targetEntity="Unlooped\GridBundle\Entity\FilterRow", mappedBy="filter", orphanRemoval=true, cascade={"ALL"})
+     *
+     * @Assert\Valid()
      */
-    private $rows;
+    private Collection $rows;
 
     /**
      * @ORM\Column(type="string")
      */
-    private $entity;
+    private string $entity;
 
     /**
      * @ORM\Column(type="string", unique=true)
      */
-    private $hash;
+    private ?string $hash = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $route;
+    private ?string $route = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
-    private $isDefault = false;
+    private bool $showAdvancedFilter = false;
 
-    private $hasDefaultShowFilter = false;
-    private $fields;
-    private $isSaveable = false;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $isDefault = false;
 
-    public function __construct()
+    private bool $hasDefaultShowFilter = false;
+
+    /** @var array<string, string> */
+    private array $fields;
+    private bool $isSaveable = false;
+
+    public function __construct(string $entity)
     {
-        $this->rows = new ArrayCollection();
+        $this->rows   = new ArrayCollection();
+        $this->entity = $entity;
     }
 
     public function getId(): ?int
@@ -199,6 +208,18 @@ class Filter
     public function setHasDefaultShowFilter(bool $hasDefaultShowFilter): self
     {
         $this->hasDefaultShowFilter = $hasDefaultShowFilter;
+
+        return $this;
+    }
+
+    public function isShowAdvancedFilter(): bool
+    {
+        return $this->showAdvancedFilter;
+    }
+
+    public function setShowAdvancedFilter(bool $showAdvancedFilter): self
+    {
+        $this->showAdvancedFilter = $showAdvancedFilter;
 
         return $this;
     }

@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\ColumnType\AbstractColumnType;
+use Unlooped\GridBundle\ColumnType\ColumnTypeInterface;
 use Unlooped\GridBundle\ColumnType\TextColumn;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
 use Unlooped\GridBundle\Entity\FilterRow;
@@ -25,44 +26,29 @@ use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 class GridHelper
 {
     private QueryBuilder $queryBuilder;
-
     private ColumnRegistry $columnRegistry;
-
     private FilterRegistry $filterRegistry;
-
-    private string $name;
-
+    private ?string $name    = null;
     private int $defaultPage = 1;
 
-    /**
-     * @var Column[]
-     */
+    /** @var Column[] */
     private array $columns = [];
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private array $columnNames = [];
 
     private ?FilterEntity $filter;
 
-    /**
-     * @var Filter[]
-     */
+    /** @var Filter[] */
     private array $filters = [];
 
-    /** @var Filter[]
-     */
+    /** @var Filter[] */
     private array $defaultShowFilters = [];
 
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     private array $filterNames = [];
 
-    /**
-     * @var array<string, mixed>
-     */
+    /** @var array<string, mixed> */
     private array $options;
 
     private string $alias;
@@ -106,6 +92,8 @@ class GridHelper
             'wrapQueries'             => true,
             'distinctQuery'           => true,
             'allow_save_filter'       => true,
+            'current_user_identifier' => null,
+            'user_settings_enabled'   => false,
         ]);
 
         $resolver->setAllowedTypes('name', 'string');
@@ -113,8 +101,6 @@ class GridHelper
         $resolver->setAllowedTypes('listRow', 'string');
         $resolver->setAllowedTypes('paginationTemplate', 'string');
         $resolver->setAllowedTypes('listHeaderTemplate', 'string');
-        $resolver->setDeprecated('listRow');
-        $resolver->setDeprecated('listHeaderTemplate');
         $resolver->setAllowedTypes('filter_view', 'string');
         $resolver->setAllowedTypes('list_view', 'string');
         $resolver->setAllowedTypes('title', 'string');
@@ -127,6 +113,8 @@ class GridHelper
         $resolver->setAllowedTypes('wrapQueries', 'bool');
         $resolver->setAllowedTypes('distinctQuery', 'bool');
         $resolver->setAllowedTypes('allow_save_filter', 'bool');
+        $resolver->setAllowedTypes('current_user_identifier', ['null', 'int', 'string']);
+        $resolver->setAllowedTypes('user_settings_enabled', ['bool']);
 
         $resolver->setRequired(['title', 'listRow']);
     }
@@ -135,11 +123,11 @@ class GridHelper
      * @throws DuplicateColumnException
      * @throws TypeNotAColumnException
      *
-     * @phpstan-param class-string<\Unlooped\GridBundle\ColumnType\ColumnTypeInterface>|null $type
+     * @phpstan-param class-string<ColumnTypeInterface>|null $type
      */
     public function addColumn(string $identifier, ?string $type = null, array $options = []): self
     {
-        $type = $type ?? TextColumn::class;
+        $type ??= TextColumn::class;
 
         if (false === $this->options['allow_duplicate_columns'] && \in_array($identifier, $this->columnNames, true)) {
             throw new DuplicateColumnException('Column '.$identifier.' already exists in '.$this->name.' Grid Helper');
@@ -171,7 +159,7 @@ class GridHelper
      */
     public function addFilter(string $identifier, ?string $type = null, array $options = []): self
     {
-        $type = $type ?? DefaultFilterType::class;
+        $type ??= DefaultFilterType::class;
 
         if (\in_array($identifier, $this->filterNames, true)) {
             throw new DuplicateFilterException('Filter '.$identifier.' already exists in '.$this->name.' Grid Helper');
@@ -220,6 +208,30 @@ class GridHelper
         }
 
         return null;
+    }
+
+    public function getHideableColumns(): array
+    {
+        $res = [];
+        foreach ($this->getColumns() as $column) {
+            if (true === $column->getOption('isHideable')) {
+                $res[$column->getLabel()] = $column->getField();
+            }
+        }
+
+        return $res;
+    }
+
+    public function getNotHideableColumns(): array
+    {
+        $res = [];
+        foreach ($this->getColumns() as $column) {
+            if (!$column->getOption('isHideable')) {
+                $res[$column->getLabel()] = $column->getField();
+            }
+        }
+
+        return $res;
     }
 
     public function getQueryBuilder(): QueryBuilder
@@ -296,9 +308,6 @@ class GridHelper
         return $this->options['title'];
     }
 
-    /**
-     * @deprecated
-     */
     public function getListRow(): string
     {
         return $this->options['listRow'];
@@ -309,9 +318,6 @@ class GridHelper
         return $this->options['paginationTemplate'];
     }
 
-    /**
-     * @deprecated
-     */
     public function getListHeaderTemplate(): string
     {
         return $this->options['listHeaderTemplate'];
@@ -375,5 +381,15 @@ class GridHelper
     public function getAllowSaveFilter(): bool
     {
         return $this->options['allow_save_filter'];
+    }
+
+    public function getCurrentUserIdentifier(): string
+    {
+        return $this->options['current_user_identifier'];
+    }
+
+    public function getUserSettingsEnabled(): bool
+    {
+        return $this->options['user_settings_enabled'];
     }
 }

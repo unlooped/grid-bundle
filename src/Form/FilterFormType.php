@@ -3,6 +3,7 @@
 namespace Unlooped\GridBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,6 +25,7 @@ class FilterFormType extends AbstractType
                 'by_reference'  => false,
                 'label'         => false,
             ])
+            ->add('showAdvancedFilter', CheckboxType::class, ['required' => false])
             ->add('filter', SubmitType::class)
         ;
 
@@ -73,12 +75,14 @@ class FilterFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Filter::class,
-            'fields'     => [],
-            'filters'    => null,
+            'data_class'        => Filter::class,
+            'fields'            => [],
+            'filters'           => null,
+            'available_columns' => [],
         ]);
 
         $resolver->setRequired('fields');
         $resolver->setAllowedTypes('fields', 'array');
+        $resolver->setAllowedTypes('available_columns', 'array');
     }
 }

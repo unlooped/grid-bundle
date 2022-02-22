@@ -14,7 +14,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->children()
                 ->booleanNode('save_filter')->defaultFalse()->end()
-                ->booleanNode('use_route_in_filter_reference')->defaultTrue()->info('If set to true the route is used to Identify filters to be loaded')->end()
             ->end()
         ;
 
