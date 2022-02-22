@@ -99,8 +99,6 @@ class GridHelper
         $resolver->setAllowedTypes('listRow', 'string');
         $resolver->setAllowedTypes('paginationTemplate', 'string');
         $resolver->setAllowedTypes('listHeaderTemplate', 'string');
-        $resolver->setDeprecated('listRow');
-        $resolver->setDeprecated('listHeaderTemplate');
         $resolver->setAllowedTypes('filter_view', 'string');
         $resolver->setAllowedTypes('list_view', 'string');
         $resolver->setAllowedTypes('title', 'string');
