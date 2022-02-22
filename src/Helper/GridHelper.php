@@ -93,6 +93,7 @@ class GridHelper
             'distinctQuery'           => true,
             'allow_save_filter'       => true,
             'current_user_identifier' => null,
+            'user_settings_enabled'   => false,
         ]);
 
         $resolver->setAllowedTypes('name', 'string');
@@ -113,6 +114,7 @@ class GridHelper
         $resolver->setAllowedTypes('distinctQuery', 'bool');
         $resolver->setAllowedTypes('allow_save_filter', 'bool');
         $resolver->setAllowedTypes('current_user_identifier', ['null', 'int', 'string']);
+        $resolver->setAllowedTypes('user_settings_enabled', ['bool']);
 
         $resolver->setRequired(['title', 'listRow']);
     }
@@ -384,5 +386,10 @@ class GridHelper
     public function getCurrentUserIdentifier(): string
     {
         return $this->options['current_user_identifier'];
+    }
+
+    public function getUserSettingsEnabled(): bool
+    {
+        return $this->options['user_settings_enabled'];
     }
 }

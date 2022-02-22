@@ -122,7 +122,11 @@ class GridService
         $route   = $request->get('_route');
 
         $filterFormRequest = $this->handleFilterForm($gridHelper);
-        $filterUserSettingsFormRequest = $this->handleColumnsForm($gridHelper);
+        if ($gridHelper->getUserSettingsEnabled()) {
+            $filterUserSettingsFormRequest = $this->handleColumnsForm($gridHelper);
+        } else {
+            $filterUserSettingsFormRequest = null;
+        }
 
         if ($sort && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
@@ -430,6 +434,10 @@ class GridService
      */
     private function handleColumnsForm(GridHelper $gridHelper): FilterUserSettingsFormRequest
     {
+        if (!$gridHelper->getUserSettingsEnabled()) {
+            throw new LogicException('User Settings are not manageable');
+        }
+
         $request = $this->requestStack->getCurrentRequest();
         if (!$request) {
             throw new LogicException('No Request Available');

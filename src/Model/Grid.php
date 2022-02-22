@@ -14,7 +14,7 @@ class Grid
     private GridHelper $gridHelper;
     private PaginationInterface $pagination;
     private FilterFormRequest $filterFormRequest;
-    private FilterUserSettingsFormRequest $filterUserSettingsFormRequest;
+    private ?FilterUserSettingsFormRequest $filterUserSettingsFormRequest;
     private array $filterData;
     private bool $saveFilter;
     private string $route;
@@ -26,7 +26,7 @@ class Grid
         GridHelper $gridHelper,
         PaginationInterface $pagination,
         FilterFormRequest $filterFormRequest,
-        FilterUserSettingsFormRequest $filterUserSettingsFormRequest,
+        ?FilterUserSettingsFormRequest $filterUserSettingsFormRequest,
         array $filterData,
         bool $saveFilter = false,
         string $route = '',
@@ -44,7 +44,9 @@ class Grid
         $this->existingFilters               = $existingFilters;
 
         $this->filterFormView = $filterFormRequest->getForm()->createView();
-        $this->filterUserSettingsFormView = $filterUserSettingsFormRequest->getForm()->createView();
+        if ($filterUserSettingsFormRequest) {
+            $this->filterUserSettingsFormView = $filterUserSettingsFormRequest->getForm()->createView();
+        }
     }
 
     public function getPagination(): PaginationInterface
@@ -70,14 +72,20 @@ class Grid
      */
     public function getVisibleColumns(): array
     {
-        $filterUserSettings = $this->filterUserSettingsFormRequest->getFilterUserSettings();
-        $visibleColumns = $filterUserSettings->getVisibleColumns();
+        if ($this->filterUserSettingsFormRequest) {
+            $filterUserSettings = $this->filterUserSettingsFormRequest->getFilterUserSettings();
+            $visibleColumns = $filterUserSettings->getVisibleColumns();
+        } else {
+            $visibleColumns = null;
+        }
         return array_filter($this->getColumns(), function (Column $column) use ($visibleColumns) {
             if (false === $column->getOption('visible')) {
                 return false;
             }
 
-            if (true === $column->getOption('isHideable') && !in_array($column->getField(), $visibleColumns, true)) {
+            if (null !== $visibleColumns
+                && true === $column->getOption('isHideable')
+                && !in_array($column->getField(), $visibleColumns, true)) {
                 return false;
             }
 
@@ -209,6 +217,11 @@ class Grid
     public function getFilterUserSettingsFormView(): FormView
     {
         return $this->filterUserSettingsFormView;
+    }
+
+    public function userSettingsEnabled(): bool
+    {
+        return $this->gridHelper->getUserSettingsEnabled();
     }
 
 }
