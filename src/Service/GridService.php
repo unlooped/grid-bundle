@@ -40,7 +40,6 @@ class GridService
     private FormFactoryInterface $formFactory;
     private EntityManager $em;
     private bool $saveFilter;
-    private bool $useRouteInFilterReference;
     private FilterRepository $filterRepo;
     private FlashBagInterface $flashBag;
     private Environment $templating;
@@ -59,15 +58,13 @@ class GridService
         RouterInterface $router,
         ColumnRegistry $columnRegistry,
         FilterRegistry $filterRegistry,
-        bool $saveFilter,
-        bool $useRouteInFilterReference
+        bool $saveFilter
     ) {
         $this->requestStack              = $requestStack;
         $this->paginator                 = $paginator;
         $this->formFactory               = $formFactory;
         $this->em                        = $em;
         $this->saveFilter                = $saveFilter;
-        $this->useRouteInFilterReference = $useRouteInFilterReference;
         $this->flashBag                  = $flashBag;
         $this->templating                = $templating;
         $this->router                    = $router;

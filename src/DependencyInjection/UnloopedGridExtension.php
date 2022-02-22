@@ -29,7 +29,6 @@ class UnloopedGridExtension extends ConfigurableExtension implements PrependExte
 
         $container->getDefinition(GridService::class)
             ->replaceArgument(9, $config['save_filter'])
-            ->replaceArgument(10, $config['use_route_in_filter_reference'])
         ;
     }
 
