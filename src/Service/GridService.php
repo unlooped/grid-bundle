@@ -8,12 +8,16 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\Mapping\MappingException;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use LogicException;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -33,6 +37,7 @@ use Unlooped\GridBundle\Model\FilterFormRequest;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\Helper\StringHelper;
+use function get_class;
 
 class GridService
 {
@@ -96,54 +101,42 @@ class GridService
      * @throws NonUniqueResultException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws ReflectionException
+     * @throws MappingException
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
         $request = $this->requestStack->getCurrentRequest();
-        $qb = $gridHelper->getQueryBuilder();
+        if (!$request) {
+            throw new LogicException('No Request Available');
+        }
+
+        $qb      = $gridHelper->getQueryBuilder();
+        $sort    = $request->get('sort');
+        $route   = $request->get('_route');
 
         $filterFormRequest = $this->handleFilterForm($gridHelper);
 
-        if ($request) {
-            $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
-            $currentPerPage = $request->query->getInt($gridHelper->getPerPageParameterName(), $gridHelper->getPerPage());
-        } else {
-            $currentPage    = 1;
-            $currentPerPage = 1;
-        }
-
-        $request = $this->requestStack->getCurrentRequest();
-
-        if (($sort = $request->get('sort')) && ($col = $gridHelper->getColumnForAlias($sort))) {
+        if ($sort && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
         }
 
-        $pagination = $this->paginator->paginate(
-            $qb,
-            $currentPage,
-            $currentPerPage,
-            [
-                'wrap-queries' => $gridHelper->getWrapQueries(),
-                'distinct'     => $gridHelper->getDistinctQuery(),
-            ]
-        );
-
-        $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $request->get('_route')));
-
-        $filterData = $this->getFilterData($gridHelper);
+        $pagination      = $this->getPagination($gridHelper);
+        $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $route));
+        $filterData      = $this->getFilterData($gridHelper);
 
         return new Grid(
             $gridHelper,
             $pagination,
             $filterFormRequest->getFilterForm(),
-            $currentPage,
-            $currentPerPage,
+            $pagination->getCurrentPageNumber(),
+            $pagination->getItemNumberPerPage(),
             $filterData,
             ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
             $filterFormRequest->isFilterApplied(),
             $filterFormRequest->isFilterSaved(),
             $filterFormRequest->isFilterDeleted(),
-            $request->get('_route'),
+            $route,
             $request->query->all(),
             $existingFilters
         );
@@ -167,7 +160,7 @@ class GridService
         foreach ($filters as $field => $filter) {
             $filterData[$field] = [
                 'operators'    => $filter->getOption('operators', []),
-                'type'         => \get_class($filter->getType()),
+                'type'         => get_class($filter->getType()),
                 'options'      => $filter->getOptions(),
                 'template'     => $this->getFilterTemplateForFilter($filter),
                 'templatePath' => $filter->getOption('template'),
@@ -431,5 +424,23 @@ class GridService
     private function handleColumnsForm(GridHelper $gridHelper)
     {
 
+    }
+
+    private function getPagination(GridHelper $gridHelper): PaginationInterface
+    {
+        $request = $this->requestStack->getMainRequest();
+
+        $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
+        $currentPerPage = $request->query->getInt($gridHelper->getPerPageParameterName(), $gridHelper->getPerPage());
+
+        return $this->paginator->paginate(
+            $gridHelper->getQueryBuilder(),
+            $currentPage,
+            $currentPerPage,
+            [
+                'wrap-queries' => $gridHelper->getWrapQueries(),
+                'distinct'     => $gridHelper->getDistinctQuery(),
+            ]
+        );
     }
 }
