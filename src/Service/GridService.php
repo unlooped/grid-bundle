@@ -29,6 +29,7 @@ use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
+use Unlooped\GridBundle\Model\FilterFormRequest;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\Helper\StringHelper;
@@ -60,17 +61,17 @@ class GridService
         FilterRegistry $filterRegistry,
         bool $saveFilter
     ) {
-        $this->requestStack              = $requestStack;
-        $this->paginator                 = $paginator;
-        $this->formFactory               = $formFactory;
-        $this->em                        = $em;
-        $this->saveFilter                = $saveFilter;
-        $this->flashBag                  = $flashBag;
-        $this->templating                = $templating;
-        $this->router                    = $router;
-        $this->filterRepo                = $em->getRepository(FilterEntity::class);
-        $this->columnRegistry            = $columnRegistry;
-        $this->filterRegistry            = $filterRegistry;
+        $this->requestStack   = $requestStack;
+        $this->paginator      = $paginator;
+        $this->formFactory    = $formFactory;
+        $this->em             = $em;
+        $this->saveFilter     = $saveFilter;
+        $this->flashBag       = $flashBag;
+        $this->templating     = $templating;
+        $this->router         = $router;
+        $this->filterRepo     = $em->getRepository(FilterEntity::class);
+        $this->columnRegistry = $columnRegistry;
+        $this->filterRegistry = $filterRegistry;
     }
 
     /**
@@ -98,51 +99,10 @@ class GridService
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
-        $request             = $this->requestStack->getCurrentRequest();
-        $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
-
-        $filter = $gridHelper->getFilter();
-        $filter->setIsSaveable($filterAllowedToSave);
-
-        $form = $this->formFactory->create(FilterFormType::class, $filter, [
-            'fields'  => $filter->getFields(),
-            'filters' => $gridHelper->getFilters(),
-            'method'  => 'get',
-        ]);
-
-        $form->handleRequest($request);
-
-        $filterApplied = false;
-        $filterSaved   = false;
-        $filterDeleted = false;
-
+        $request = $this->requestStack->getCurrentRequest();
         $qb = $gridHelper->getQueryBuilder();
 
-        if ($filter->getHash() || ($filter->hasDefaultShowFilter() && !$form->isSubmitted()) || ($form->isSubmitted() && $form->isValid())) {
-            $filterApplied = $filter->getHash() || ($form->isSubmitted() && $form->isValid());
-
-            $this->handleFilter($qb, $filter, $gridHelper);
-
-            if ($filterAllowedToSave && $form->get('filter_and_save')->isClicked()) {
-                $this->saveFilter($filter);
-                $filterSaved = true;
-            }
-
-            if ($filterAllowedToSave && $form->has('delete_filter') && $form->get('delete_filter')->isClicked()) {
-                $this->deleteFilter($filter);
-                $filterDeleted = true;
-            }
-
-            if ($filter->getHash()) {
-                if ($form->has('remove_default') && $form->get('remove_default')->isClicked()) {
-                    $this->removeFilterAsDefault($filter);
-                    $filterSaved = true;
-                } elseif ($form->has('make_default') && $form->get('make_default')->isClicked()) {
-                    $this->makeFilterAsDefault($filter);
-                    $filterSaved = true;
-                }
-            }
-        }
+        $filterFormRequest = $this->handleFilterForm($gridHelper);
 
         if ($request) {
             $currentPage    = $request->query->getInt($gridHelper->getPageParameterName(), $gridHelper->getDefaultPage());
@@ -175,14 +135,14 @@ class GridService
         return new Grid(
             $gridHelper,
             $pagination,
-            $form,
+            $filterFormRequest->getFilterForm(),
             $currentPage,
             $currentPerPage,
             $filterData,
-            $filterAllowedToSave,
-            $filterApplied,
-            $filterSaved,
-            $filterDeleted,
+            ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
+            $filterFormRequest->isFilterApplied(),
+            $filterFormRequest->isFilterSaved(),
+            $filterFormRequest->isFilterDeleted(),
             $request->get('_route'),
             $request->query->all(),
             $existingFilters
@@ -295,7 +255,7 @@ class GridService
         }
 
         foreach ($filter->getRows() as $row) {
-            $arr[]= $row->getField().$row->getOperator().serialize($row->getValue());
+            $arr[] = $row->getField().$row->getOperator().serialize($row->getValue());
         }
 
         sort($arr);
@@ -414,5 +374,62 @@ class GridService
     protected function redirectToRoute(string $route, array $parameters = [], int $status = 302): RedirectResponse
     {
         return new RedirectResponse($this->router->generate($route, $parameters), $status);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleFilterForm(GridHelper $gridHelper): FilterFormRequest
+    {
+        $filterAllowedToSave = $this->saveFilter && $gridHelper->getAllowSaveFilter();
+
+        $filter = $gridHelper->getFilter();
+        $filter->setIsSaveable($filterAllowedToSave);
+
+        $filterForm = $this->formFactory->create(FilterFormType::class, $filter, [
+            'fields'  => $filter->getFields(),
+            'filters' => $gridHelper->getFilters(),
+            'method'  => 'get',
+        ]);
+        $ffr = new FilterFormRequest($filterForm);
+
+        $filterForm->handleRequest($this->requestStack->getCurrentRequest());
+
+        $qb = $gridHelper->getQueryBuilder();
+
+        if ($filter->getHash() || ($filter->hasDefaultShowFilter() && !$filterForm->isSubmitted()) || ($filterForm->isSubmitted() && $filterForm->isValid())) {
+            $ffr->setIsFilterApplied($filter->getHash() || ($filterForm->isSubmitted() && $filterForm->isValid()));
+
+            $this->handleFilter($qb, $filter, $gridHelper);
+
+            if ($filterAllowedToSave && $filterForm->get('filter_and_save')->isClicked()) {
+                $this->saveFilter($filter);
+                $ffr->setIsFilterSaved(true);
+            }
+
+            if ($filterAllowedToSave && $filterForm->has('delete_filter') && $filterForm->get('delete_filter')->isClicked()) {
+                $this->deleteFilter($filter);
+                $ffr->setIsFilterDeleted(true);
+            }
+
+            if ($filter->getHash()) {
+                if ($filterForm->has('remove_default') && $filterForm->get('remove_default')->isClicked()) {
+                    $this->removeFilterAsDefault($filter);
+                    $ffr->setIsFilterSaved(true);
+                } elseif ($filterForm->has('make_default') && $filterForm->get('make_default')->isClicked()) {
+                    $this->makeFilterAsDefault($filter);
+                    $ffr->setIsFilterSaved(true);
+                }
+            }
+        }
+
+        return $ffr;
+    }
+
+    private function handleColumnsForm(GridHelper $gridHelper)
+    {
+
     }
 }
