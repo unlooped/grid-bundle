@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use function Symfony\Component\String\u;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -34,14 +35,12 @@ use Unlooped\GridBundle\Form\FilterFormType;
 use Unlooped\GridBundle\Form\FilterUserSettingsFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
-use Unlooped\GridBundle\Model\FilterUserSettingsFormRequest;
 use Unlooped\GridBundle\Model\FilterFormRequest;
+use Unlooped\GridBundle\Model\FilterUserSettingsFormRequest;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\Helper\StringHelper;
-use function get_class;
-use function Symfony\Component\String\u;
 
 class GridService
 {
@@ -167,7 +166,7 @@ class GridService
         foreach ($filters as $field => $filter) {
             $filterData[$field] = [
                 'operators'    => $filter->getOption('operators', []),
-                'type'         => get_class($filter->getType()),
+                'type'         => \get_class($filter->getType()),
                 'options'      => $filter->getOptions(),
                 'template'     => $this->getFilterTemplateForFilter($filter),
                 'templatePath' => $filter->getOption('template'),
@@ -458,7 +457,6 @@ class GridService
 
         $filterUserSettingsForm->handleRequest($request);
         if ($filterUserSettingsForm->isSubmitted() && $filterUserSettingsForm->isValid()) {
-
             $this->em->persist($filterUserSettings);
             $this->em->flush();
         }

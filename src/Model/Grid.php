@@ -74,18 +74,19 @@ class Grid
     {
         if ($this->filterUserSettingsFormRequest) {
             $filterUserSettings = $this->filterUserSettingsFormRequest->getFilterUserSettings();
-            $visibleColumns = $filterUserSettings->getVisibleColumns();
+            $visibleColumns     = $filterUserSettings->getVisibleColumns();
         } else {
             $visibleColumns = null;
         }
-        return array_filter($this->getColumns(), function (Column $column) use ($visibleColumns) {
+
+        return array_filter($this->getColumns(), static function (Column $column) use ($visibleColumns) {
             if (false === $column->getOption('visible')) {
                 return false;
             }
 
             if (null !== $visibleColumns
                 && true === $column->getOption('isHideable')
-                && !in_array($column->getField(), $visibleColumns, true)) {
+                && !\in_array($column->getField(), $visibleColumns, true)) {
                 return false;
             }
 
@@ -223,5 +224,4 @@ class Grid
     {
         return $this->gridHelper->getUserSettingsEnabled();
     }
-
 }

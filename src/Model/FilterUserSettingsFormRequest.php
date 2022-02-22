@@ -7,13 +7,12 @@ use Unlooped\GridBundle\Entity\FilterUserSettings;
 
 class FilterUserSettingsFormRequest
 {
-
     private FormInterface $columnForm;
     private FilterUserSettings $filterUserSettings;
 
     public function __construct(FormInterface $columnForm, FilterUserSettings $filterUserSettings)
     {
-        $this->columnForm = $columnForm;
+        $this->columnForm         = $columnForm;
         $this->filterUserSettings = $filterUserSettings;
     }
 
@@ -26,5 +25,4 @@ class FilterUserSettingsFormRequest
     {
         return $this->filterUserSettings;
     }
-
 }

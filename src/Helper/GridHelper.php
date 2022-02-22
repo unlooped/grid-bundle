@@ -214,7 +214,7 @@ class GridHelper
     {
         $res = [];
         foreach ($this->getColumns() as $column) {
-            if ($column->getOption('isHideable') === true) {
+            if (true === $column->getOption('isHideable')) {
                 $res[$column->getLabel()] = $column->getField();
             }
         }

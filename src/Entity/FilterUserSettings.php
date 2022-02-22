@@ -34,18 +34,16 @@ class FilterUserSettings
      * @ORM\Column(type="string", length=255)
      */
     private string $filterHash;
+
     /**
      * @ORM\Column(type="string", length=255)
      */
     private string $route;
 
-    /**
-     * @param string|null $userIdentifier
-     */
     public function __construct(string $route, ?string $filterHash = '_default', ?string $userIdentifier = '_default')
     {
         $this->route          = $route;
-        $this->filterHash     = $filterHash ?? '_default';
+        $this->filterHash     = $filterHash     ?? '_default';
         $this->userIdentifier = $userIdentifier ?? '_default';
     }
 
@@ -90,9 +88,9 @@ class FilterUserSettings
         return $this;
     }
 
-    public function addVisibleColumn(Column $column)
+    public function addVisibleColumn(Column $column): void
     {
-        if (!in_array($column, $this->visibleColumns, true)) {
+        if (!\in_array($column, $this->visibleColumns, true)) {
             $this->visibleColumns[] = $column;
         }
     }
@@ -105,7 +103,7 @@ class FilterUserSettings
     public function setFilterHash(?string $filterHash): self
     {
         $this->filterHash = $filterHash;
+
         return $this;
     }
-
 }

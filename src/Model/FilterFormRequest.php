@@ -6,15 +6,11 @@ use Symfony\Component\Form\FormInterface;
 
 class FilterFormRequest
 {
-
     private bool $isFilterApplied = false;
-    private bool $isFilterSaved = false;
+    private bool $isFilterSaved   = false;
     private bool $isFilterDeleted = false;
     private FormInterface $filterForm;
 
-    /**
-     * @param FormInterface $filterForm
-     */
     public function __construct(FormInterface $filterForm)
     {
         $this->filterForm = $filterForm;
@@ -28,6 +24,7 @@ class FilterFormRequest
     public function setIsFilterApplied(bool $isFilterApplied): self
     {
         $this->isFilterApplied = $isFilterApplied;
+
         return $this;
     }
 
@@ -39,6 +36,7 @@ class FilterFormRequest
     public function setIsFilterSaved(bool $isFilterSaved): self
     {
         $this->isFilterSaved = $isFilterSaved;
+
         return $this;
     }
 
@@ -50,6 +48,7 @@ class FilterFormRequest
     public function setIsFilterDeleted(bool $isFilterDeletes): self
     {
         $this->isFilterDeleted = $isFilterDeletes;
+
         return $this;
     }
 
@@ -57,5 +56,4 @@ class FilterFormRequest
     {
         return $this->filterForm;
     }
-
 }
