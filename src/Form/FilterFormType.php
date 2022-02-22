@@ -75,12 +75,14 @@ class FilterFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Filter::class,
-            'fields'     => [],
-            'filters'    => null,
+            'data_class'        => Filter::class,
+            'fields'            => [],
+            'filters'           => null,
+            'available_columns' => [],
         ]);
 
         $resolver->setRequired('fields');
         $resolver->setAllowedTypes('fields', 'array');
+        $resolver->setAllowedTypes('available_columns', 'array');
     }
 }

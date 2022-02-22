@@ -35,6 +35,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
             'resolve_collections' => false,
             'implode_separator'   => ', ',
             'nullSymbol'          => '',
+            'isHideable'          => true,
         ]);
 
         $resolver->setDefault('visible', function (Options $options): bool {
@@ -64,6 +65,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         $resolver->setAllowedTypes('visible', 'bool');
         $resolver->setAllowedTypes('resolve_collections', 'bool');
         $resolver->setAllowedTypes('implode_separator', ['null', 'string']);
+        $resolver->setAllowedTypes('isHideable', ['bool']);
     }
 
     public function getValue(string $field, object $object, array $options = [])

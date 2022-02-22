@@ -92,6 +92,7 @@ class GridHelper
             'wrapQueries'             => true,
             'distinctQuery'           => true,
             'allow_save_filter'       => true,
+            'current_user_identifier' => null,
         ]);
 
         $resolver->setAllowedTypes('name', 'string');
@@ -111,6 +112,7 @@ class GridHelper
         $resolver->setAllowedTypes('wrapQueries', 'bool');
         $resolver->setAllowedTypes('distinctQuery', 'bool');
         $resolver->setAllowedTypes('allow_save_filter', 'bool');
+        $resolver->setAllowedTypes('current_user_identifier', ['null', 'int', 'string']);
 
         $resolver->setRequired(['title', 'listRow']);
     }
@@ -206,6 +208,30 @@ class GridHelper
         return null;
     }
 
+    public function getHideableColumns(): array
+    {
+        $res = [];
+        foreach ($this->getColumns() as $column) {
+            if ($column->getOption('isHideable') === true) {
+                $res[$column->getLabel()] = $column->getField();
+            }
+        }
+
+        return $res;
+    }
+
+    public function getNotHideableColumns(): array
+    {
+        $res = [];
+        foreach ($this->getColumns() as $column) {
+            if (!$column->getOption('isHideable')) {
+                $res[$column->getLabel()] = $column->getField();
+            }
+        }
+
+        return $res;
+    }
+
     public function getQueryBuilder(): QueryBuilder
     {
         return $this->queryBuilder;
@@ -280,9 +306,6 @@ class GridHelper
         return $this->options['title'];
     }
 
-    /**
-     * @deprecated
-     */
     public function getListRow(): string
     {
         return $this->options['listRow'];
@@ -293,9 +316,6 @@ class GridHelper
         return $this->options['paginationTemplate'];
     }
 
-    /**
-     * @deprecated
-     */
     public function getListHeaderTemplate(): string
     {
         return $this->options['listHeaderTemplate'];
@@ -359,5 +379,10 @@ class GridHelper
     public function getAllowSaveFilter(): bool
     {
         return $this->options['allow_save_filter'];
+    }
+
+    public function getCurrentUserIdentifier(): string
+    {
+        return $this->options['current_user_identifier'];
     }
 }

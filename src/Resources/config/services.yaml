@@ -3,6 +3,10 @@ services:
         public: true
         autoconfigure: true
         autowire: true
+    Unlooped\GridBundle\Repository\FilterUserSettingsRepository:
+        public: true
+        autoconfigure: true
+        autowire: true
     Unlooped\GridBundle\Service\GridService:
         public: true
         arguments:

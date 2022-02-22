@@ -17,9 +17,11 @@ class ActionsColumn extends AbstractColumnType
             'actions'    => [],
             'isMapped'   => false,
             'isSortable' => false,
+            'isHideable' => false,
         ]);
 
         $resolver->setAllowedTypes('actions', ['array']);
+        $resolver->setAllowedValues('isHideable', [false]);
     }
 
     public function getValue(string $field, object $object, array $options = [])

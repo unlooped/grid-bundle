@@ -13,48 +13,38 @@ class Grid
 {
     private GridHelper $gridHelper;
     private PaginationInterface $pagination;
-    private FormInterface $filterForm;
-    private FormView $filterFormView;
-    private bool $filterApplied;
+    private FilterFormRequest $filterFormRequest;
+    private FilterUserSettingsFormRequest $filterUserSettingsFormRequest;
+    private array $filterData;
+    private bool $saveFilter;
     private string $route;
     private array $routeParams;
-    private int $currentPage;
-    private int $currentPerPage;
-    private bool $saveFilter;
     private array $existingFilters;
-    private bool $filterSaved;
-    private bool $filterDeleted;
-    private array $filterData;
+    private FormView $filterFormView;
 
     public function __construct(
         GridHelper $gridHelper,
         PaginationInterface $pagination,
-        FormInterface $filterForm,
-        int $currentPage,
-        int $currentPerPage,
+        FilterFormRequest $filterFormRequest,
+        FilterUserSettingsFormRequest $filterUserSettingsFormRequest,
         array $filterData,
         bool $saveFilter = false,
-        bool $filterApplied = false,
-        bool $filterSaved = false,
-        bool $filterDeleted = false,
         string $route = '',
         array $routeParams = [],
         array $existingFilters = []
     ) {
-        $this->gridHelper      = $gridHelper;
-        $this->pagination      = $pagination;
-        $this->filterForm      = $filterForm;
-        $this->filterFormView  = $filterForm->createView();
-        $this->filterApplied   = $filterApplied;
-        $this->currentPage     = $currentPage;
-        $this->currentPerPage  = $currentPerPage;
-        $this->filterData      = $filterData;
-        $this->route           = $route;
-        $this->routeParams     = $routeParams;
-        $this->saveFilter      = $saveFilter;
-        $this->existingFilters = $existingFilters;
-        $this->filterSaved     = $filterSaved;
-        $this->filterDeleted   = $filterDeleted;
+        $this->gridHelper                    = $gridHelper;
+        $this->pagination                    = $pagination;
+        $this->filterFormRequest             = $filterFormRequest;
+        $this->filterUserSettingsFormRequest = $filterUserSettingsFormRequest;
+        $this->filterData                    = $filterData;
+        $this->saveFilter                    = $saveFilter;
+        $this->route                         = $route;
+        $this->routeParams                   = $routeParams;
+        $this->existingFilters               = $existingFilters;
+
+        $this->filterFormView = $filterFormRequest->getForm()->createView();
+        $this->filterUserSettingsFormView = $filterUserSettingsFormRequest->getForm()->createView();
     }
 
     public function getPagination(): PaginationInterface
@@ -75,6 +65,26 @@ class Grid
         return $this->gridHelper->getColumns();
     }
 
+    /**
+     * @return Column[]
+     */
+    public function getVisibleColumns(): array
+    {
+        $filterUserSettings = $this->filterUserSettingsFormRequest->getFilterUserSettings();
+        $visibleColumns = $filterUserSettings->getVisibleColumns();
+        return array_filter($this->getColumns(), function (Column $column) use ($visibleColumns) {
+            if (false === $column->getOption('visible')) {
+                return false;
+            }
+
+            if (true === $column->getOption('isHideable') && !in_array($column->getField(), $visibleColumns, true)) {
+                return false;
+            }
+
+            return true;
+        });
+    }
+
     public function getFilter(): Filter
     {
         return $this->gridHelper->getFilter();
@@ -82,7 +92,7 @@ class Grid
 
     public function getFilterForm(): FormInterface
     {
-        return $this->filterForm;
+        return $this->filterFormRequest->getForm();
     }
 
     public function getFilterFormView(): FormView
@@ -92,7 +102,7 @@ class Grid
 
     public function getFilterApplied(): bool
     {
-        return $this->filterApplied;
+        return $this->filterFormRequest->isFilterApplied();
     }
 
     public function getTitle(): string
@@ -100,9 +110,6 @@ class Grid
         return $this->gridHelper->getTitle();
     }
 
-    /**
-     * @deprecated
-     */
     public function getListRow(): ?string
     {
         return $this->gridHelper->getListRow();
@@ -113,9 +120,6 @@ class Grid
         return $this->gridHelper->getPaginationTemplate();
     }
 
-    /**
-     * @deprecated
-     */
     public function getListHeaderTemplate(): string
     {
         return $this->gridHelper->getListHeaderTemplate();
@@ -143,12 +147,12 @@ class Grid
 
     public function getCurrentPage(): int
     {
-        return $this->currentPage;
+        return $this->pagination->getCurrentPageNumber();
     }
 
     public function getCurrentPerPage(): int
     {
-        return $this->currentPerPage;
+        return $this->pagination->getItemNumberPerPage();
     }
 
     public function getRoute(): string
@@ -194,11 +198,17 @@ class Grid
 
     public function wasFilterSaved(): bool
     {
-        return $this->filterSaved;
+        return $this->filterFormRequest->isFilterSaved();
     }
 
     public function wasFilterDeleted(): bool
     {
-        return $this->filterDeleted;
+        return $this->filterFormRequest->isFilterDeleted();
     }
+
+    public function getFilterUserSettingsFormView(): FormView
+    {
+        return $this->filterUserSettingsFormView;
+    }
+
 }

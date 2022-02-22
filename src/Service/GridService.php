@@ -17,7 +17,6 @@ use ReflectionException;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -28,16 +27,21 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
+use Unlooped\GridBundle\Entity\FilterUserSettings;
 use Unlooped\GridBundle\Filter\Filter;
 use Unlooped\GridBundle\Filter\Registry\FilterRegistry;
 use Unlooped\GridBundle\Form\FilterFormType;
+use Unlooped\GridBundle\Form\FilterUserSettingsFormType;
 use Unlooped\GridBundle\Helper\GridHelper;
 use Unlooped\GridBundle\Helper\RelationsHelper;
+use Unlooped\GridBundle\Model\FilterUserSettingsFormRequest;
 use Unlooped\GridBundle\Model\FilterFormRequest;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
+use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\Helper\StringHelper;
 use function get_class;
+use function Symfony\Component\String\u;
 
 class GridService
 {
@@ -53,6 +57,7 @@ class GridService
 
     private ColumnRegistry $columnRegistry;
     private FilterRegistry $filterRegistry;
+    private FilterUserSettingsRepository $filterUserSettingsRepo;
 
     public function __construct(
         RequestStack $requestStack,
@@ -66,17 +71,18 @@ class GridService
         FilterRegistry $filterRegistry,
         bool $saveFilter
     ) {
-        $this->requestStack   = $requestStack;
-        $this->paginator      = $paginator;
-        $this->formFactory    = $formFactory;
-        $this->em             = $em;
-        $this->saveFilter     = $saveFilter;
-        $this->flashBag       = $flashBag;
-        $this->templating     = $templating;
-        $this->router         = $router;
-        $this->filterRepo     = $em->getRepository(FilterEntity::class);
-        $this->columnRegistry = $columnRegistry;
-        $this->filterRegistry = $filterRegistry;
+        $this->requestStack           = $requestStack;
+        $this->paginator              = $paginator;
+        $this->formFactory            = $formFactory;
+        $this->em                     = $em;
+        $this->saveFilter             = $saveFilter;
+        $this->flashBag               = $flashBag;
+        $this->templating             = $templating;
+        $this->router                 = $router;
+        $this->filterRepo             = $em->getRepository(FilterEntity::class);
+        $this->filterUserSettingsRepo = $em->getRepository(FilterUserSettings::class);
+        $this->columnRegistry         = $columnRegistry;
+        $this->filterRegistry         = $filterRegistry;
     }
 
     /**
@@ -116,6 +122,7 @@ class GridService
         $route   = $request->get('_route');
 
         $filterFormRequest = $this->handleFilterForm($gridHelper);
+        $filterUserSettingsFormRequest = $this->handleColumnsForm($gridHelper);
 
         if ($sort && ($col = $gridHelper->getColumnForAlias($sort))) {
             RelationsHelper::joinRequiredPaths($qb, $gridHelper->getFilter()->getEntity(), $col->getField());
@@ -128,14 +135,10 @@ class GridService
         return new Grid(
             $gridHelper,
             $pagination,
-            $filterFormRequest->getFilterForm(),
-            $pagination->getCurrentPageNumber(),
-            $pagination->getItemNumberPerPage(),
+            $filterFormRequest,
+            $filterUserSettingsFormRequest,
             $filterData,
             ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
-            $filterFormRequest->isFilterApplied(),
-            $filterFormRequest->isFilterSaved(),
-            $filterFormRequest->isFilterDeleted(),
             $route,
             $request->query->all(),
             $existingFilters
@@ -421,9 +424,38 @@ class GridService
         return $ffr;
     }
 
-    private function handleColumnsForm(GridHelper $gridHelper)
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleColumnsForm(GridHelper $gridHelper): FilterUserSettingsFormRequest
     {
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            throw new LogicException('No Request Available');
+        }
 
+        $filter = $gridHelper->getFilter();
+
+        $route      = u($request->get('_route'))->replace('.filter', '');
+        $filterHash = $filter->getHash() ?? '_default';
+
+        $filterUserSettings = $this->filterUserSettingsRepo->findOneByRouteAndUserId($route, $filterHash, $gridHelper->getCurrentUserIdentifier());
+        if (!$filterUserSettings) {
+            $filterUserSettings = new FilterUserSettings($route, $filterHash, $gridHelper->getCurrentUserIdentifier());
+            $filterUserSettings->setVisibleColumns($gridHelper->getHideableColumns());
+        }
+
+        $filterUserSettingsForm = $this->formFactory->create(FilterUserSettingsFormType::class, $filterUserSettings, ['available_columns' => $gridHelper->getHideableColumns()]);
+
+        $filterUserSettingsForm->handleRequest($request);
+        if ($filterUserSettingsForm->isSubmitted() && $filterUserSettingsForm->isValid()) {
+
+            $this->em->persist($filterUserSettings);
+            $this->em->flush();
+        }
+
+        return new FilterUserSettingsFormRequest($filterUserSettingsForm, $filterUserSettings);
     }
 
     private function getPagination(GridHelper $gridHelper): PaginationInterface

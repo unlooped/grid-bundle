@@ -6,7 +6,7 @@
 {% endif %}
 
 {% block grid_column %}
-    <th scope="col" {% for attr, value in attr %}
+    <th scope="col" data-field="{{ column.field }}" {% for attr, value in attr %}
     {{ attr }}="{{ value }}"
 {% endfor %}
     >
