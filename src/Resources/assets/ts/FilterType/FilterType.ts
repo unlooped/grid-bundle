@@ -57,8 +57,10 @@ export class FilterType {
             operatorSelect.appendChild(option);
         }
 
-        if (currentValue !== null) {
+        if (currentValue !== null && Object.keys(operators).indexOf(currentValue) !== -1) {
             operatorSelect.value = currentValue;
+        } else {
+            operatorSelect.value = Object.keys(operators)[0];
         }
     }
 
