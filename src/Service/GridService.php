@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -57,18 +59,20 @@ class GridService
     private ColumnRegistry $columnRegistry;
     private FilterRegistry $filterRegistry;
     private FilterUserSettingsRepository $filterUserSettingsRepo;
+    private TranslatorInterface $translator;
 
     public function __construct(
-        RequestStack $requestStack,
-        PaginatorInterface $paginator,
+        RequestStack         $requestStack,
+        PaginatorInterface   $paginator,
         FormFactoryInterface $formFactory,
-        EntityManager $em,
-        FlashBagInterface $flashBag,
-        Environment $templating,
-        RouterInterface $router,
-        ColumnRegistry $columnRegistry,
-        FilterRegistry $filterRegistry,
-        bool $saveFilter
+        EntityManager        $em,
+        FlashBagInterface    $flashBag,
+        Environment          $templating,
+        RouterInterface      $router,
+        ColumnRegistry       $columnRegistry,
+        FilterRegistry       $filterRegistry,
+        TranslatorInterface  $translator,
+        bool                 $saveFilter
     ) {
         $this->requestStack           = $requestStack;
         $this->paginator              = $paginator;
@@ -81,6 +85,7 @@ class GridService
         $this->filterRepo             = $em->getRepository(FilterEntity::class);
         $this->filterUserSettingsRepo = $em->getRepository(FilterUserSettings::class);
         $this->columnRegistry         = $columnRegistry;
+        $this->translator             = $translator;
         $this->filterRegistry         = $filterRegistry;
     }
 
@@ -165,7 +170,7 @@ class GridService
         $filterData = [];
         foreach ($filters as $field => $filter) {
             $filterData[$field] = [
-                'operators'    => $filter->getOption('operators', []),
+                'operators'    => $this->translateValues($filter->getOption('operators', [])),
                 'type'         => \get_class($filter->getType()),
                 'options'      => $filter->getOptions(),
                 'template'     => $this->getFilterTemplateForFilter($filter),
@@ -174,6 +179,16 @@ class GridService
         }
 
         return $filterData;
+    }
+
+    public function translateValues(array $array): array
+    {
+        $res = [];
+        foreach ($array as $key => $item) {
+            $res[$key] = $this->translator->trans($item, [], 'unlooped_grid');
+        }
+
+        return $res;
     }
 
     /**

@@ -19,6 +19,7 @@ services:
           - '@router.default'
           - '@Unlooped\GridBundle\Column\Registry\ColumnRegistry'
           - '@Unlooped\GridBundle\Filter\Registry\FilterRegistry'
+          - '@Symfony\Contracts\Translation\TranslatorInterface'
           -
 
     Unlooped\GridBundle\Service\AutocompleteService:

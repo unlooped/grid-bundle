@@ -3,7 +3,6 @@
 namespace Unlooped\GridBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 
 /**
@@ -86,13 +85,6 @@ class FilterUserSettings
         $this->visibleColumns = $visibleColumns;
 
         return $this;
-    }
-
-    public function addVisibleColumn(Column $column): void
-    {
-        if (!\in_array($column, $this->visibleColumns, true)) {
-            $this->visibleColumns[] = $column;
-        }
     }
 
     public function getFilterHash(): ?string
