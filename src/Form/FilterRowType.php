@@ -40,6 +40,11 @@ class FilterRowType extends AbstractType
             /** @var FilterRow $data */
             $data = $event->getData();
             $form = $event->getForm();
+
+            if (!$data->getField()) {
+                return;
+            }
+
             $filter = $this->getFilterFromOptions($options, $data->getField());
             $filterOptions = $filter->getOptions();
             if (\array_key_exists('is_removable', $filterOptions) && false === $filterOptions['is_removable']) {
