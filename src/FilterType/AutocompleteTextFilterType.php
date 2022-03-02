@@ -27,6 +27,7 @@ class AutocompleteTextFilterType extends TextFilterType
             'text_property'        => null,
             'property'             => null,
             'filter_callback'      => null,
+            'group_results'        => false,
         ]);
 
         $resolver->setRequired('entity');
@@ -41,6 +42,7 @@ class AutocompleteTextFilterType extends TextFilterType
         $resolver->setAllowedTypes('text_property', ['string', 'null']);
         $resolver->setAllowedTypes('property', ['string', 'array', 'null']);
         $resolver->setAllowedTypes('filter_callback', ['null', 'callable']);
+        $resolver->setAllowedTypes('group_results', ['bool']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
@@ -61,7 +63,7 @@ class AutocompleteTextFilterType extends TextFilterType
                     'data-minimum-input-length' => $options['minimum_input_length'],
                     'data-placeholder'          => '',
                     'data-page-limit'           => 10,
-                    'data-scroll'               => 'false',
+                    'data-scroll'               => 'true',
                     'data-autostart'            => 'true',
                     'data-allow-clear'          => 'true',
                     'data-property'             => $options['property'],

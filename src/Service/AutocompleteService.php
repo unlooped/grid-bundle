@@ -52,7 +52,8 @@ class AutocompleteService
         $property         = $filter->getOption('property');
         $gridField        = $filter->getOption('grid_field');
         $entityPrimaryKey = $filter->getOption('entity_primary_key', $gridField);
-        $minLength        = (int) $filter->getOption('minimum_input_length');
+        $groupResults     = $filter->getOption('group_results', false);
+        $minLength        = (int)$filter->getOption('minimum_input_length');
         $searchProperty   = $property ?? $gridField;
         $filterOptions    = $filter->getOptions();
 
@@ -60,25 +61,27 @@ class AutocompleteService
             return [];
         }
 
-        $repository = $this->getRepository($entity);
-
-        $count = $this
-            ->createQueryBuilder($repository, $filterOptions, $term)
-            ->select('COUNT(e)')
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
         $maxResults = $pageLimit;
         $offset     = ($page - 1) * $maxResults;
 
-        $paginationResults = $this
+        $repository = $this->getRepository($entity);
+        $countQb = $this->createQueryBuilder($repository, $filterOptions, $term);
+
+        $paginationQb = $this
             ->createQueryBuilder($repository, $filterOptions, $term)
             ->setMaxResults($maxResults)
             ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult()
         ;
+
+        if ($groupResults) {
+            $paginationQb->addGroupBy(sprintf('e.%s', $searchProperty));
+            $countQb->select(sprintf('COUNT(DISTINCT e.%s)', $searchProperty));
+        } else {
+            $countQb->select('COUNT(DISTINCT e)');
+        }
+
+        $count = $countQb->getQuery()->getSingleScalarResult();
+        $paginationResults = $paginationQb->getQuery()->getResult();
 
         $accessor = PropertyAccess::createPropertyAccessor();
 
