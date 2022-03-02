@@ -36,6 +36,7 @@ class AutocompleteFilterType extends AbstractFilterType
             'text_property'        => null,
             'property'             => null,
             'filter_callback'      => null,
+            'group_results'        => false,
         ]);
 
         $resolver->setRequired('entity');
@@ -54,6 +55,7 @@ class AutocompleteFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('multiple_expr', 'string');
         $resolver->setAllowedValues('multiple_expr', ['AND', 'OR']);
         $resolver->setAllowedTypes('filter_callback', ['null', 'callable']);
+        $resolver->setAllowedTypes('group_results', ['bool']);
     }
 
     public function buildForm($builder, array $options = [], $data = null): void
