@@ -158,21 +158,25 @@ abstract class AbstractFilterType implements FilterType
         $multiple = ($options['multiple'] ?? false) === true;
 
         if ($multiple && \is_array($value)) {
-            $orX = $qb->expr()->orX();
+            if ($filterRow->getOperator() === self::EXPR_NEQ) {
+                $andOrX = $qb->expr()->andX();
+            } else {
+                $andOrX = $qb->expr()->orX();
+            }
 
             foreach ($value as $val) {
                 $suffix = uniqid('', false);
 
                 if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
-                    $orX->add($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
+                    $andOrX->add($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
                 } else {
-                    $orX->add($qb->expr()->{$op}($alias, ':value_'.$suffix));
+                    $andOrX->add($qb->expr()->{$op}($alias, ':value_'.$suffix));
                 }
 
                 $qb->setParameter('value_'.$suffix, $val);
             }
 
-            $qb->andWhere($orX);
+            $qb->andWhere($andOrX);
 
             if (\array_key_exists('multiple_expr', $options) && 'AND' === $options['multiple_expr']) {
                 $qb->groupBy($qb->getRootAliases()[0].'.id');
