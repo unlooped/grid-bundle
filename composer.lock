@@ -1637,16 +1637,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "93ebd0014cab80c4ea9f5e297ea48672f1b87706"
+                "reference": "77a32518733312af16a44300404e945338981de3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/93ebd0014cab80c4ea9f5e297ea48672f1b87706",
-                "reference": "93ebd0014cab80c4ea9f5e297ea48672f1b87706",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/77a32518733312af16a44300404e945338981de3",
+                "reference": "77a32518733312af16a44300404e945338981de3",
                 "shasum": ""
             },
             "require": {
@@ -1681,9 +1681,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.1"
             },
-            "time": "2022-01-04T19:58:01+00:00"
+            "time": "2022-03-15T21:29:03+00:00"
         },
         {
             "name": "psr/cache",
@@ -6079,16 +6079,16 @@
         },
         {
             "name": "unlooped/helper",
-            "version": "1.2.1",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unlooped/helper.git",
-                "reference": "24ae153ed00f34c1eac93d5c67b8110ad1180a38"
+                "reference": "f210acc4c326102dbf2d8b368a63f3787acafd97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unlooped/helper/zipball/24ae153ed00f34c1eac93d5c67b8110ad1180a38",
-                "reference": "24ae153ed00f34c1eac93d5c67b8110ad1180a38",
+                "url": "https://api.github.com/repos/unlooped/helper/zipball/f210acc4c326102dbf2d8b368a63f3787acafd97",
+                "reference": "f210acc4c326102dbf2d8b368a63f3787acafd97",
                 "shasum": ""
             },
             "require": {
@@ -6120,9 +6120,9 @@
             "description": "Often used Helper Classes",
             "support": {
                 "issues": "https://github.com/unlooped/helper/issues",
-                "source": "https://github.com/unlooped/helper/tree/1.2.1"
+                "source": "https://github.com/unlooped/helper/tree/1.2.4"
             },
-            "time": "2021-12-19T15:46:47+00:00"
+            "time": "2022-03-31T20:56:52+00:00"
         },
         {
             "name": "unlooped/ts-resources",
