@@ -1,9 +1,10 @@
 {% block column %}
     <td data-field="{{ column.field }}" {% for key, value in column.options.attr %}
-    {% if column.options.attr %}
-        {{ key }}="{{ value }}"
-    {% endif %}
-{% endfor %}>
+        {% if column.options.attr %}
+            {{ key }}="{{ value }}"
+        {% endif %}
+    {% endfor %}
+    >
         {% block content %}
             {% set value = type.value(data) %}
             {% block column_content %}

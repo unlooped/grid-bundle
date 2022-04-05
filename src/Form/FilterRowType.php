@@ -45,7 +45,7 @@ class FilterRowType extends AbstractType
                 return;
             }
 
-            $filter = $this->getFilterFromOptions($options, $data->getField());
+            $filter        = $this->getFilterFromOptions($options, $data->getField());
             $filterOptions = $filter->getOptions();
             if (\array_key_exists('is_removable', $filterOptions) && false === $filterOptions['is_removable']) {
                 $form

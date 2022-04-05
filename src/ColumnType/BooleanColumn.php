@@ -18,6 +18,4 @@ class BooleanColumn extends AbstractColumnType
 
         $resolver->setAllowedTypes('nullAsFalse', 'bool');
     }
-
-
 }

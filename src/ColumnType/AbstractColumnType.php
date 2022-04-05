@@ -90,6 +90,11 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         return $options['label'] ?? $field;
     }
 
+    public function hasAggregates(array $options): bool
+    {
+        return false;
+    }
+
     protected function implodeCollections(string $field, $object, array $options = [])
     {
         $fieldPaths = explode('.', $field);

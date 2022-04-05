@@ -82,4 +82,9 @@ final class Column implements ArrayAccess
     {
         unset($this->options[$offset]);
     }
+
+    public function hasAggregates(): bool
+    {
+        return $this->type->hasAggregates($this->options);
+    }
 }
