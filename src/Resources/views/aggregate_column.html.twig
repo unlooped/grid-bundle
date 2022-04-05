@@ -1,0 +1,19 @@
+{# @var grid \Unlooped\GridBundle\Model\Grid #}
+{# @var type \Unlooped\GridBundle\ColumnType\ColumnTypeInterface #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
+
+{% extends column.template %}
+
+{% block column %}
+    <th data-field="{{ column.field }}" {% for key, value in column.options.attr %}
+        {% if column.options.attr %}
+            {{ key }}="{{ value }}"
+        {% endif %}
+    {% endfor %}
+    >
+        {% block content %}
+            {% set value = type.value(data) %}
+            {{ block('column_content') }}
+        {% endblock %}
+    </th>
+{% endblock %}

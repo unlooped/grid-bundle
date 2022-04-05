@@ -78,6 +78,7 @@ class GridHelper
             'name'                    => '',
             'allow_duplicate_columns' => false,
             'listRow'                 => '@UnloopedGrid/list_row.html.twig',
+            'aggregateRow'            => '@UnloopedGrid/aggregate_row.html.twig',
             'paginationTemplate'      => '@UnloopedGrid/_pagination.html.twig',
             'listHeaderTemplate'      => '@UnloopedGrid/column_headers.html.twig',
             'filter_view'             => '@UnloopedGrid/_filter.html.twig',
@@ -311,6 +312,11 @@ class GridHelper
     public function getListRow(): string
     {
         return $this->options['listRow'];
+    }
+
+    public function getAggregateRow(): string
+    {
+        return $this->options['aggregateRow'];
     }
 
     public function getPaginationTemplate(): string

@@ -5,14 +5,28 @@ namespace Unlooped\GridBundle\Helper;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\ClassMetadata;
-use Doctrine\Persistence\Mapping\MappingException;
 use ReflectionException;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
+use function Symfony\Component\String\u;
 
 class RelationsHelper
 {
     /** @var FieldMetaDataStruct[] */
-    protected static $fieldAliases = [];
+    protected static array $fieldAliases = [];
+
+    public static function cloneAliases(QueryBuilder $orig, QueryBuilder $new, string $entity): void
+    {
+        $origKeyPrefix = self::getKeyPrefix($orig, $entity);
+        $newKeyPrefix = self::getKeyPrefix($new, $entity);
+
+        foreach (self::$fieldAliases as $key => $fieldAlias) {
+            $uKey = u($key);
+            if ($uKey->startsWith($origKeyPrefix)) {
+                $newKey = $uKey->replace($origKeyPrefix, $newKeyPrefix)->toString();
+                self::$fieldAliases[$newKey] = $fieldAlias;
+            }
+        }
+    }
 
     public static function getAliasForEntityAndField(QueryBuilder $qb, string $entity, string $path)
     {
@@ -31,8 +45,8 @@ class RelationsHelper
     }
 
     /**
-     * @throws MappingException
      * @throws ReflectionException
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public static function joinRequiredPaths(QueryBuilder $qb, string $entity, string $path): FieldMetaDataStruct
     {
@@ -97,17 +111,14 @@ class RelationsHelper
     }
 
     /**
-     * @param $entity
-     *
-     * @throws MappingException
      * @throws ReflectionException
+     * @throws \Doctrine\Persistence\Mapping\MappingException
      */
     protected static function getMetadataForEntity(QueryBuilder $qb, $entity): ClassMetadata
     {
         /** @var EntityManager $em */
-        $em                   = $qb->getEntityManager();
-        $classMetadataFactory = $em->getMetadataFactory();
+        $em = $qb->getEntityManager();
 
-        return $classMetadataFactory->getMetadataFor($entity);
+        return $em->getMetadataFactory()->getMetadataFor($entity);
     }
 }

@@ -27,6 +27,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Unlooped\GridBundle\Column\Registry\ColumnRegistry;
+use Unlooped\GridBundle\ColumnType\NumberColumn;
 use Unlooped\GridBundle\Entity\Filter as FilterEntity;
 use Unlooped\GridBundle\Entity\FilterUserSettings;
 use Unlooped\GridBundle\Filter\Filter;
@@ -40,6 +41,7 @@ use Unlooped\GridBundle\Model\FilterUserSettingsFormRequest;
 use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
+use Unlooped\GridBundle\Struct\AggregateResultStruct;
 use Unlooped\Helper\StringHelper;
 use function Symfony\Component\String\u;
 
@@ -139,6 +141,8 @@ class GridService
         $existingFilters = $this->filterRepo->findByRoute(str_replace('.filter', '', $route));
         $filterData      = $this->getFilterData($gridHelper);
 
+        $aggregateResults = $this->getAggreagates($gridHelper);
+
         return new Grid(
             $gridHelper,
             $pagination,
@@ -148,8 +152,51 @@ class GridService
             ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
             $route,
             $request->query->all(),
-            $existingFilters
+            $existingFilters,
+            $aggregateResults
         );
+    }
+
+    public function getAggreagates(GridHelper $gridHelper): ?AggregateResultStruct
+    {
+        $entity = $gridHelper->getFilter()->getEntity();
+        $qb = clone $gridHelper->getQueryBuilder();
+        RelationsHelper::cloneAliases($gridHelper->getQueryBuilder(), $qb, $entity);
+
+        $aggregateCount = 0;
+        foreach ($gridHelper->getColumns() as $column) {
+            $columnType = $column->getType();
+            if (!$columnType instanceof NumberColumn) {
+                continue;
+            }
+
+            $aggregates = [...$column->getOption('aggregates')];
+            if ($column->getOption('show_aggregate')) {
+                $aggregates[] = $column->getOption('show_aggregate');
+            }
+
+            if (count($aggregates) > 0) {
+                $fieldInfo = RelationsHelper::joinRequiredPaths($qb, $entity, $column->getField());
+
+                foreach ($aggregates as $aggregate) {
+                    $aggregateAlias = $columnType->getAggregateAlias($aggregate, $column->getField());
+                    $aggrFn         = strtoupper($aggregate) . '(' . $fieldInfo->alias . ') AS ' . $aggregateAlias;
+
+                    if ($aggregateCount++ === 0) {
+                        $qb->select($aggrFn);
+                    } else {
+                        $qb->addSelect($aggrFn);
+                    }
+                }
+
+            }
+        }
+
+        if ($aggregateCount > 0) {
+            return new AggregateResultStruct((object)$qb->getQuery()->getResult()[0]);
+        }
+
+        return null;
     }
 
     public function handleFilter(QueryBuilder $qb, FilterEntity $filterEntity, GridHelper $gridHelper): void

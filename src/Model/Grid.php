@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormView;
 use Unlooped\GridBundle\Column\Column;
 use Unlooped\GridBundle\Entity\Filter;
 use Unlooped\GridBundle\Helper\GridHelper;
+use Unlooped\GridBundle\Struct\AggregateResultStruct;
 
 class Grid
 {
@@ -21,6 +22,7 @@ class Grid
     private array $routeParams;
     private array $existingFilters;
     private FormView $filterFormView;
+    private ?AggregateResultStruct $aggregateResults;
 
     public function __construct(
         GridHelper $gridHelper,
@@ -31,7 +33,8 @@ class Grid
         bool $saveFilter = false,
         string $route = '',
         array $routeParams = [],
-        array $existingFilters = []
+        array $existingFilters = [],
+        ?AggregateResultStruct $aggregateResults = null
     ) {
         $this->gridHelper                    = $gridHelper;
         $this->pagination                    = $pagination;
@@ -42,6 +45,7 @@ class Grid
         $this->route                         = $route;
         $this->routeParams                   = $routeParams;
         $this->existingFilters               = $existingFilters;
+        $this->aggregateResults              = $aggregateResults;
 
         $this->filterFormView = $filterFormRequest->getForm()->createView();
         if ($filterUserSettingsFormRequest) {
@@ -94,6 +98,11 @@ class Grid
         });
     }
 
+    public function getAggregateResults(): ?AggregateResultStruct
+    {
+        return $this->aggregateResults;
+    }
+
     public function getFilter(): Filter
     {
         return $this->gridHelper->getFilter();
@@ -122,6 +131,11 @@ class Grid
     public function getListRow(): ?string
     {
         return $this->gridHelper->getListRow();
+    }
+
+    public function getAggregateRow(): ?string
+    {
+        return $this->gridHelper->getAggregateRow();
     }
 
     public function getPaginationTemplate(): string

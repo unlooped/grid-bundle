@@ -1,0 +1,22 @@
+{# @var grid \Unlooped\GridBundle\Model\Grid #}
+{# @var type \Unlooped\GridBundle\ColumnType\ColumnTypeInterface #}
+
+{% block grid_list_row %}
+    <tr>
+        {% for column in grid.visibleColumns %}
+            {% if column.hasAggregates %}
+                {% block aggregate_column %}
+                    {% include '@UnloopedGrid/aggregate_column.html.twig' with {'type': column, 'data': data} %}
+                {% endblock %}
+            {% else %}
+                <td data-field="{{ column.field }}"
+                    {% for key, value in column.options.attr %}
+                        {% if column.options.attr %}
+                            {{ key }}="{{ value }}"
+                        {% endif %}
+                    {% endfor %}
+                ></td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+{% endblock %}
