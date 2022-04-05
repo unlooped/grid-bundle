@@ -6,8 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use ReflectionException;
-use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 use function Symfony\Component\String\u;
+use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 
 class RelationsHelper
 {
@@ -17,12 +17,12 @@ class RelationsHelper
     public static function cloneAliases(QueryBuilder $orig, QueryBuilder $new, string $entity): void
     {
         $origKeyPrefix = self::getKeyPrefix($orig, $entity);
-        $newKeyPrefix = self::getKeyPrefix($new, $entity);
+        $newKeyPrefix  = self::getKeyPrefix($new, $entity);
 
         foreach (self::$fieldAliases as $key => $fieldAlias) {
             $uKey = u($key);
             if ($uKey->startsWith($origKeyPrefix)) {
-                $newKey = $uKey->replace($origKeyPrefix, $newKeyPrefix)->toString();
+                $newKey                      = $uKey->replace($origKeyPrefix, $newKeyPrefix)->toString();
                 self::$fieldAliases[$newKey] = $fieldAlias;
             }
         }

@@ -30,21 +30,22 @@ class NumberColumn extends AbstractColumnType
 
     public function getAggregateAlias(string $aggregate, string $field): string
     {
-        return $aggregate . '_' . str_replace('.', '_', $field);
+        return $aggregate.'_'.str_replace('.', '_', $field);
     }
 
     public function hasAggregates(array $options): bool
     {
-        return $options['show_aggregate'] !== null || count($options['aggregates']) > 0;
+        return null !== $options['show_aggregate'] || \count($options['aggregates']) > 0;
     }
 
     public function getValue(string $field, object $object, array $options = [])
     {
         if ($object instanceof AggregateResultStruct) {
             $alias = $this->getAggregateAlias($options['show_aggregate'], $field);
+
             return $object->getAggregateResultFor($alias);
         }
+
         return parent::getValue($field, $object, $options);
     }
-
 }

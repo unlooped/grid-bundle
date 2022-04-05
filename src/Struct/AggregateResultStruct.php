@@ -4,7 +4,6 @@ namespace Unlooped\GridBundle\Struct;
 
 class AggregateResultStruct
 {
-
     private object $aggregateResults;
 
     public function __construct(object $aggregateResults)
@@ -19,6 +18,6 @@ class AggregateResultStruct
 
     public function getAggregateResultFor(string $alias)
     {
-        return $this->aggregateResults->$alias;
+        return $this->aggregateResults->{$alias};
     }
 }

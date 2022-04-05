@@ -158,7 +158,7 @@ abstract class AbstractFilterType implements FilterType
         $multiple = ($options['multiple'] ?? false) === true;
 
         if ($multiple && \is_array($value)) {
-            if ($filterRow->getOperator() === self::EXPR_NEQ) {
+            if (self::EXPR_NEQ === $filterRow->getOperator()) {
                 $andOrX = $qb->expr()->andX();
             } else {
                 $andOrX = $qb->expr()->orX();

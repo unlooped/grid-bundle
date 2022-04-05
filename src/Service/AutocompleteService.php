@@ -53,7 +53,7 @@ class AutocompleteService
         $gridField        = $filter->getOption('grid_field');
         $entityPrimaryKey = $filter->getOption('entity_primary_key', $gridField);
         $groupResults     = $filter->getOption('group_results', false);
-        $minLength        = (int)$filter->getOption('minimum_input_length');
+        $minLength        = (int) $filter->getOption('minimum_input_length');
         $searchProperty   = $property ?? $gridField;
         $filterOptions    = $filter->getOptions();
 
@@ -65,7 +65,7 @@ class AutocompleteService
         $offset     = ($page - 1) * $maxResults;
 
         $repository = $this->getRepository($entity);
-        $countQb = $this->createQueryBuilder($repository, $filterOptions, $term);
+        $countQb    = $this->createQueryBuilder($repository, $filterOptions, $term);
 
         $paginationQb = $this
             ->createQueryBuilder($repository, $filterOptions, $term)
@@ -80,7 +80,7 @@ class AutocompleteService
             $countQb->select('COUNT(DISTINCT e)');
         }
 
-        $count = $countQb->getQuery()->getSingleScalarResult();
+        $count             = $countQb->getQuery()->getSingleScalarResult();
         $paginationResults = $paginationQb->getQuery()->getResult();
 
         $accessor = PropertyAccess::createPropertyAccessor();
