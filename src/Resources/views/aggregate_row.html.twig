@@ -2,7 +2,7 @@
 {# @var type \Unlooped\GridBundle\ColumnType\ColumnTypeInterface #}
 
 {% block grid_list_row %}
-    <tr>
+    <tr class="aggregate-row">
         {% for column in grid.visibleColumns %}
             {% if column.hasAggregates %}
                 {% block aggregate_column %}
