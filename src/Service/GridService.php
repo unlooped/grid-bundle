@@ -171,16 +171,23 @@ class GridService
             }
 
             $aggregates = [...$column->getOption('aggregates')];
-            if ($column->getOption('show_aggregate')) {
+            if ($column->getOption('show_aggregate') && $column->getOption('show_aggregate') !== 'callback') {
                 $aggregates[] = $column->getOption('show_aggregate');
+            }
+            if (is_callable($column->getOption('aggregate_callback'))) {
+                $aggregates[] = $column->getOption('aggregate_callback');
             }
 
             if (\count($aggregates) > 0) {
                 $fieldInfo = RelationsHelper::joinRequiredPaths($qb, $entity, $column->getField());
 
                 foreach ($aggregates as $aggregate) {
-                    $aggregateAlias = $columnType->getAggregateAlias($aggregate, $column->getField());
-                    $aggrFn         = strtoupper($aggregate).'('.$fieldInfo->alias.') AS '.$aggregateAlias;
+                    if (is_callable($aggregate)) {
+                        $aggrFn = $aggregate($column, $qb);
+                    } else {
+                        $aggregateAlias = $columnType->getAggregateAlias($aggregate, $column->getField());
+                        $aggrFn         = strtoupper($aggregate).'('.$fieldInfo->alias.') AS '.$aggregateAlias;
+                    }
 
                     if (0 === $aggregateCount++) {
                         $qb->select($aggrFn);

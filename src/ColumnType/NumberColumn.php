@@ -14,18 +14,20 @@ class NumberColumn extends AbstractColumnType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'nullAsZero'     => false,
-            'attr'           => ['class' => 'text-right'],
-            'formatOptions'  => [],
-            'style'          => 'decimal',
-            'aggregates'     => [],
-            'show_aggregate' => null,
+            'nullAsZero'         => false,
+            'attr'               => ['class' => 'text-right'],
+            'formatOptions'      => [],
+            'style'              => 'decimal',
+            'aggregates'         => [],
+            'show_aggregate'     => null,
+            'aggregate_callback' => null,
         ]);
 
         $resolver->setAllowedTypes('aggregates', ['array']);
         $resolver->setAllowedTypes('show_aggregate', ['null', 'string']);
+        $resolver->setAllowedTypes('aggregate_callback', ['null', 'callable']);
 
-        $resolver->setAllowedValues('show_aggregate', [null, 'sum', 'avg', 'min', 'max', 'count', 'count_distinct', 'group_concat', 'std']);
+        $resolver->setAllowedValues('show_aggregate', [null, 'sum', 'avg', 'min', 'max', 'count', 'count_distinct', 'group_concat', 'std', 'callback']);
     }
 
     public function getAggregateAlias(string $aggregate, string $field): string
