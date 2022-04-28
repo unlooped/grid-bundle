@@ -1035,16 +1035,16 @@
         },
         {
             "name": "doctrine/persistence",
-            "version": "2.4.1",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/persistence.git",
-                "reference": "092a52b71410ac1795287bb5135704ef07d18dd0"
+                "reference": "4473480044c88f30e0e8288e7123b60c7eb9efa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/persistence/zipball/092a52b71410ac1795287bb5135704ef07d18dd0",
-                "reference": "092a52b71410ac1795287bb5135704ef07d18dd0",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/4473480044c88f30e0e8288e7123b60c7eb9efa3",
+                "reference": "4473480044c88f30e0e8288e7123b60c7eb9efa3",
                 "shasum": ""
             },
             "require": {
@@ -1064,10 +1064,10 @@
                 "doctrine/annotations": "^1.0",
                 "doctrine/coding-standard": "^9.0",
                 "doctrine/common": "^3.0",
-                "phpstan/phpstan": "1.4.6",
+                "phpstan/phpstan": "~1.4.10 || 1.5.0",
                 "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.5",
                 "symfony/cache": "^4.4 || ^5.4 || ^6.0",
-                "vimeo/psalm": "4.21.0"
+                "vimeo/psalm": "4.22.0"
             },
             "type": "library",
             "autoload": {
@@ -1117,9 +1117,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/persistence/issues",
-                "source": "https://github.com/doctrine/persistence/tree/2.4.1"
+                "source": "https://github.com/doctrine/persistence/tree/2.5.1"
             },
-            "time": "2022-03-22T06:44:40+00:00"
+            "time": "2022-04-14T21:47:17+00:00"
         },
         {
             "name": "doctrine/sql-formatter",
@@ -2500,21 +2500,21 @@
         },
         {
             "name": "symfony/doctrine-bridge",
-            "version": "v5.4.7",
+            "version": "v5.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/doctrine-bridge.git",
-                "reference": "8293adcd47c2a3195cfa5f511feebb12832c47b4"
+                "reference": "f3d8c57d2502cb22ce475d309bd88a1cf019a162"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/8293adcd47c2a3195cfa5f511feebb12832c47b4",
-                "reference": "8293adcd47c2a3195cfa5f511feebb12832c47b4",
+                "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/f3d8c57d2502cb22ce475d309bd88a1cf019a162",
+                "reference": "f3d8c57d2502cb22ce475d309bd88a1cf019a162",
                 "shasum": ""
             },
             "require": {
                 "doctrine/event-manager": "~1.0",
-                "doctrine/persistence": "^2",
+                "doctrine/persistence": "^2|^3",
                 "php": ">=7.2.5",
                 "symfony/deprecation-contracts": "^2.1|^3",
                 "symfony/polyfill-ctype": "~1.8",
@@ -2597,7 +2597,7 @@
             "description": "Provides integration for Doctrine with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/doctrine-bridge/tree/v5.4.7"
+                "source": "https://github.com/symfony/doctrine-bridge/tree/v5.4.8"
             },
             "funding": [
                 {
@@ -2613,7 +2613,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-01T08:40:14+00:00"
+            "time": "2022-04-22T08:14:12+00:00"
         },
         {
             "name": "symfony/error-handler",
@@ -7260,5 +7260,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
