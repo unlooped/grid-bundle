@@ -135,7 +135,7 @@ class AutocompleteService
 
         if (\is_array($field)) {
             foreach ($field as $property) {
-                $qb->orWhere(sprintf('e.%s LIKE :term', $field))
+                $qb->orWhere(sprintf('e.%s LIKE :term', $property))
                     ->addOrderBy(sprintf('LOCATE(:rawTerm, e.%s)', $property), 'ASC')
                     ->addOrderBy(sprintf('e.%s', $property), 'ASC')
                 ;
