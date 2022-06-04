@@ -19,9 +19,8 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
-use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -44,6 +43,7 @@ use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\GridBundle\Struct\AggregateResultStruct;
 use Unlooped\Helper\StringHelper;
+use function Symfony\Component\String\u;
 
 class GridService
 {
@@ -53,7 +53,6 @@ class GridService
     private EntityManager $em;
     private bool $saveFilter;
     private FilterRepository $filterRepo;
-    private FlashBagInterface $flashBag;
     private Environment $templating;
     private RouterInterface $router;
 
@@ -67,7 +66,6 @@ class GridService
         PaginatorInterface $paginator,
         FormFactoryInterface $formFactory,
         EntityManager $em,
-        FlashBagInterface $flashBag,
         Environment $templating,
         RouterInterface $router,
         ColumnRegistry $columnRegistry,
@@ -80,7 +78,6 @@ class GridService
         $this->formFactory            = $formFactory;
         $this->em                     = $em;
         $this->saveFilter             = $saveFilter;
-        $this->flashBag               = $flashBag;
         $this->templating             = $templating;
         $this->router                 = $router;
         $this->filterRepo             = $em->getRepository(FilterEntity::class);
@@ -252,7 +249,10 @@ class GridService
     {
         $existingFilter = $this->doesSameFilterExist($filter);
         if ($existingFilter && $existingFilter->getId() !== $filter->getId()) {
-            $this->flashBag->add('unlooped_grid.alert', 'Filter already Exists: '.$existingFilter->getName());
+            $session = $this->requestStack->getSession();
+            if ($session instanceof Session) {
+                $session->getFlashBag()->add('unlooped_grid.alert', 'Filter already Exists: '.$existingFilter->getName());
+            }
 
             return;
         }

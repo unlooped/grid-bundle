@@ -14,7 +14,6 @@ services:
           - '@knp_paginator'
           - '@form.factory'
           - '@doctrine.orm.entity_manager'
-          - '@session.flash_bag'
           - '@twig'
           - '@router.default'
           - '@Unlooped\GridBundle\Column\Registry\ColumnRegistry'
