@@ -32,8 +32,8 @@ return static function (ContainerConfigurator $container): void {
 
         ->set(AutocompleteFilterType::class)
             ->args([
-                ref('doctrine'),
-                ref('property_accessor'),
+                service('doctrine'),
+                service('property_accessor'),
             ])
         ->set(BooleanFilterType::class)
         ->set(ChoiceFilterType::class)
@@ -49,7 +49,7 @@ return static function (ContainerConfigurator $container): void {
         ->set(TextFilterType::class)
         ->set(AutocompleteTextFilterType::class)
             ->args([
-                ref('router'),
+                service('router'),
             ])
     ;
 };
