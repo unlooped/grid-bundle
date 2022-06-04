@@ -28,7 +28,7 @@ class UnloopedGridExtension extends ConfigurableExtension implements PrependExte
         $phpLoader->load('filter.php');
 
         $container->getDefinition(GridService::class)
-            ->replaceArgument(10, $config['save_filter'])
+            ->replaceArgument(9, $config['save_filter'])
         ;
     }
 
