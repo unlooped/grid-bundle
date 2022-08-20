@@ -46,7 +46,7 @@ class NumberRangeFilterType extends AbstractFilterType
             return;
         }
 
-        $suffix = uniqid('', true);
+        $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();

@@ -150,7 +150,7 @@ class DateFilterType extends AbstractFilterType
         $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
-            $suffix = uniqid('', true);
+            $suffix = uniqid('', false);
 
             if (\is_string($value)) {
                 $value = $this->replaceVarsInValue($value, $options);

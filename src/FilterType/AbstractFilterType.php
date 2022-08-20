@@ -149,7 +149,7 @@ abstract class AbstractFilterType implements FilterType
         $alias     = $fieldInfo->alias;
 
         if ($fieldInfo->fieldData && ClassMetadata::MANY_TO_MANY === $fieldInfo->fieldData['type']) {
-            $newAlias = uniqid('jn', true);
+            $newAlias = uniqid('jn', false);
 
             $qb->leftJoin($alias, $newAlias);
             $alias = $newAlias.'.id';
@@ -165,7 +165,7 @@ abstract class AbstractFilterType implements FilterType
             }
 
             foreach ($value as $val) {
-                $suffix = uniqid('', true);
+                $suffix = uniqid('', false);
 
                 if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
                     $andOrX->add($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
@@ -184,7 +184,7 @@ abstract class AbstractFilterType implements FilterType
                 $qb->setParameter('cnt_'.$suffix, \count($value));
             }
         } elseif (null !== $value) {
-            $suffix = uniqid('', true);
+            $suffix = uniqid('', false);
 
             if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
                 $qb->andWhere($qb->expr()->isMemberOf(':value_'.$suffix, $alias));
@@ -195,7 +195,7 @@ abstract class AbstractFilterType implements FilterType
             $qb->setParameter('value_'.$suffix, $value);
         } elseif (!$this->hasExpressionValue($filterRow)) {
             if ($filterRow->getOperator() === static::EXPR_IS_EMPTY) {
-                $suffix = uniqid('', true);
+                $suffix = uniqid('', false);
 
                 $orX = $qb->expr()->orX();
                 $orX->add($qb->expr()->{$op}($alias));

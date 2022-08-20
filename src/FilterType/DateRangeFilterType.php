@@ -49,7 +49,7 @@ class DateRangeFilterType extends DateFilterType
             return;
         }
 
-        $suffix = uniqid('', true);
+        $suffix = uniqid('', false);
 
         $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
