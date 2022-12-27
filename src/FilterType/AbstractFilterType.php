@@ -14,7 +14,7 @@ use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 use Unlooped\Helper\ConstantHelper;
-use Unlooped\Helper\StringHelper;
+use function Symfony\Component\String\u;
 
 abstract class AbstractFilterType implements FilterType
 {
@@ -216,7 +216,7 @@ abstract class AbstractFilterType implements FilterType
             $condition = static::$conditionMap[$condition];
         }
 
-        return StringHelper::camelize($condition)->toString();
+        return u($condition)->camel()->toString();
     }
 
     /**

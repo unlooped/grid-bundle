@@ -42,7 +42,6 @@ use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\GridBundle\Struct\AggregateResultStruct;
-use Unlooped\Helper\StringHelper;
 use function Symfony\Component\String\u;
 
 class GridService
@@ -94,7 +93,7 @@ class GridService
     public function getGridHelper(string $className, array $options = [], string $filterHash = null): GridHelper
     {
         $reflect = new ReflectionClass($className);
-        $alias   = StringHelper::first($reflect->getShortName(), 1)->toLowerCase()->toString();
+        $alias   = u($reflect->getShortName())->truncate(1)->lower()->toString();
 
         /** @var ServiceEntityRepository $repo */
         $repo = $this->em->getRepository($className);

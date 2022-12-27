@@ -4,7 +4,7 @@ namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Unlooped\GridBundle\Entity\FilterRow;
-use Unlooped\Helper\StringHelper;
+use function Symfony\Component\String\u;
 
 class NullFilterType extends AbstractFilterType
 {
@@ -30,10 +30,10 @@ class NullFilterType extends AbstractFilterType
         $value = $filterRow->getValue();
 
         if ('is_set' === $value) {
-            return StringHelper::camelize(static::IEXPR_IS_NOT_NULL)->toString();
+            return u(static::IEXPR_IS_NOT_NULL)->camel()->toString();
         }
 
-        return StringHelper::camelize(static::IEXPR_IS_NULL)->toString();
+        return u(static::IEXPR_IS_NULL)->camel()->toString();
     }
 
     public function getExpressionValue(FilterRow $filterRow)
