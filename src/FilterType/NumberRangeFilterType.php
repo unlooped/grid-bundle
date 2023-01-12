@@ -12,10 +12,30 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Unlooped\GridBundle\Entity\FilterRow;
+use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class NumberRangeFilterType extends AbstractFilterType
 {
     protected $template = '@UnloopedGrid/filter_types/number_range.html.twig';
+
+    public static function createDefaultRangeData(string $operator, ?int $min = null, ?int $max = null): DefaultFilterDataStruct
+    {
+        $dto = parent::createDefaultData($operator, null);
+        $meta = [
+            'operator' => $operator,
+        ];
+
+        if ($min) {
+            $meta['from'] = $min;
+        }
+        if ($max) {
+            $meta['to'] = $max;
+        }
+
+        $dto->metaData = $meta;
+
+        return $dto;
+    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
