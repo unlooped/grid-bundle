@@ -15,7 +15,7 @@
         "doctrine/doctrine-bundle": "^2",
         "doctrine/orm": "^2.8.2",
         "doctrine/persistence": "^2",
-        "knplabs/knp-paginator-bundle": "^5.0",
+        "knplabs/knp-paginator-bundle": "^6.1",
         "nesbot/carbon": "^2.21",
         "symfony/doctrine-bridge": "^4.2 || ^5.1 || ^6.0",
         "symfony/form": "^4.2 || ^5.1 || ^6.0",
