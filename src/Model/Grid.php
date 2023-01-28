@@ -23,6 +23,7 @@ class Grid
     private array $existingFilters;
     private FormView $filterFormView;
     private ?AggregateResultStruct $aggregateResults;
+    private ?FormView $filterUserSettingsFormView = null;
 
     public function __construct(
         GridHelper $gridHelper,
@@ -83,7 +84,7 @@ class Grid
             $visibleColumns = null;
         }
 
-        return array_filter($this->getColumns(), static function (Column $column) use ($visibleColumns) {
+        return array_filter($this->getColumns(), static function (Column $column) use ($visibleColumns): bool {
             if (false === $column->getOption('visible')) {
                 return false;
             }
@@ -229,7 +230,7 @@ class Grid
         return $this->filterFormRequest->isFilterDeleted();
     }
 
-    public function getFilterUserSettingsFormView(): FormView
+    public function getFilterUserSettingsFormView(): ?FormView
     {
         return $this->filterUserSettingsFormView;
     }

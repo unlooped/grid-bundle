@@ -27,15 +27,15 @@ class AutocompleteService
 
     public function getAutocompleteResults(GridHelper $gridHelper, Request $request): Response
     {
-        $filter = $gridHelper->getFilterTypeForField($request->get('field'));
+        $filter = $gridHelper->getFilterTypeForField((string) $request->query->get('field'));
 
         if (!$this->isSupportedFilter($filter)) {
             return new JsonResponse([]);
         }
 
-        $q         = $request->get('q', '');
-        $page      = (int) $request->get('page', 1);
-        $pageLimit = (int) $request->get('page_limit', 10);
+        $q         = (string) $request->query->get('q', '');
+        $page      = (int) $request->query->get('page', 1);
+        $pageLimit = (int) $request->query->get('page_limit', 10);
 
         $result = $this->getResult($filter, $q, $page, $pageLimit);
 

@@ -120,8 +120,8 @@ class GridService
         }
 
         $qb      = $gridHelper->getQueryBuilder();
-        $sort    = $request->get('sort');
-        $route   = $request->get('_route');
+        $sort    = (string) $request->query->get('sort');
+        $route   = (string) $request->attributes->get('_route');
 
         $filterFormRequest = $this->handleFilterForm($gridHelper);
         if ($gridHelper->getUserSettingsEnabled()) {
@@ -424,8 +424,8 @@ class GridService
         $request = $this->requestStack->getCurrentRequest();
         if ($this->saveFilter
             && $request
-            && $request->get('_route')
-            && $filter = $this->filterRepo->findDefaultForRoute($request->get('_route'))
+            && $request->attributes->get('_route')
+            && $filter = $this->filterRepo->findDefaultForRoute($request->attributes->get('_route'))
         ) {
             return $filter;
         }
@@ -433,7 +433,7 @@ class GridService
         $filter = new FilterEntity($className);
 
         if ($request) {
-            $filter->setRoute(str_replace('.filter', '', $request->get('_route')));
+            $filter->setRoute(str_replace('.filter', '', $request->attributes->get('_route')));
         }
 
         return $filter;
@@ -517,7 +517,7 @@ class GridService
 
         $filter = $gridHelper->getFilter();
 
-        $route      = u($request->get('_route'))->replace('.filter', '');
+        $route      = u($request->attributes->get('_route'))->replace('.filter', '')->toString();
         $filterHash = $filter->getHash() ?? '_default';
 
         $filterUserSettings = $this->filterUserSettingsRepo->findOneByRouteAndUserId($route, $filterHash, $gridHelper->getCurrentUserIdentifier());

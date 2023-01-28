@@ -158,7 +158,7 @@ class NumberRangeFilterType extends AbstractFilterType
 
                 $diff        = abs($number_from - $number_to);
                 if ($diff < $options['min_range']) {
-                    $context->addViolation('Minimum Range is '.$options['min_range'], [], null);
+                    $context->addViolation('Minimum Range is '.$options['min_range']);
                 }
             });
         }
@@ -170,7 +170,7 @@ class NumberRangeFilterType extends AbstractFilterType
 
                 $diff        = abs($number_from - $number_to);
                 if ($diff > $options['max_range']) {
-                    $context->addViolation('Maximum Range is '.$options['max_range'], [], null);
+                    $context->addViolation('Maximum Range is '.$options['max_range']);
                 }
             });
         }
