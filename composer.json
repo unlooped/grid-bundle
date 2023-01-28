@@ -1,8 +1,8 @@
 {
     "name": "unlooped/grid-bundle",
-    "type": "symfony-bundle",
     "description": "Simple Grid Bundle",
     "license": "MIT",
+    "type": "symfony-bundle",
     "authors": [
         {
             "name": "Steffen Persch",
@@ -37,13 +37,6 @@
         "ergebnis/composer-normalize": "^2.0.1",
         "symfony/var-dumper": "^4.3 || ^5.1 || ^6.0"
     },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "ergebnis/composer-normalize": true,
-            "bamarni/composer-bin-plugin": true
-        }
-    },
     "autoload": {
         "psr-4": {
             "Unlooped\\GridBundle\\": "src/"
@@ -53,6 +46,13 @@
         "psr-4": {
             "Unlooped\\GridBundle\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "bamarni/composer-bin-plugin": true
+        },
+        "sort-packages": true
     },
     "scripts": {
         "post-install-cmd": [
