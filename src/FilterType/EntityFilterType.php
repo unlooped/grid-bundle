@@ -7,7 +7,7 @@ use Unlooped\GridBundle\Form\EntityType;
 
 final class EntityFilterType extends AbstractFilterType
 {
-    protected $template = '@UnloopedGrid/filter_types/entity.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/entity.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {

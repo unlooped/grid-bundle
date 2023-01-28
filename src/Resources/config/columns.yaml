@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+    _instanceof:
+        Unlooped\GridBundle\ColumnType\ColumnTypeInterface:
+            tags: ['unlooped_grid.column']
+    Unlooped\GridBundle\Column\Registry\ColumnRegistry: ~
+    Unlooped\GridBundle\ColumnType\:
+        resource: '../../ColumnType/*'
+        tags: ['unlooped_grid.column']

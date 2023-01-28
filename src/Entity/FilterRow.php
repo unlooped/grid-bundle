@@ -14,25 +14,23 @@ class FilterRow
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Unlooped\GridBundle\Entity\Filter", inversedBy="rows")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $filter;
+    private ?Filter $filter;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $field;
+    private ?string $field;
 
     /**
-     * @var array
-     *
      * @ORM\Column(type="json", nullable=true)
      */
-    private $metaData = [];
+    private array $metaData = [];
 
     public function getId(): ?int
     {

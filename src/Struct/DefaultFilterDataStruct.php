@@ -6,20 +6,14 @@ use Unlooped\GridBundle\FilterType\AbstractFilterType;
 
 class DefaultFilterDataStruct
 {
-    /**
-     * @var string|null
-     */
-    public $operator = AbstractFilterType::EXPR_CONTAINS;
+    public ?string $operator = AbstractFilterType::EXPR_CONTAINS;
 
-    /**
-     * @var mixed|mixed[]
-     */
     public $value;
 
     /**
      * @var array<string, mixed>
      */
-    public $metaData = [];
+    public array $metaData = [];
 
     public function serialize(): array
     {

@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LocalizedDateColumn extends AbstractColumnType
 {
-    protected $template = '@UnloopedGrid/column_types/localized_date.html.twig';
+    protected string $template = '@UnloopedGrid/column_types/localized_date.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {

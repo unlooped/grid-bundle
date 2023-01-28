@@ -6,7 +6,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BooleanColumn extends AbstractColumnType
 {
-    protected $template = '@UnloopedGrid/column_types/boolean.html.twig';
+    protected string $template = '@UnloopedGrid/column_types/boolean.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {

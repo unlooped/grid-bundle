@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+    _instanceof:
+        Unlooped\GridBundle\FilterType\FilterType:
+            tags: ['unlooped_grid.filter']
+    Unlooped\GridBundle\Filter\Registry\FilterRegistry: ~
+    Unlooped\GridBundle\FilterType\:
+        resource: '../../FilterType/*'
+        tags: ['unlooped_grid.filter']

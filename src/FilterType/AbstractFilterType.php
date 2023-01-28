@@ -8,13 +8,13 @@ use Doctrine\Persistence\Mapping\MappingException;
 use ReflectionException;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use function Symfony\Component\String\u;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 use Unlooped\Helper\ConstantHelper;
-use function Symfony\Component\String\u;
 
 abstract class AbstractFilterType implements FilterType
 {
@@ -38,12 +38,12 @@ abstract class AbstractFilterType implements FilterType
     public const IEXPR_IS_NULL     = 'is_null';
     public const IEXPR_IS_NOT_NULL = 'is_not_null';
 
-    protected $template  = '@UnloopedGrid/filter_types/text.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/text.html.twig';
 
     /**
      * @var array<string, string>
      */
-    protected static $conditionMap = [
+    protected static array $conditionMap = [
         self::EXPR_CONTAINS     => self::EXPR_LIKE,
         self::EXPR_NOT_CONTAINS => self::EXPR_NOT_LIKE,
         self::EXPR_BEGINS_WITH  => self::EXPR_LIKE,
@@ -55,7 +55,7 @@ abstract class AbstractFilterType implements FilterType
     /**
      * @var array<string, array<string, mixed>>
      */
-    protected static $valueMap = [
+    protected static array $valueMap = [
         self::EXPR_CONTAINS     => [
             'prefix' => '%',
             'suffix' => '%',
@@ -86,6 +86,14 @@ abstract class AbstractFilterType implements FilterType
             'split' => true,
         ],
     ];
+
+    /**
+     * @param string $baseTemplatePath #Template
+     */
+    public function setBaseTemplatePath(string $baseTemplatePath): void
+    {
+        $this->template = str_replace('@UnloopedGrid', $baseTemplatePath, $this->template);
+    }
 
     public static function getVariables(): array
     {

@@ -4,11 +4,8 @@ namespace Unlooped\GridBundle\Struct;
 
 class FieldMetaDataStruct
 {
-    /** @var string */
-    public $alias;
-
-    /** @var array */
-    public $fieldData;
+    public ?string $alias;
+    public ?array $fieldData;
 
     public function __toString(): string
     {

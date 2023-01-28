@@ -10,16 +10,27 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 abstract class AbstractColumnType implements ColumnTypeInterface
 {
-    protected $template = '@UnloopedGrid/column_types/text.html.twig';
+    /** @var string #Template */
+    protected string $template = '@UnloopedGrid/column_types/text.html.twig';
 
     protected TokenStorageInterface $tokenStorage;
 
     protected PropertyAccessorInterface $propertyAccessor;
 
-    public function __construct(TokenStorageInterface $tokenStorage, PropertyAccessorInterface $propertyAccessor)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        PropertyAccessorInterface $propertyAccessor
+    ) {
         $this->tokenStorage     = $tokenStorage;
         $this->propertyAccessor = $propertyAccessor;
+    }
+
+    /**
+     * @param string $baseTemplatePath #Template
+     */
+    public function setBaseTemplatePath(string $baseTemplatePath): void
+    {
+        $this->template = str_replace('@UnloopedGrid', $baseTemplatePath, $this->template);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

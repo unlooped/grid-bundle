@@ -9,7 +9,7 @@ use Traversable;
 
 class ChoiceFilterType extends AbstractFilterType
 {
-    protected $template = '@UnloopedGrid/filter_types/choice.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/choice.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {

@@ -3,8 +3,8 @@
 namespace Unlooped\GridBundle\FilterType;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Unlooped\GridBundle\Entity\FilterRow;
 use function Symfony\Component\String\u;
+use Unlooped\GridBundle\Entity\FilterRow;
 
 class NullFilterType extends AbstractFilterType
 {

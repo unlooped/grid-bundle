@@ -21,7 +21,7 @@ class DateFilterType extends AbstractFilterType
     public const VALUE_CHOICE_DATE      = 'date';
     public const VALUE_CHOICE_VARIABLES = 'variables';
 
-    protected $template = '@UnloopedGrid/filter_types/date.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/date.html.twig';
 
     public static function getVariables(): array
     {

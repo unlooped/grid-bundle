@@ -16,11 +16,11 @@ use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class NumberRangeFilterType extends AbstractFilterType
 {
-    protected $template = '@UnloopedGrid/filter_types/number_range.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/number_range.html.twig';
 
     public static function createDefaultRangeData(string $operator, ?int $min = null, ?int $max = null): DefaultFilterDataStruct
     {
-        $dto = parent::createDefaultData($operator, null);
+        $dto  = parent::createDefaultData($operator, null);
         $meta = [
             'operator' => $operator,
         ];

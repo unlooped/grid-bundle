@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->children()
                 ->booleanNode('save_filter')->defaultFalse()->end()
+                ->scalarNode('template')->defaultValue('@UnloopedGrid')->end()
             ->end()
         ;
 

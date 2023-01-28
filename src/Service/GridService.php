@@ -4,11 +4,10 @@ namespace Unlooped\GridBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Persistence\Mapping\MappingException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use LogicException;
@@ -21,6 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
+use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -42,7 +42,6 @@ use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\GridBundle\Struct\AggregateResultStruct;
-use function Symfony\Component\String\u;
 
 class GridService
 {
@@ -59,6 +58,7 @@ class GridService
     private FilterRegistry $filterRegistry;
     private FilterUserSettingsRepository $filterUserSettingsRepo;
     private TranslatorInterface $translator;
+    private string $baseTemplatePath;
 
     public function __construct(
         RequestStack $requestStack,
@@ -70,7 +70,8 @@ class GridService
         ColumnRegistry $columnRegistry,
         FilterRegistry $filterRegistry,
         TranslatorInterface $translator,
-        bool $saveFilter
+        bool $saveFilter,
+        string $baseTemplatePath
     ) {
         $this->requestStack           = $requestStack;
         $this->paginator              = $paginator;
@@ -84,6 +85,7 @@ class GridService
         $this->columnRegistry         = $columnRegistry;
         $this->translator             = $translator;
         $this->filterRegistry         = $filterRegistry;
+        $this->baseTemplatePath       = $baseTemplatePath;
     }
 
     /**
@@ -101,7 +103,7 @@ class GridService
 
         $filter = $this->getFilter($className, $filterHash);
 
-        return new GridHelper($qb, $this->columnRegistry, $this->filterRegistry, $options, $filter);
+        return new GridHelper($qb, $this->columnRegistry, $this->filterRegistry, $options, $filter, $this->baseTemplatePath);
     }
 
     /**
@@ -109,7 +111,6 @@ class GridService
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws ReflectionException
-     * @throws MappingException
      */
     public function getGrid(GridHelper $gridHelper): Grid
     {
@@ -167,10 +168,10 @@ class GridService
             }
 
             $aggregates = [...$column->getOption('aggregates')];
-            if ($column->getOption('show_aggregate') && $column->getOption('show_aggregate') !== 'callback') {
+            if ($column->getOption('show_aggregate') && 'callback' !== $column->getOption('show_aggregate')) {
                 $aggregates[] = $column->getOption('show_aggregate');
             }
-            if (is_callable($column->getOption('aggregate_callback'))) {
+            if (\is_callable($column->getOption('aggregate_callback'))) {
                 $aggregates[] = $column->getOption('aggregate_callback');
             }
 
@@ -178,7 +179,7 @@ class GridService
                 $fieldInfo = RelationsHelper::joinRequiredPaths($qb, $entity, $column->getField());
 
                 foreach ($aggregates as $aggregate) {
-                    if (is_callable($aggregate)) {
+                    if (\is_callable($aggregate)) {
                         $aggrFn = $aggregate($column, $qb);
                     } else {
                         $aggregateAlias = $columnType->getAggregateAlias($aggregate, $column->getField());
@@ -210,6 +211,10 @@ class GridService
     }
 
     /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     *
      * @return array<string, array<string, mixed>>
      */
     public function getFilterData(GridHelper $helper): array
@@ -312,7 +317,7 @@ class GridService
         return $this->filterRepo->findOneByHash($hash);
     }
 
-    public function getHashForFilter(FilterEntity $filter)
+    public function getHashForFilter(FilterEntity $filter): string
     {
         $arr = [];
         if ($route = $filter->getRoute()) {
@@ -376,6 +381,7 @@ class GridService
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws ReflectionException
      */
     public function render(string $template, GridHelper $gridHelper, array $parameters = []): Response
     {

@@ -7,7 +7,7 @@ use Unlooped\GridBundle\Struct\AggregateResultStruct;
 
 class NumberColumn extends AbstractColumnType
 {
-    protected $template = '@UnloopedGrid/column_types/number.html.twig';
+    protected string $template = '@UnloopedGrid/column_types/number.html.twig';
 
     public function configureOptions(OptionsResolver $resolver): void
     {

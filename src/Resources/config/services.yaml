@@ -20,6 +20,7 @@ services:
           - '@Unlooped\GridBundle\Filter\Registry\FilterRegistry'
           - '@Symfony\Contracts\Translation\TranslatorInterface'
           -
+          -
 
     Unlooped\GridBundle\Service\AutocompleteService:
         public: true

@@ -52,19 +52,22 @@ class GridHelper
     private array $options;
 
     private string $alias;
+    private ?string $baseTemplatePath;
 
     public function __construct(
         QueryBuilder $queryBuilder,
         ColumnRegistry $columnRegistry,
         FilterRegistry $filterRegistry,
         array $options = [],
-        FilterEntity $filter = null
+        FilterEntity $filter = null,
+        string $baseTemplatePath = null
     ) {
-        $this->queryBuilder   = $queryBuilder;
-        $this->columnRegistry = $columnRegistry;
-        $this->filterRegistry = $filterRegistry;
-        $this->alias          = $this->queryBuilder->getRootAliases()[0];
-        $this->filter         = $filter;
+        $this->queryBuilder     = $queryBuilder;
+        $this->columnRegistry   = $columnRegistry;
+        $this->filterRegistry   = $filterRegistry;
+        $this->alias            = $this->queryBuilder->getRootAliases()[0];
+        $this->filter           = $filter;
+        $this->baseTemplatePath = $baseTemplatePath;
 
         $resolver = new OptionsResolver();
         $this->configureOptions($resolver);
@@ -77,12 +80,12 @@ class GridHelper
         $resolver->setDefaults([
             'name'                    => '',
             'allow_duplicate_columns' => false,
-            'listRow'                 => '@UnloopedGrid/list_row.html.twig',
-            'aggregateRow'            => '@UnloopedGrid/aggregate_row.html.twig',
-            'paginationTemplate'      => '@UnloopedGrid/_pagination.html.twig',
-            'listHeaderTemplate'      => '@UnloopedGrid/column_headers.html.twig',
-            'filter_view'             => '@UnloopedGrid/_filter.html.twig',
-            'list_view'               => '@UnloopedGrid/_list.html.twig',
+            'listRow'                 => $this->baseTemplatePath.'/list_row.html.twig',
+            'aggregateRow'            => $this->baseTemplatePath.'/aggregate_row.html.twig',
+            'paginationTemplate'      => $this->baseTemplatePath.'/_pagination.html.twig',
+            'listHeaderTemplate'      => $this->baseTemplatePath.'/column_headers.html.twig',
+            'filter_view'             => $this->baseTemplatePath.'/_filter.html.twig',
+            'list_view'               => $this->baseTemplatePath.'/_list.html.twig',
             'title'                   => '',
             'createRoute'             => null,
             'createLabel'             => null,

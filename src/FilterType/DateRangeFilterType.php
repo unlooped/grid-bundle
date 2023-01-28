@@ -13,7 +13,7 @@ use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 
 class DateRangeFilterType extends DateFilterType
 {
-    protected $template = '@UnloopedGrid/filter_types/date_range.html.twig';
+    protected string $template = '@UnloopedGrid/filter_types/date_range.html.twig';
 
     public static function createDefaultDataForRangeVariables(string $fromDate, string $toDate): DefaultFilterDataStruct
     {

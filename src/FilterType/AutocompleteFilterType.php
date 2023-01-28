@@ -7,6 +7,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Tetranz\Select2EntityBundle\Form\Type\Select2EntityType;
 use Unlooped\GridBundle\Entity\FilterRow;
 
@@ -15,7 +16,7 @@ class AutocompleteFilterType extends AbstractFilterType
     private ManagerRegistry $registry;
     private PropertyAccessor $propertyAccessor;
 
-    public function __construct(ManagerRegistry $registry, PropertyAccessor $propertyAccessor)
+    public function __construct(ManagerRegistry $registry, PropertyAccessorInterface $propertyAccessor)
     {
         $this->registry         = $registry;
         $this->propertyAccessor = $propertyAccessor;
