@@ -12,9 +12,9 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "doctrine/doctrine-bundle": "^2",
-        "doctrine/orm": "^2.8.2",
-        "doctrine/persistence": "^2",
+        "doctrine/doctrine-bundle": "^2 || ^3",
+        "doctrine/orm": "^2.8.2 || ^3",
+        "doctrine/persistence": "^2 || ^3",
         "knplabs/knp-paginator-bundle": "^5.0",
         "nesbot/carbon": "^2.21",
         "symfony/doctrine-bridge": "^4.2 || ^5.1 || ^6.0",
