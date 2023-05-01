@@ -68,6 +68,10 @@ class RelationsHelper
                 $fieldData = $md->getAssociationMapping($fields[0]);
             }
 
+            if ($fields[0] === '__self') {
+                return FieldMetaDataStruct::create($alias, $fieldData);
+            }
+
             return FieldMetaDataStruct::create($alias.'.'.$fields[0], $fieldData);
         }
 
