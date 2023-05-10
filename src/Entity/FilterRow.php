@@ -14,18 +14,18 @@ class FilterRow
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Unlooped\GridBundle\Entity\Filter", inversedBy="rows")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Filter $filter;
+    private ?Filter $filter = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $field;
+    private ?string $field = null;
 
     /**
      * @ORM\Column(type="json", nullable=true)

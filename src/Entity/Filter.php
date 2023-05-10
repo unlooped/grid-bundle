@@ -61,7 +61,7 @@ class Filter
     private bool $hasDefaultShowFilter = false;
 
     /** @var array<string, string> */
-    private array $fields;
+    private array $fields = [];
     private bool $isSaveable = false;
 
     public function __construct(string $entity)
