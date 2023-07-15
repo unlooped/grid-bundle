@@ -75,3 +75,12 @@
     content: '\f0de';
   }
 }
+
+#filter_user_settings_form_visibleColumns {
+  @include make-row();
+  padding: 0 1.5rem;
+  > div.custom-control.custom-checkbox {
+    @include make-col-ready();
+    @include make-col(3);
+  }
+}
