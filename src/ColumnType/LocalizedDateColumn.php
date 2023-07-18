@@ -15,6 +15,7 @@ class LocalizedDateColumn extends AbstractColumnType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
+            'attr'        => ['class' => 'text-right'],
             'date_format' => 'medium',
             'time_format' => 'medium',
             'locale'      => null,
