@@ -6,8 +6,8 @@
     {% if value is null and not column.options.nullAsFalse %}
         {{ column.options.nullSymbol }}
     {% elseif value %}
-        <span class="badge badge-success">{% trans %}Yes{% endtrans %}</span>
+        <span class="badge {% if column.options.inverted %}badge-danger{% else %}badge-success{% endif %}">{% trans %}Yes{% endtrans %}</span>
     {% else %}
-        <span class="badge badge-danger">{% trans %}No{% endtrans %}</span>
+        <span class="badge {% if column.options.inverted %}badge-success{% else %}badge-danger{% endif %}">{% trans %}No{% endtrans %}</span>
     {% endif %}
 {% endblock %}

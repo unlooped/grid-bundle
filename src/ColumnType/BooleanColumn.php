@@ -13,9 +13,12 @@ class BooleanColumn extends AbstractColumnType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
+            'attr'        => ['class' => 'text-center'],
             'nullAsFalse' => false,
+            'inverted'    => false,
         ]);
 
         $resolver->setAllowedTypes('nullAsFalse', 'bool');
+        $resolver->setAllowedTypes('inverted', 'bool');
     }
 }
