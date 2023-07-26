@@ -3,6 +3,7 @@
      data-allow-add="{{ data.vars.allow_add|json_encode }}"
      data-allow-delete="{{ data.vars.allow_delete|json_encode }}"
      data-prototype="{% apply escape('html_attr')|spaceless %}{% include rowTemplate with {'data': data.vars.prototype} %}{% endapply %}"
+     data-prototype-name="{{ data.vars.prototype.vars.name }}"
      data-add-btn-sel="{{ addBtnSel }}"
      data-delete-btn-sel="{{ deleteBtnSel }}"
 >
