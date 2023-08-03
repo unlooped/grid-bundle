@@ -59,3 +59,7 @@ is_empty: 'is maintained'
 is_not_empty: 'is not maintained'
 in: 'in'
 in_range: 'in range'
+flash_message:
+    warning: Warning
+    success: Success
+    error: Error
