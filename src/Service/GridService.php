@@ -325,12 +325,12 @@ class GridService
         }
 
         foreach ($filter->getRows() as $row) {
-            $arr[] = $row->getField().$row->getOperator().serialize($row->getValue());
+            $arr[] = $row->getField().$row->getOperator().serialize($row->getValue()).serialize($row->getMetaData());
         }
 
         sort($arr);
 
-        return sha1(implode('-', $arr));
+        return hash('sha1', implode('-', $arr));
     }
 
     /**
