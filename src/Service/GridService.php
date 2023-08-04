@@ -148,7 +148,7 @@ class GridService
             $filterData,
             ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
             $route,
-            $request->query->all(),
+            array_merge($request->attributes->get('_route_params'), $request->query->all()),
             $existingFilters,
             $aggregateResults
         );
