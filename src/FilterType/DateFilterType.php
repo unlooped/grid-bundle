@@ -2,7 +2,7 @@
 
 namespace Unlooped\GridBundle\FilterType;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
@@ -122,7 +122,7 @@ class DateFilterType extends AbstractFilterType
      */
     public static function createDefaultDataForDate(string $operator, DateTimeInterface $dateTime): DefaultFilterDataStruct
     {
-        return static::createDefaultData($operator, Carbon::instance($dateTime)->toFormattedDateString());
+        return static::createDefaultData($operator, CarbonImmutable::instance($dateTime)->toFormattedDateString());
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -157,9 +157,9 @@ class DateFilterType extends AbstractFilterType
             }
 
             try {
-                $date = Carbon::parse($value, $options['view_timezone'])->startOfDay();
+                $date = CarbonImmutable::parse($value, $options['view_timezone'])->startOfDay();
             } catch (Exception $e) {
-                $date = Carbon::now($options['view_timezone'])->startOfDay();
+                $date = CarbonImmutable::now($options['view_timezone'])->startOfDay();
             }
 
             if (static::EXPR_EQ === $op) {
@@ -181,7 +181,7 @@ class DateFilterType extends AbstractFilterType
 
     public function replaceVarsInValue(string $value, array $options = []): string
     {
-        $now = Carbon::now($options['view_timezone']);
+        $now = CarbonImmutable::now($options['view_timezone']);
         $now->settings([
             'monthOverflow' => false,
             'yearOverflow'  => false,
@@ -213,40 +213,40 @@ class DateFilterType extends AbstractFilterType
                 return $now->subWeeks(4)->startOfDay()->toFormattedDateString();
 
             case 'START_OF_WEEK_MONDAY':
-                return $now->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+                return $now->startOfWeek(CarbonImmutable::MONDAY)->toFormattedDateString();
 
             case 'START_OF_WEEK_SUNDAY':
-                return $now->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->startOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'START_OF_LAST_WEEK_MONDAY':
-                return $now->subWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+                return $now->subWeek()->startOfWeek(CarbonImmutable::MONDAY)->toFormattedDateString();
 
             case 'START_OF_LAST_WEEK_SUNDAY':
-                return $now->subWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->subWeek()->startOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'START_OF_NEXT_WEEK_MONDAY':
-                return $now->addWeek()->startOfWeek(Carbon::MONDAY)->toFormattedDateString();
+                return $now->addWeek()->startOfWeek(CarbonImmutable::MONDAY)->toFormattedDateString();
 
             case 'START_OF_NEXT_WEEK_SUNDAY':
-                return $now->addWeek()->startOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->addWeek()->startOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_WEEK_SUNDAY':
-                return $now->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->endOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_WEEK_SATURDAY':
-                return $now->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+                return $now->endOfWeek(CarbonImmutable::SATURDAY)->toFormattedDateString();
 
             case 'END_OF_LAST_WEEK_SUNDAY':
-                return $now->subWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->subWeek()->endOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_LAST_WEEK_SATURDAY':
-                return $now->subWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+                return $now->subWeek()->endOfWeek(CarbonImmutable::SATURDAY)->toFormattedDateString();
 
             case 'END_OF_NEXT_WEEK_SUNDAY':
-                return $now->addWeek()->endOfWeek(Carbon::SUNDAY)->toFormattedDateString();
+                return $now->addWeek()->endOfWeek(CarbonImmutable::SUNDAY)->toFormattedDateString();
 
             case 'END_OF_NEXT_WEEK_SATURDAY':
-                return $now->addWeek()->endOfWeek(Carbon::SATURDAY)->toFormattedDateString();
+                return $now->addWeek()->endOfWeek(CarbonImmutable::SATURDAY)->toFormattedDateString();
 
             case 'START_OF_MONTH':
                 return $now->startOfMonth()->toFormattedDateString();
@@ -369,7 +369,7 @@ class DateFilterType extends AbstractFilterType
             $builder->get('_variables')->setData($data->getValue());
         } elseif (static::VALUE_CHOICE_DATE === $valueType) {
             if ($data->getValue()) {
-                $builder->get('_dateValue')->setData(Carbon::parse($data->getValue()));
+                $builder->get('_dateValue')->setData(CarbonImmutable::parse($data->getValue()));
             }
         }
     }
@@ -378,7 +378,7 @@ class DateFilterType extends AbstractFilterType
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if (static::VALUE_CHOICE_DATE === $valueType) {
-            $date = null !== $builder->get('_dateValue')->getData() ? Carbon::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
+            $date = null !== $builder->get('_dateValue')->getData() ? CarbonImmutable::parse($builder->get('_dateValue')->getData())->toFormattedDateString() : null;
             $data->setValue($date);
             $data->addMetaData('value_type', $valueType);
         } elseif (static::VALUE_CHOICE_VARIABLES === $valueType) {

@@ -2,7 +2,7 @@
 
 namespace Unlooped\GridBundle\FilterType;
 
-use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -34,8 +34,8 @@ class DateRangeFilterType extends DateFilterType
         $dto->operator = static::EXPR_IN_RANGE;
         $dto->metaData = [
             'value_type'     => static::VALUE_CHOICE_DATE,
-            'dateValue_from' => Carbon::instance($fromDate)->toFormattedDateString(),
-            'dateValue_to'   => Carbon::instance($toDate)->toFormattedDateString(),
+            'dateValue_from' => CarbonImmutable::instance($fromDate)->toFormattedDateString(),
+            'dateValue_to'   => CarbonImmutable::instance($toDate)->toFormattedDateString(),
         ];
 
         return $dto;
@@ -70,7 +70,7 @@ class DateRangeFilterType extends DateFilterType
                 $startValue = $this->replaceVarsInValue($startValue, $options);
             }
 
-            $startDate = Carbon::parse($startValue, $options['view_timezone'])->startOfDay();
+            $startDate = CarbonImmutable::parse($startValue, $options['view_timezone'])->startOfDay();
 
             $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
             $qb->setParameter('value_start_'.$suffix, $startDate->timezone($options['target_timezone']));
@@ -81,7 +81,7 @@ class DateRangeFilterType extends DateFilterType
                 $endValue = $this->replaceVarsInValue($endValue, $options);
             }
 
-            $endDate = Carbon::parse($endValue, $options['view_timezone'])->addDay()->startOfDay();
+            $endDate = CarbonImmutable::parse($endValue, $options['view_timezone'])->addDay()->startOfDay();
             $qb->andWhere($qb->expr()->lt($field, ':value_end_'.$suffix));
             $qb->setParameter('value_end_'.$suffix, $endDate->timezone($options['target_timezone']));
         }
@@ -175,8 +175,8 @@ class DateRangeFilterType extends DateFilterType
             $builder->get('_variables_from')->setData($metaData['variable_from']);
             $builder->get('_variables_to')->setData($metaData['variable_to']);
         } elseif (static::VALUE_CHOICE_DATE === $valueType) {
-            $builder->get('_dateValue_from')->setData(Carbon::parse($metaData['dateValue_from']));
-            $builder->get('_dateValue_to')->setData(Carbon::parse($metaData['dateValue_to']));
+            $builder->get('_dateValue_from')->setData(CarbonImmutable::parse($metaData['dateValue_from']));
+            $builder->get('_dateValue_to')->setData(CarbonImmutable::parse($metaData['dateValue_to']));
         }
     }
 
@@ -184,8 +184,8 @@ class DateRangeFilterType extends DateFilterType
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if (static::VALUE_CHOICE_DATE === $valueType) {
-            $dateFrom = null !== $builder->get('_dateValue_from')->getData() ? Carbon::parse($builder->get('_dateValue_from')->getData())->toFormattedDateString() : null;
-            $dateTo   = null !== $builder->get('_dateValue_to')->getData() ? Carbon::parse($builder->get('_dateValue_to')->getData())->toFormattedDateString() : null;
+            $dateFrom = null !== $builder->get('_dateValue_from')->getData() ? CarbonImmutable::parse($builder->get('_dateValue_from')->getData())->toFormattedDateString() : null;
+            $dateTo   = null !== $builder->get('_dateValue_to')->getData() ? CarbonImmutable::parse($builder->get('_dateValue_to')->getData())->toFormattedDateString() : null;
 
             $data->setMetaData([
                 'operator'       => $data->getOperator(),
