@@ -12,7 +12,10 @@ class BadgeColumn extends AbstractColumnType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults(['classPrefix' => null]);
+        $resolver->setDefaults([
+            'classPrefix' => null,
+            'attr'        => ['class' => 'text-center'],
+        ]);
         $resolver->setAllowedTypes('classPrefix', ['null', 'string']);
     }
 }
