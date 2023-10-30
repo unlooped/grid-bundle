@@ -15,9 +15,34 @@ class CurrencyColumn extends NumberColumn
 
         $resolver->setDefaults([
             'currency' => 'EUR',
+            'currency_path' => null,
+            'divider' => 0,
         ]);
 
-        $resolver->setAllowedTypes('currency', ['string']);
+        $resolver->setAllowedTypes('currency', ['string', 'null']);
+        $resolver->setAllowedTypes('currency_path', ['string', 'null']);
+
         $resolver->setAllowedValues('currency', Currencies::getCurrencyCodes());
     }
+
+    public function getValue(string $field, object $object, array $options = [])
+    {
+        $value = parent::getValue($field, $object, $options);
+
+        if ($options['divider'] > 0) {
+            $value /= $options['divider'];
+        }
+
+        return $value;
+    }
+
+    public function getCurrency(object $object, array $options)
+    {
+        if ($options['currency_path']) {
+            return $this->propertyAccessor->getValue($object, $options['currency_path']);
+        }
+
+        return $options['currency'];
+    }
+
 }
