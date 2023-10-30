@@ -6,7 +6,7 @@
     {% endfor %}
     >
         {% block content %}
-            {% set value = type.value(data) %}
+            {% set value = column.value(data) %}
             {% block column_content %}
                 {{ value }}
             {% endblock %}

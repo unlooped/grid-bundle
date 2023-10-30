@@ -1,10 +1,9 @@
 {# @var grid \Unlooped\GridBundle\Model\Grid #}
-{# @var type \Unlooped\GridBundle\ColumnType\ColumnTypeInterface #}
 
 {% block grid_list_row %}
     <tr>
         {% for column in grid.visibleColumns %}
-            {% include column.template with {'type': column, 'data': data} %}
+            {% include column.template with {'column': column, 'data': data} only %}
         {% endfor %}
     </tr>
 {% endblock %}

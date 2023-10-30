@@ -1,10 +1,10 @@
-{# @var type \Unlooped\GridBundle\Column\Column #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
 
 {% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
 {% block column_content %}
     {% set val = value|default(column.options.nullSymbol) %}
-    <span class="badge badge-status-{% if type.options.classPrefix %}{{ type.options.classPrefix }}-{% endif %}{{ val }}">
+    <span class="badge badge-status-{% if column.options.classPrefix %}{{ column.options.classPrefix }}-{% endif %}{{ val }}">
         {{ val }}
     </span>
 {% endblock %}

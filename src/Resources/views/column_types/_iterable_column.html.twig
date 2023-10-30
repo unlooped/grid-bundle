@@ -1,9 +1,9 @@
-{# @var type \Unlooped\GridBundle\Column\Column #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
 
 {% extends '@UnloopedGrid/column_types/_column.html.twig' %}
 
 {% block content %}
-    {% set val = type.value(data) %}
+    {% set val = column.value(data) %}
     {% if val is defined %}
         {% if val is iterable %}
             {% for value in val %}

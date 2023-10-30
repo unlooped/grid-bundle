@@ -1,4 +1,4 @@
-{# @var type \Unlooped\GridBundle\Column\Column #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
 
 {% extends '@UnloopedGrid/column_types/_iterable_column.html.twig' %}
 
@@ -9,6 +9,6 @@
         {{ column.options.nullSymbol }}
     {% endif %}
     {% if it_loop is defined and not it_loop.last %}
-        {{ type.options.implode_separator }}
+        {{ column.options.implode_separator }}
     {% endif %}
 {% endblock %}

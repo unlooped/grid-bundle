@@ -5,7 +5,7 @@
 {% block column_content %}
     {% set amount = value %}
     {% if amount is not null or column.options.nullAsZero %}
-        {{ amount|format_currency(column.options.currency, column.options.formatOptions) }}
+        {{ amount|format_currency(column.type.currency(data, column.options), column.options.formatOptions) }}
         {% if it_loop is defined and not it_loop.last %}
             {{ type.options.implode_separator }}
         {% endif %}
