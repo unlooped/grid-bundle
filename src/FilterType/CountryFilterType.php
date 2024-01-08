@@ -13,7 +13,7 @@ class CountryFilterType extends ChoiceFilterType
                 'required'           => false,
                 'translation_domain' => 'unlooped_grid',
                 'attr'               => [
-                    'class' => 'custom-select',
+                    'class' => ($options['use_select2'] ? 'initSelect2' : 'custom-select'),
                 ],
                 'preferred_choices' => $options['preferred_choices'],
             ])
