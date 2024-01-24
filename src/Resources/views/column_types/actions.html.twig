@@ -8,10 +8,13 @@
             {% if action.template is defined and action.template %}
                 {% include action.template with {'action': action, 'data': data, 'column': column} only %}
             {% else %}
-                <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': column.type.value(action.path|default('id'), data)}) }}"{% endif %}>
-                    <span class="{{ action.icon }}"></span>
-                    {{ action.label|trans }}
-                </a>
+                {% set id = column.type.value(action.path|default('id'), data) %}
+                {% if id %}
+                    <a class="btn btn-light btn-sm"{% if action.route %} href="{{ path(action.route, {'id': id}) }}"{% endif %}>
+                        <span class="{{ action.icon }}"></span>
+                        {{ action.label|trans }}
+                    </a>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>
