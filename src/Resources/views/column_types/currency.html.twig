@@ -4,8 +4,14 @@
 
 {% block column_content %}
     {% set amount = value %}
+    {% set currency = column.type.currency(data, column.options) %}
+
     {% if amount is not null or column.options.nullAsZero %}
-        {{ amount|format_currency(column.type.currency(data, column.options), column.options.formatOptions) }}
+        {% if currency %}
+            {{ amount|format_currency(currency, column.options.formatOptions) }}
+        {% else %}
+            {{ amount|format_number(column.options.formatOptions) }}
+        {% endif %}
         {% if it_loop is defined and not it_loop.last %}
             {{ type.options.implode_separator }}
         {% endif %}

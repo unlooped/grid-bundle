@@ -17,6 +17,9 @@ class CurrencyColumn extends NumberColumn
             'currency' => 'EUR',
             'currency_path' => null,
             'divider' => 0,
+            'formatOptions' => [
+                'fraction_digit' => 2,
+            ],
         ]);
 
         $resolver->setAllowedTypes('currency', ['string', 'null']);
