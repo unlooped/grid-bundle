@@ -81,6 +81,10 @@ abstract class AbstractColumnType implements ColumnTypeInterface
 
     public function getValue(string $field, object $object, array $options = [])
     {
+        if ('__self' === $field) {
+            return $object;
+        }
+
         if ($options['isMapped']) {
             try {
                 if ($options['resolve_collections']) {
