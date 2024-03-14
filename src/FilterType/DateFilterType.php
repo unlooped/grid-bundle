@@ -34,9 +34,13 @@ class DateFilterType extends AbstractFilterType
             ],
             'WEEKS' => [
                 'ONE_WEEK_AGO'    => 'ONE_WEEK_AGO',
+                'IN_ONE_WEEK'     => 'IN_ONE_WEEK',
                 'TWO_WEEKS_AGO'   => 'TWO_WEEKS_AGO',
+                'IN_TWO_WEEKS'    => 'IN_TWO_WEEKS',
                 'THREE_WEEKS_AGO' => 'THREE_WEEKS_AGO',
+                'IN_THREE_WEEKS'  => 'IN_THREE_WEEKS',
                 'FOUR_WEEKS_AGO'  => 'FOUR_WEEKS_AGO',
+                'IN_FOUR_WEEKS'   => 'IN_FOUR_WEEKS',
             ],
             'MONDAYS_WEEKS' => [
                 'START_OF_WEEK_MONDAY'      => 'START_OF_WEEK_MONDAY',
@@ -203,14 +207,26 @@ class DateFilterType extends AbstractFilterType
             case 'ONE_WEEK_AGO':
                 return $now->subWeek()->startOfDay()->toFormattedDateString();
 
+            case 'IN_ONE_WEEK':
+                return $now->addWeek()->startOfDay()->toFormattedDateString();
+
             case 'TWO_WEEKS_AGO':
                 return $now->subWeeks(2)->startOfDay()->toFormattedDateString();
+
+            case 'IN_TWO_WEEKS':
+                return $now->addWeeks(2)->startOfDay()->toFormattedDateString();
 
             case 'THREE_WEEKS_AGO':
                 return $now->subWeeks(3)->startOfDay()->toFormattedDateString();
 
+            case 'IN_THREE_WEEKS':
+                return $now->addWeeks(3)->startOfDay()->toFormattedDateString();
+
             case 'FOUR_WEEKS_AGO':
                 return $now->subWeeks(4)->startOfDay()->toFormattedDateString();
+
+            case 'IN_FOUR_WEEKS_AGO':
+                return $now->addWeeks(4)->startOfDay()->toFormattedDateString();
 
             case 'START_OF_WEEK_MONDAY':
                 return $now->startOfWeek(CarbonImmutable::MONDAY)->toFormattedDateString();
