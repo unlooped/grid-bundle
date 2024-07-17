@@ -1,8 +1,9 @@
-{# @var column \Unlooped\GridBundle\ColumnType\AbstractColumnType #}
+{# @var column \Unlooped\GridBundle\Column\Column #}
+
 {% if column.isSortable and pagination.isSorted(column.field) %}
-    {% set attr = column.attr|merge({class: (column.attr.class|default('') ~ ' sorted sorted-' ~ pagination.direction)|trim}) %}
+    {% set attr = column.header_attr|merge({class: (column.header_attr.class|default('') ~ ' sorted sorted-' ~ pagination.direction)|trim}) %}
 {% else %}
-    {% set attr = column.attr %}
+    {% set attr = column.header_attr %}
 {% endif %}
 
 {% block grid_column %}

@@ -15,6 +15,7 @@ class BadgeColumn extends AbstractColumnType
         $resolver->setDefaults([
             'classPrefix' => null,
             'attr'        => ['class' => 'text-center'],
+            'header_attr' => ['class' => 'text-center'],
         ]);
         $resolver->setAllowedTypes('classPrefix', ['null', 'string']);
     }

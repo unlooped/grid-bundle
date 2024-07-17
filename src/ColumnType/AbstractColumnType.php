@@ -40,6 +40,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
             'isSortable'          => true,
             'isMapped'            => true,
             'attr'                => [],
+            'header_attr'         => [],
             'template'            => $this->template,
             'meta'                => [],
             'permissions'         => [],
@@ -70,6 +71,7 @@ abstract class AbstractColumnType implements ColumnTypeInterface
         $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('isSortable', 'bool');
         $resolver->setAllowedTypes('attr', 'array');
+        $resolver->setAllowedTypes('header_attr', 'array');
         $resolver->setAllowedTypes('template', ['null', 'string']);
         $resolver->setAllowedTypes('meta', 'array');
         $resolver->setAllowedTypes('permissions', 'array');

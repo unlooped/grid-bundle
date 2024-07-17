@@ -16,6 +16,7 @@ class NumberColumn extends AbstractColumnType
         $resolver->setDefaults([
             'nullAsZero'         => false,
             'attr'               => ['class' => 'text-right'],
+            'header_attr'        => ['class' => 'text-right'],
             'formatOptions'      => [],
             'style'              => 'decimal',
             'aggregates'         => [],
