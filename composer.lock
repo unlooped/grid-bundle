@@ -5424,16 +5424,16 @@
         },
         {
             "name": "unlooped/ts-resources",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/unlooped/ts-resources.git",
-                "reference": "42527cb52577c92eb6b7f2f88a24fa9bb0cb3701"
+                "reference": "dd1370863ed0ddfe4331548e39c3f2f06d5ec5b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/unlooped/ts-resources/zipball/42527cb52577c92eb6b7f2f88a24fa9bb0cb3701",
-                "reference": "42527cb52577c92eb6b7f2f88a24fa9bb0cb3701",
+                "url": "https://api.github.com/repos/unlooped/ts-resources/zipball/dd1370863ed0ddfe4331548e39c3f2f06d5ec5b4",
+                "reference": "dd1370863ed0ddfe4331548e39c3f2f06d5ec5b4",
                 "shasum": ""
             },
             "type": "library",
@@ -5450,9 +5450,9 @@
             "description": "often used typescript code",
             "support": {
                 "issues": "https://github.com/unlooped/ts-resources/issues",
-                "source": "https://github.com/unlooped/ts-resources/tree/0.1.8"
+                "source": "https://github.com/unlooped/ts-resources/tree/0.1.9"
             },
-            "time": "2023-03-06T13:39:09+00:00"
+            "time": "2023-12-03T22:24:59+00:00"
         }
     ],
     "packages-dev": [
@@ -6044,5 +6044,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
