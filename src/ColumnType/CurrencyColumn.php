@@ -14,9 +14,9 @@ class CurrencyColumn extends NumberColumn
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'currency' => 'EUR',
+            'currency'      => 'EUR',
             'currency_path' => null,
-            'divider' => 0,
+            'divider'       => 0,
             'formatOptions' => [
                 'fraction_digit' => 2,
             ],
@@ -47,5 +47,4 @@ class CurrencyColumn extends NumberColumn
 
         return $options['currency'];
     }
-
 }
