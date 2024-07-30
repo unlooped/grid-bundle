@@ -21,7 +21,7 @@
         "symfony/form": "^4.2 || ^5.1 || ^6.0",
         "symfony/intl": "^4.2 || ^5.1 || ^6.0",
         "symfony/options-resolver": "^4.2 || ^5.1 || ^6.0",
-        "symfony/property-access": "^4.3 || ^5.1 || ^6.0",
+        "symfony/property-access": "^7.1.1",
         "symfony/security-core": "^4.2 || ^5.1 || ^6.0",
         "symfony/translation": "^5.4 || ^6.0",
         "symfony/validator": "^5.4 || ^6.0",
