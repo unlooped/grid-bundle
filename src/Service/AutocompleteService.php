@@ -33,7 +33,7 @@ class AutocompleteService
             return new JsonResponse([]);
         }
 
-        $q         = (string) $request->query->get('q', '');
+        $q         = $request->query->get('q', '');
         $page      = (int) $request->query->get('page', 1);
         $pageLimit = (int) $request->query->get('page_limit', 10);
 
