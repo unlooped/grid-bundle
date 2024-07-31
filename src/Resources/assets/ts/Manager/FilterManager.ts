@@ -40,6 +40,7 @@ export class FilterManager {
         let formCollection = this.filterForm.querySelector('[data-collection="form-collection"]');
         // @ts-ignore
         jQuery(formCollection).on('unl.row_added', (event: Event, row: Element) => {
+            this.toggleAdvancedFilter();
             this.updateForField(row.querySelector('[name*="[field]"]'));
         });
 
