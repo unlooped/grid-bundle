@@ -154,7 +154,7 @@ abstract class AbstractFilterType implements FilterType
         $value = $this->getExpressionValue($filterRow);
 
         $multiple = ($options['multiple'] ?? false) === true;
-        if (!($multiple && \is_array($value)) && null === $value && $this->hasExpressionValue($filterRow)) {
+        if (!($multiple && \is_array($value) && [] !== $value) && null === $value && $this->hasExpressionValue($filterRow)) {
             return;
         }
 
@@ -169,7 +169,7 @@ abstract class AbstractFilterType implements FilterType
             $alias = $newAlias.'.id';
         }
 
-        if ($multiple && \is_array($value)) {
+        if ($multiple && \is_array($value) && [] !== $value) {
             if (self::EXPR_NEQ === $filterRow->getOperator()) {
                 $andOrX = $qb->expr()->andX();
             } else {
