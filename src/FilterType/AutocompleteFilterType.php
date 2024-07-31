@@ -84,7 +84,7 @@ class AutocompleteFilterType extends AbstractFilterType
         ;
     }
 
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         if (null === $event) {
             parent::postSetFormData($builder, $options, $data, $event);
@@ -129,7 +129,7 @@ class AutocompleteFilterType extends AbstractFilterType
         parent::postSetFormData($builder, $options, $data, $event);
     }
 
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         parent::postFormSubmit($builder, $options, $data, $event);
 

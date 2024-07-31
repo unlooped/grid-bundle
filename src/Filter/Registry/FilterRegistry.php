@@ -24,11 +24,11 @@ final class FilterRegistry
     public function getType(string $name)
     {
         if (!class_exists($name)) {
-            throw new InvalidArgumentException(sprintf('Could not load type "%s": class does not exist.', $name));
+            throw new InvalidArgumentException(\sprintf('Could not load type "%s": class does not exist.', $name));
         }
 
         if (!is_subclass_of($name, FilterType::class)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 'Could not load type "%s": class does not implement "%s".',
                 $name,
                 FilterType::class

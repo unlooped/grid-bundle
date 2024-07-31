@@ -5,7 +5,9 @@ namespace Unlooped\GridBundle\FilterType;
 use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\Mapping\MappingException;
 use Exception;
+use ReflectionException;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormEvent;
@@ -147,13 +149,17 @@ class DateFilterType extends AbstractFilterType
         $resolver->setAllowedTypes('target_timezone', ['string']);
     }
 
+    /**
+     * @throws MappingException
+     * @throws ReflectionException
+     */
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
         $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
-        $field = $this->getFieldInfo($qb, $filterRow);
 
         if ($value) {
+            $field  = $this->getFieldInfo($qb, $filterRow);
             $suffix = uniqid('', false);
 
             if (\is_string($value)) {
@@ -179,6 +185,7 @@ class DateFilterType extends AbstractFilterType
                 $qb->setParameter('value_'.$suffix, $date->timezone($options['target_timezone']));
             }
         } elseif (!$this->hasExpressionValue($filterRow)) {
+            $field = $this->getFieldInfo($qb, $filterRow);
             $qb->andWhere($qb->expr()->{$op}($field));
         }
     }
@@ -373,7 +380,7 @@ class DateFilterType extends AbstractFilterType
         ];
     }
 
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $this->buildForm($builder, $options, $data);
 
@@ -390,7 +397,7 @@ class DateFilterType extends AbstractFilterType
         }
     }
 
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if (static::VALUE_CHOICE_DATE === $valueType) {

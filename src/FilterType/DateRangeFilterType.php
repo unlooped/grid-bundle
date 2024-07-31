@@ -49,9 +49,6 @@ class DateRangeFilterType extends DateFilterType
             return;
         }
 
-        $suffix = uniqid('', false);
-
-        $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
         if (!\array_key_exists('value_type', $metaData)) {
@@ -64,6 +61,13 @@ class DateRangeFilterType extends DateFilterType
             $startValue = $metaData['dateValue_from'];
             $endValue   = $metaData['dateValue_to'];
         }
+
+        if (!$startValue && !$endValue) {
+            return;
+        }
+
+        $suffix = uniqid('', false);
+        $field  = $this->getFieldInfo($qb, $filterRow);
 
         if ($startValue) {
             if (\is_string($startValue)) {
@@ -159,7 +163,7 @@ class DateRangeFilterType extends DateFilterType
         ];
     }
 
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $this->buildForm($builder, $options, $data);
 
@@ -180,7 +184,7 @@ class DateRangeFilterType extends DateFilterType
         }
     }
 
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $valueType = $builder->get('_valueChoices')->getData();
         if (static::VALUE_CHOICE_DATE === $valueType) {

@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
-use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -42,6 +41,8 @@ use Unlooped\GridBundle\Model\Grid;
 use Unlooped\GridBundle\Repository\FilterRepository;
 use Unlooped\GridBundle\Repository\FilterUserSettingsRepository;
 use Unlooped\GridBundle\Struct\AggregateResultStruct;
+
+use function Symfony\Component\String\u;
 
 class GridService
 {
@@ -92,7 +93,7 @@ class GridService
      * @throws ReflectionException
      * @throws NonUniqueResultException
      */
-    public function getGridHelper(string $className, array $options = [], string $filterHash = null): GridHelper
+    public function getGridHelper(string $className, array $options = [], ?string $filterHash = null): GridHelper
     {
         $reflect = new ReflectionClass($className);
         $alias   = u($reflect->getShortName())->truncate(1)->lower()->toString();
@@ -146,7 +147,7 @@ class GridService
             $filterFormRequest,
             $filterUserSettingsFormRequest,
             $filterData,
-            ($this->saveFilter && $gridHelper->getAllowSaveFilter()),
+            $this->saveFilter && $gridHelper->getAllowSaveFilter(),
             $route,
             array_merge($request->attributes->get('_route_params'), $request->query->all()),
             $existingFilters,
@@ -211,11 +212,11 @@ class GridService
     }
 
     /**
+     * @return array<string, array<string, mixed>>
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     *
-     * @return array<string, array<string, mixed>>
      */
     public function getFilterData(GridHelper $helper): array
     {
@@ -471,7 +472,10 @@ class GridService
 
         $qb = $gridHelper->getQueryBuilder();
 
-        if ($filter->getHash() || ($filter->hasDefaultShowFilter() && !$filterForm->isSubmitted()) || ($filterForm->isSubmitted() && $filterForm->isValid())) {
+        if ($filter->getHash()
+            || ($filter->hasDefaultShowFilter() && !$filterForm->isSubmitted())
+            || ($filterForm->isSubmitted() && $filterForm->isValid())
+        ) {
             $ffr->setIsFilterApplied($filter->getHash() || ($filterForm->isSubmitted() && $filterForm->isValid()));
 
             $this->handleFilter($qb, $filter, $gridHelper);

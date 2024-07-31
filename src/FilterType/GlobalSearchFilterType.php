@@ -39,7 +39,7 @@ class GlobalSearchFilterType extends AbstractFilterType
             }
             $alias = $this->entityJoin($qb, $mappings);
 
-            $orX->add($qb->expr()->like(sprintf('%s.%s', $alias, $field), $qb->expr()->literal('%'.$text.'%')));
+            $orX->add($qb->expr()->like(\sprintf('%s.%s', $alias, $field), $qb->expr()->literal('%'.$text.'%')));
         }
 
         $qb->andWhere($orX);
@@ -71,7 +71,7 @@ class GlobalSearchFilterType extends AbstractFilterType
                 foreach ($joinExprList as $joinExpr) {
                     $newAliasTmp = $joinExpr->getAlias();
 
-                    if (sprintf('%s.%s', $alias, $associationMapping['fieldName']) === $joinExpr->getJoin()) {
+                    if (\sprintf('%s.%s', $alias, $associationMapping['fieldName']) === $joinExpr->getJoin()) {
                         $this->entityJoinAliases[] = $newAliasTmp;
                         $alias                     = $newAliasTmp;
 
@@ -83,7 +83,7 @@ class GlobalSearchFilterType extends AbstractFilterType
             $newAlias .= '_'.$associationMapping['fieldName'];
             if (!\in_array($newAlias, $this->entityJoinAliases, true)) {
                 $this->entityJoinAliases[] = $newAlias;
-                $qb->leftJoin(sprintf('%s.%s', $alias, $associationMapping['fieldName']), $newAlias);
+                $qb->leftJoin(\sprintf('%s.%s', $alias, $associationMapping['fieldName']), $newAlias);
             }
 
             $alias = $newAlias;

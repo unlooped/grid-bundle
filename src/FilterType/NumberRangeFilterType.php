@@ -68,14 +68,22 @@ class NumberRangeFilterType extends AbstractFilterType
 
         $suffix = uniqid('', false);
 
-        $field    = $this->getFieldInfo($qb, $filterRow);
         $metaData = $filterRow->getMetaData();
 
-        if (\array_key_exists('from', $metaData) && $fromValue = $metaData['from']) {
+        $fromValue = $metaData['from'] ?? null;
+        $toValue   = $metaData['to']   ?? null;
+
+        if (null === $fromValue && null === $toValue) {
+            return;
+        }
+
+        $field = $this->getFieldInfo($qb, $filterRow);
+
+        if (null !== $fromValue) {
             $qb->andWhere($qb->expr()->gte($field, ':value_start_'.$suffix));
             $qb->setParameter('value_start_'.$suffix, $fromValue);
         }
-        if (\array_key_exists('to', $metaData) && $toValue = $metaData['to']) {
+        if (null !== $toValue) {
             $qb->andWhere($qb->expr()->lte($field, ':value_end_'.$suffix));
             $qb->setParameter('value_end_'.$suffix, $toValue);
         }
@@ -106,7 +114,7 @@ class NumberRangeFilterType extends AbstractFilterType
         ];
     }
 
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $this->buildForm($builder, $options, $data);
 
@@ -120,7 +128,7 @@ class NumberRangeFilterType extends AbstractFilterType
         }
     }
 
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $data->setMetaData([
             'operator' => $data->getOperator(),
@@ -129,7 +137,7 @@ class NumberRangeFilterType extends AbstractFilterType
         ]);
     }
 
-    protected function getFormConstraints($builder, array $options, $data, string $field = null): array
+    protected function getFormConstraints($builder, array $options, $data, ?string $field = null): array
     {
         $constraints = [];
         if (null !== $options['min_value']) {

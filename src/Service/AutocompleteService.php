@@ -74,8 +74,8 @@ class AutocompleteService
         ;
 
         if ($groupResults) {
-            $paginationQb->addGroupBy(sprintf('e.%s', $searchProperty));
-            $countQb->select(sprintf('COUNT(DISTINCT e.%s)', $searchProperty));
+            $paginationQb->addGroupBy(\sprintf('e.%s', $searchProperty));
+            $countQb->select(\sprintf('COUNT(DISTINCT e.%s)', $searchProperty));
         } else {
             $countQb->select('COUNT(DISTINCT e)');
         }
@@ -135,16 +135,16 @@ class AutocompleteService
 
         if (\is_array($field)) {
             foreach ($field as $property) {
-                $qb->orWhere(sprintf('e.%s LIKE :term', $property))
-                    ->addOrderBy(sprintf('LOCATE(:rawTerm, e.%s)', $property), 'ASC')
-                    ->addOrderBy(sprintf('e.%s', $property), 'ASC')
+                $qb->orWhere(\sprintf('e.%s LIKE :term', $property))
+                    ->addOrderBy(\sprintf('LOCATE(:rawTerm, e.%s)', $property), 'ASC')
+                    ->addOrderBy(\sprintf('e.%s', $property), 'ASC')
                 ;
             }
         } else {
             $qb
-                ->where(sprintf('e.%s LIKE :term', $field))
-                ->addOrderBy(sprintf('LOCATE(:rawTerm, e.%s)', $field), 'ASC')
-                ->addOrderBy(sprintf('e.%s', $field), 'ASC')
+                ->where(\sprintf('e.%s LIKE :term', $field))
+                ->addOrderBy(\sprintf('LOCATE(:rawTerm, e.%s)', $field), 'ASC')
+                ->addOrderBy(\sprintf('e.%s', $field), 'ASC')
             ;
         }
 

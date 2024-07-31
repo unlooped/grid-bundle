@@ -56,9 +56,9 @@ final class EntityTypeTest extends BaseTypeTest
         ]);
         $view = $builder->getForm()->createView();
 
-        static::assertSame('parent_child_grand_child', $view['child']['grand_child']->vars['id']);
-        static::assertSame('grand_child', $view['child']['grand_child']->vars['name']);
-        static::assertSame('parent[child][grand_child]', $view['child']['grand_child']->vars['full_name']);
+        self::assertSame('parent_child_grand_child', $view['child']['grand_child']->vars['id']);
+        self::assertSame('grand_child', $view['child']['grand_child']->vars['name']);
+        self::assertSame('parent[child][grand_child]', $view['child']['grand_child']->vars['full_name']);
     }
 
     protected function create($data = null, array $options = []): FormInterface

@@ -30,7 +30,7 @@ class FilterUserSettingsRepository extends ServiceEntityRepository
             ->setParameter('userIdentifier', $userId)
             ->getQuery()
             ->getOneOrNullResult()
-            ;
+        ;
     }
 
     // /**

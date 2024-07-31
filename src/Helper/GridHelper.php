@@ -59,8 +59,8 @@ class GridHelper
         ColumnRegistry $columnRegistry,
         FilterRegistry $filterRegistry,
         array $options = [],
-        FilterEntity $filter = null,
-        string $baseTemplatePath = null
+        ?FilterEntity $filter = null,
+        ?string $baseTemplatePath = null
     ) {
         $this->queryBuilder     = $queryBuilder;
         $this->columnRegistry   = $columnRegistry;
@@ -292,7 +292,7 @@ class GridHelper
         }
 
         if (\count($fields) > 0 && 1 === $this->filter->getRows()->count() && !$this->filter->getRows()->first(
-            )->getField()) {
+        )->getField()) {
             $this->filter->getRows()->first()->setField($fields[array_key_first($fields)]);
         }
 

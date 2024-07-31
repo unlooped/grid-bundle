@@ -11,13 +11,16 @@ class FilterRow
 {
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="Unlooped\GridBundle\Entity\Filter", inversedBy="rows")
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Filter $filter = null;

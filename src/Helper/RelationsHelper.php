@@ -3,11 +3,13 @@
 namespace Unlooped\GridBundle\Helper;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use ReflectionException;
-use function Symfony\Component\String\u;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
+
+use function Symfony\Component\String\u;
 
 class RelationsHelper
 {
@@ -46,7 +48,7 @@ class RelationsHelper
 
     /**
      * @throws ReflectionException
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws MappingException
      */
     public static function joinRequiredPaths(QueryBuilder $qb, string $entity, string $path): FieldMetaDataStruct
     {

@@ -27,7 +27,7 @@ interface FilterType
      *
      * @internal
      */
-    public function preSubmitFormData($builder, array $options = [], $data = null, FormEvent $event = null): void;
+    public function preSubmitFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void;
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
@@ -35,7 +35,7 @@ interface FilterType
      *
      * @internal
      */
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void;
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void;
 
     /**
      * @param FormBuilderInterface|FormInterface $builder
@@ -43,7 +43,7 @@ interface FilterType
      *
      * @internal
      */
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void;
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void;
 
     /**
      * @internal

@@ -39,7 +39,8 @@ final class EntityType extends AbstractType
                 $entities = $manager->createQueryBuilder()
                     ->select('e')
                     ->from($class, 'e')
-                    ->getQuery()->getResult();
+                    ->getQuery()->getResult()
+                ;
 
                 return $this->buildChoices($entities, $idColumn);
             })

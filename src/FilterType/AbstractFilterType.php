@@ -8,13 +8,14 @@ use Doctrine\Persistence\Mapping\MappingException;
 use ReflectionException;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use function Symfony\Component\String\u;
 use Unlooped\GridBundle\Entity\FilterRow;
 use Unlooped\GridBundle\Exception\OperatorDoesNotExistException;
 use Unlooped\GridBundle\Helper\RelationsHelper;
 use Unlooped\GridBundle\Struct\DefaultFilterDataStruct;
 use Unlooped\GridBundle\Struct\FieldMetaDataStruct;
 use Unlooped\Helper\ConstantHelper;
+
+use function Symfony\Component\String\u;
 
 abstract class AbstractFilterType implements FilterType
 {
@@ -150,9 +151,14 @@ abstract class AbstractFilterType implements FilterType
 
     public function handleFilter(QueryBuilder $qb, FilterRow $filterRow, array $options = []): void
     {
-        $op    = $this->getExpressionOperator($filterRow);
         $value = $this->getExpressionValue($filterRow);
 
+        $multiple = ($options['multiple'] ?? false) === true;
+        if (!($multiple && \is_array($value)) && null === $value && $this->hasExpressionValue($filterRow)) {
+            return;
+        }
+
+        $op        = $this->getExpressionOperator($filterRow);
         $fieldInfo = $this->getFieldInfo($qb, $filterRow);
         $alias     = $fieldInfo->alias;
 
@@ -162,8 +168,6 @@ abstract class AbstractFilterType implements FilterType
             $qb->leftJoin($alias, $newAlias);
             $alias = $newAlias.'.id';
         }
-
-        $multiple = ($options['multiple'] ?? false) === true;
 
         if ($multiple && \is_array($value)) {
             if (self::EXPR_NEQ === $filterRow->getOperator()) {
@@ -275,17 +279,17 @@ abstract class AbstractFilterType implements FilterType
         ;
     }
 
-    public function preSubmitFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function preSubmitFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $this->buildForm($builder, $options, $data);
     }
 
-    public function postSetFormData($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postSetFormData($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         $this->buildForm($builder, $options, $data);
     }
 
-    public function postFormSubmit($builder, array $options = [], $data = null, FormEvent $event = null): void
+    public function postFormSubmit($builder, array $options = [], $data = null, ?FormEvent $event = null): void
     {
         // nothing to do here
     }
