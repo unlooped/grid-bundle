@@ -154,7 +154,7 @@ abstract class AbstractFilterType implements FilterType
         $value = $this->getExpressionValue($filterRow);
 
         $multiple = ($options['multiple'] ?? false) === true;
-        if (!($multiple && \is_array($value) && [] !== $value) && null === $value && $this->hasExpressionValue($filterRow)) {
+        if (!($multiple && \is_array($value) && [] !== $value) && !(null !== $value && !\is_array($value)) && $this->hasExpressionValue($filterRow)) {
             return;
         }
 
@@ -195,7 +195,7 @@ abstract class AbstractFilterType implements FilterType
                 $qb->having('COUNT(DISTINCT '.$alias.') = :cnt_'.$suffix);
                 $qb->setParameter('cnt_'.$suffix, \count($value));
             }
-        } elseif (null !== $value) {
+        } elseif (null !== $value && !\is_array($value)) {
             $suffix = uniqid('', false);
 
             if ($fieldInfo->fieldData && ClassMetadata::INHERITANCE_TYPE_TABLE_PER_CLASS === $fieldInfo->fieldData['type']) {
