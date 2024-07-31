@@ -36,7 +36,7 @@ export class FilterType {
 
     public fieldWithFilterChosen(row: Element, fieldName: string, config: any) {
         let operatorSelect = <HTMLSelectElement>row.querySelector('select[name$="[operator]"]');
-        let currentValue = null;
+        let currentValue = config?.options?.default_data?.operator ?? null;
         if (operatorSelect.selectedIndex) {
             currentValue = operatorSelect.options[operatorSelect.selectedIndex].value;
         }
