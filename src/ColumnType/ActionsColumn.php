@@ -14,10 +14,12 @@ class ActionsColumn extends AbstractColumnType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'actions'    => [],
-            'isMapped'   => false,
-            'isSortable' => false,
-            'isHideable' => false,
+            'actions'     => [],
+            'isMapped'    => false,
+            'isSortable'  => false,
+            'isHideable'  => false,
+            'attr'        => ['class' => 'text-right'],
+            'header_attr' => ['class' => 'text-right'],
         ]);
 
         $resolver->setAllowedTypes('actions', ['array']);
