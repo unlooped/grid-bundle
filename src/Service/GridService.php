@@ -461,10 +461,11 @@ class GridService
         $filter->setIsSaveable($filterAllowedToSave);
 
         $filterForm = $this->formFactory->create(FilterFormType::class, $filter, [
-            'fields'          => $filter->getFields(),
-            'filters'         => $gridHelper->getFilters(),
-            'method'          => 'get',
-            'csrf_protection' => false,
+            'fields'             => $filter->getFields(),
+            'filters'            => $gridHelper->getFilters(),
+            'method'             => 'get',
+            'csrf_protection'    => false,
+            'allow_extra_fields' => true,
         ]);
         $ffr = new FilterFormRequest($filterForm);
 
